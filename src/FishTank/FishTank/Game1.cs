@@ -1,5 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿//
+// Copyright - James Finlay
+// 
+
+using FishTank.Models;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Diagnostics;
 
 namespace FishTank
 {
@@ -8,12 +14,27 @@ namespace FishTank
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        public static readonly float ExpectedFramesPerSecond = 60f;
+        public static readonly float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        GraphicsDeviceManager _graphics;
+
+        /// <summary>
+        /// Spritebatch is used to draw textures on the canvas
+        /// </summary>
+        SpriteBatch _spriteBatch;
+
+        /// <summary>
+        /// Global gold fish used to test fish AI
+        /// </summary>
+        GoldFish _fish;
 
         public Game1()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -25,7 +46,7 @@ namespace FishTank
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            IsMouseVisible = true;
 
             base.Initialize();
         }
@@ -36,8 +57,9 @@ namespace FishTank
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _fish = new GoldFish(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -58,7 +80,9 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // TODO: Add your update logic here
+            float frameRateChange = gameTime.ElapsedGameTime.Milliseconds / ExpectedMillisecondsPerFrame;
+
+            _fish.Update();
 
             base.Update(gameTime);
         }
@@ -71,7 +95,11 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
+            _spriteBatch.Begin();
+
+            _fish.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

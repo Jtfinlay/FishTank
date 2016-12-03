@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="65207cde-36db-4589-bc4f-e8b891f3f6f1"
-    Publisher="CN=jtfin"
+    Name="FishTank"
+    Publisher="CN=jtfinlay"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="65207cde-36db-4589-bc4f-e8b891f3f6f1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>FishTank</DisplayName>
-    <PublisherDisplayName>jtfin</PublisherDisplayName>
+    <PublisherDisplayName>James Finlay</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

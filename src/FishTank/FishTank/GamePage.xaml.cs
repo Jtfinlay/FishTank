@@ -1,7 +1,9 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+﻿//
+// Copyright - James Finlay
+// 
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace FishTank
 {
