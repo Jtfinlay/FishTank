@@ -4,13 +4,12 @@
 
 using FishTank.Models;
 using FishTank.Models.Interfaces;
+using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using System;
-using FishTank.Utilities;
 
 namespace FishTank.Views
 {
@@ -74,6 +73,13 @@ namespace FishTank.Views
             // Handle mouse input events
             _previousMouseState = _currentMouseState;
             _currentMouseState = translatedMouseState;
+
+            // If outside the game view area, ignore it
+            if (_currentMouseState.X < 0 || _currentMouseState.X > Width 
+                || _currentMouseState.Y < 0 || _currentMouseState.Y > Height)
+            {
+                return;
+            }
 
             if (_currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
             {
