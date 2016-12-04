@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace FishTank.Models
 {
@@ -46,7 +47,7 @@ namespace FishTank.Models
 
             _texture = rect;
             Position = new Vector2(
-                graphicsDevice.Viewport.TitleSafeArea.X, 
+                graphicsDevice.Viewport.TitleSafeArea.X + Constants.VirtualWidth / 2, 
                 graphicsDevice.Viewport.TitleSafeArea.Y + Constants.VirtualHeight / 2);
 
             _random = new Random();
@@ -54,7 +55,19 @@ namespace FishTank.Models
 
         public void Update(List<IInteractable> models)
         {
+            Pellet nearestPellet = models.Where((model) => model is Pellet)?.OrderBy(i => Vector2.Distance(i.Position, Position)).FirstOrDefault() as Pellet;
+            if (nearestPellet != null)
+            {
+                float distance = Vector2.Distance(nearestPellet.Position, Position);
+                if (distance < 30)
+                {
+                    nearestPellet.Kill();
+                    return;
+                }
 
+                Vector2 direction = Vector2.Normalize(nearestPellet.Position - Position);
+                Position += direction * _maxSpeed;
+            }
         }
 
         /// <summary>

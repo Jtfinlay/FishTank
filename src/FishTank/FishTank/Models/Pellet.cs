@@ -58,5 +58,10 @@ namespace FishTank.Models
                 this.State = InteractableState.Dead;
             }
         }
+
+        public void Kill()
+        {
+            State = InteractableState.Dead;
+        }
     }
 }
