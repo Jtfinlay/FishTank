@@ -8,19 +8,17 @@ using FishTank.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace FishTank
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game
+    public class GameController : Game
     {
-        public static readonly float ExpectedFramesPerSecond = 60f;
 
-        public static readonly float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
-
-        public Game1()
+        public GameController()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -36,8 +34,10 @@ namespace FishTank
         {
             IsMouseVisible = true;
 
-            _itemBarView = new ItemBarView();
-            _gameView = new GameView(Matrix.CreateTranslation(new Vector3(0, _itemBarView.Height, 0)));
+            var itemBarView = new ItemBarView();
+            var gameView = new GameView(Matrix.CreateTranslation(new Vector3(0, itemBarView.Height, 0)));
+
+            _views = new List<IView>() { itemBarView, gameView };
 
             base.Initialize();
         }
@@ -50,8 +50,8 @@ namespace FishTank
         {
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _gameView.LoadContent(_graphics.GraphicsDevice, Content);
-            _itemBarView.LoadContent(_graphics.GraphicsDevice, Content);
+
+            _views.ForEach((view) => view.LoadContent(_graphics.GraphicsDevice, Content));
         }
 
         /// <summary>
@@ -60,8 +60,7 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
-            _gameView.UnloadContent();
-            _itemBarView.UnloadContent();
+            _views.ForEach((view) => view.UnloadContent());
         }
 
         /// <summary>
@@ -71,14 +70,12 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            //float frameRateChange = gameTime.ElapsedGameTime.Milliseconds / ExpectedMillisecondsPerFrame;
             MouseState mouseState = Mouse.GetState();
 
             Point virtualMousePosition = _viewportAdapter.PointToScreen(mouseState.Position);
             MouseState virtualMouseState = mouseState.SetPosition(virtualMousePosition.ToVector2());
 
-            _gameView.Update(gameTime, virtualMouseState);
-            _itemBarView.Update(gameTime, virtualMouseState);
+            _views.ForEach((view) => view.Update(gameTime, virtualMouseState));
 
             base.Update(gameTime);
         }
@@ -91,31 +88,22 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.Black);
 
-            // Draw top bar
-            _spriteBatch.Begin(
-                samplerState: SamplerState.LinearClamp,
-                blendState: BlendState.AlphaBlend,
-                transformMatrix: _viewportAdapter.GetScaleMatrix());
+            foreach (IView view in _views)
+            {
+                var viewMatrix = _viewportAdapter.GetScaleMatrix() * view.PostScaleTransform;
 
-            _itemBarView.Draw(gameTime, _spriteBatch);
+                _spriteBatch.Begin(
+                    samplerState: SamplerState.LinearClamp,
+                    blendState: BlendState.AlphaBlend,
+                    transformMatrix: viewMatrix);
 
-            _spriteBatch.End();
+                view.Draw(gameTime, _spriteBatch);
 
-            // Draw Gameview
-            var gameViewMatrix = _viewportAdapter.GetScaleMatrix() * _gameView.OffsetMatrix;
-            _spriteBatch.Begin(
-                samplerState: SamplerState.LinearClamp,
-                blendState: BlendState.AlphaBlend,
-                transformMatrix: gameViewMatrix);
-
-            _gameView.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.End();
+                _spriteBatch.End();
+            }
 
             base.Draw(gameTime);
         }
-
-
 
         /// <summary>
         /// Spritebatch is used to draw textures on the canvas
@@ -126,8 +114,6 @@ namespace FishTank
 
         private GraphicsDeviceManager _graphics;
 
-        private GameView _gameView;
-
-        private ItemBarView _itemBarView;
+        private List<IView> _views;
     }
 }

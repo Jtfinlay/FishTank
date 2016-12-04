@@ -11,6 +11,8 @@ namespace FishTank.Views
 {
     public interface IView
     {
+        Matrix PostScaleTransform { get; }
+
         int Width { get; }
 
         int Height { get; }

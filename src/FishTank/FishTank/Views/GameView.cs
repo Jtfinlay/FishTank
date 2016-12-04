@@ -15,7 +15,7 @@ namespace FishTank.Views
 {
     public class GameView : IView
     {
-        public Matrix OffsetMatrix { get; private set; }
+        public Matrix PostScaleTransform { get; private set; }
 
         public int Width => Constants.VirtualWidth;
 
@@ -23,7 +23,7 @@ namespace FishTank.Views
 
         public GameView(Matrix offsetMatrix)
         {
-            OffsetMatrix = offsetMatrix;
+            PostScaleTransform = offsetMatrix;
 
             _models = new List<IInteractable>();
         }
@@ -67,7 +67,7 @@ namespace FishTank.Views
         private void HandleInputs(MouseState virtualMouseState)
         {
             var virtualPosition = virtualMouseState.Position.ToVector2();
-            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(OffsetMatrix));
+            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(PostScaleTransform));
             var translatedMouseState = virtualMouseState.SetPosition(translatedPosition);
 
             // Handle mouse input events

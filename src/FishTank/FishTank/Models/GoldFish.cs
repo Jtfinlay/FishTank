@@ -21,14 +21,7 @@ namespace FishTank.Models
 
         private const float _maxSpeed = 3.0f;
 
-        private Random _random;
-
         private Texture2D _texture;
-
-        /// <summary>
-        /// Expect fish to move every 4 seconds or so.
-        /// </summary>
-        private readonly float _probabilityToMovePerFrame = 1f / (3.5f * Game1.ExpectedFramesPerSecond);
 
         public Vector2 Position { get; private set; }
 
@@ -49,8 +42,6 @@ namespace FishTank.Models
             Position = new Vector2(
                 graphicsDevice.Viewport.TitleSafeArea.X + Constants.VirtualWidth / 2, 
                 0);
-
-            _random = new Random();
         }
 
         public void Update(List<IInteractable> models)

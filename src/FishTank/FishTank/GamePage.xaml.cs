@@ -15,7 +15,7 @@ namespace FishTank
     /// </summary>
     public sealed partial class GamePage : Page
     {
-        readonly Game1 _game;
+        readonly GameController _game;
 
         public GamePage()
         {
@@ -26,7 +26,7 @@ namespace FishTank
 
             // Create the game.
             var launchArguments = string.Empty;
-            _game = MonoGame.Framework.XamlGame<Game1>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
+            _game = MonoGame.Framework.XamlGame<GameController>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
         }
     }
 }

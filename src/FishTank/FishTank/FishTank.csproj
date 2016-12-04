@@ -103,7 +103,7 @@
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Game1.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Models\TopbarItem.cs" />
     <Compile Include="Models\GoldFish.cs" />
     <Compile Include="Models\Interfaces\IInteractable.cs" />

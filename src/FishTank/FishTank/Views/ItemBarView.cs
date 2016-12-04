@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System;
 
 namespace FishTank.Views
 {
@@ -17,6 +18,8 @@ namespace FishTank.Views
         public int Height => Constants.VirtualBarHeight;
 
         public int Width => Constants.VirtualWidth;
+
+        public Matrix PostScaleTransform => _postScaleTransform;
 
         public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
@@ -54,5 +57,7 @@ namespace FishTank.Views
         private Texture2D _texture;
 
         private List<TopbarItem> _buttons;
+
+        private Matrix _postScaleTransform = Matrix.CreateTranslation(0,0,0);
     }
 }
