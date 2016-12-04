@@ -122,19 +122,23 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.Black);
 
-            foreach (IView view in new List<IView>() { _tankView, _topBarView })
-            {
-                var viewMatrix = _viewportAdapter.GetScaleMatrix() * view.PostScaleTransform;
-
-                _spriteBatch.Begin(
+            _spriteBatch.Begin(
                     samplerState: SamplerState.LinearClamp,
                     blendState: BlendState.AlphaBlend,
-                    transformMatrix: viewMatrix);
+                    transformMatrix: _tankView.PostScaleTransform * _viewportAdapter.GetScaleMatrix());
 
-                view.Draw(gameTime, _spriteBatch);
+            _tankView.Draw(gameTime, _spriteBatch);
 
-                _spriteBatch.End();
-            }
+            _spriteBatch.End();
+
+            _spriteBatch.Begin(
+                    samplerState: SamplerState.LinearClamp,
+                    blendState: BlendState.AlphaBlend,
+                    transformMatrix: _viewportAdapter.GetScaleMatrix());
+
+            _topBarView.Draw(gameTime, _spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
