@@ -42,7 +42,6 @@ namespace FishTank.Models
             }
             rect.SetData(data);
             _texture = rect;
-
         }
 
         /// <summary>
@@ -57,6 +56,8 @@ namespace FishTank.Models
                 _wanderingTarget = null;
                 return;
             }
+
+            _currentHunger -= _hungerDropPerFrame;
 
             // Continue wandering to target if it is set
             if (_wanderingTarget != null)
@@ -90,7 +91,11 @@ namespace FishTank.Models
         /// <param name="spriteBatch">Graphics resource for drawing</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), null);
+            Color color = Color.Gold;
+            if (_currentHunger <= _hungerDangerValue) color = Color.Green;
+            else if (_currentHunger <= _hungerWarningValue) color = Color.Blue;
+
+            spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), color: color);
         }
 
         /// <summary>
@@ -147,12 +152,17 @@ namespace FishTank.Models
         }
 
         /// <summary>
-        /// Target available food on the field and move to consume it
+        /// If fish is hungry, find nearby food and move to consume it
         /// </summary>
         /// <param name="models">List of  all interactable objects on the field</param>
-        /// <returns>Bool indicating whether going after a source of food</returns>
+        /// <returns>Bool indicating whether targeting a source of food</returns>
         private bool SearchForFood(List<IInteractable> models)
         {
+            if (_currentHunger > _hungerStartsValue)
+            {
+                return false;
+            }
+
             Pellet nearestPellet = models.Where((model) => model is Pellet)?
                 .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2())).FirstOrDefault() as Pellet;
             if (nearestPellet != null)
@@ -160,6 +170,7 @@ namespace FishTank.Models
                 float distance = Vector2.Distance(nearestPellet.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
                 if (distance < 30)
                 {
+                    _currentHunger = _maxHunger;
                     nearestPellet.Kill();
                     return true;
                 }
@@ -174,8 +185,23 @@ namespace FishTank.Models
         /// <summary>
         ///  The maximum hunger of the fish
         /// </summary>
-        private const float MaxHunger = 100;
+        private const float _maxHunger = 1f;
 
+        private const float _hungerStartsValue = .7f;
+
+        private const float _hungerWarningValue = .5f;
+
+        private const float _hungerDangerValue = .2f;
+
+        /// <summary>
+        /// The amount current hunger decriments per frame
+        /// </summary>
+        private const float _hungerDropPerFrame = 1 / (Constants.ExpectedFramesPerSecond * 25);
+
+        /// <summary>
+        /// Current hunger fo the gold fish. At zero the fish dies
+        /// </summary>
+        private float _currentHunger = _maxHunger;
 
         /// <summary>
         /// Maximum speed of the gold fish. Used when targeting food or running from aliens
