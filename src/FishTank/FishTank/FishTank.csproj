@@ -116,8 +116,9 @@
     <Compile Include="ViewAdapters\BoxingViewportAdapter.cs" />
     <Compile Include="ViewAdapters\ScalingViewportAdapter.cs" />
     <Compile Include="ViewAdapters\ViewportAdapter.cs" />
-    <Compile Include="Views\GameView.cs" />
-    <Compile Include="Views\ItemBarView.cs" />
+    <Compile Include="Views\IClickable.cs" />
+    <Compile Include="Views\TankView.cs" />
+    <Compile Include="Views\TopBarView.cs" />
     <Compile Include="Views\IView.cs" />
   </ItemGroup>
   <ItemGroup>

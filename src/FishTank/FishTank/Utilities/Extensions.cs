@@ -15,5 +15,11 @@ namespace FishTank.Utilities
                 mouseState.LeftButton, mouseState.MiddleButton, mouseState.RightButton,
                 mouseState.XButton1, mouseState.XButton2);
         }
+
+        public static bool Within(this Point point, Rectangle area)
+        {
+            return (point.X > area.Left) && (point.X < area.Right)
+                && (point.Y > area.Top) && (point.Y < area.Bottom);
+        }
     }
 }

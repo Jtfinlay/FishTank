@@ -34,12 +34,17 @@ namespace FishTank
         {
             IsMouseVisible = true;
 
-            var itemBarView = new ItemBarView();
-            var gameView = new GameView(Matrix.CreateTranslation(new Vector3(0, itemBarView.Height, 0)));
+            _topBarView = new TopBarView();
+            _tankView = new TankView(0, _topBarView.Area.Height);
 
-            _views = new List<IView>() { itemBarView, gameView };
+            _topBarView.OnPurchaseFish += ItemBarView_OnPurchaseFish;
 
             base.Initialize();
+        }
+
+        private void ItemBarView_OnPurchaseFish(object sender, System.EventArgs e)
+        {
+            _tankView.AddGoldFish();
         }
 
         /// <summary>
@@ -51,7 +56,10 @@ namespace FishTank
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _views.ForEach((view) => view.LoadContent(_graphics.GraphicsDevice, Content));
+            _tankView.LoadContent(_graphics.GraphicsDevice, Content);
+            _topBarView.LoadContent(_graphics.GraphicsDevice, Content);
+
+            _tankView.AddGoldFish();
         }
 
         /// <summary>
@@ -60,7 +68,10 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
-            _views.ForEach((view) => view.UnloadContent());
+            _topBarView.OnPurchaseFish -= ItemBarView_OnPurchaseFish;
+
+            _tankView.UnloadContent();
+            _topBarView.UnloadContent();
         }
 
         /// <summary>
@@ -75,7 +86,30 @@ namespace FishTank
             Point virtualMousePosition = _viewportAdapter.PointToScreen(mouseState.Position);
             MouseState virtualMouseState = mouseState.SetPosition(virtualMousePosition.ToVector2());
 
-            _views.ForEach((view) => view.Update(gameTime, virtualMouseState));
+            _previousMouseState = _currentMouseState;
+            _currentMouseState = virtualMouseState;
+
+            foreach (IView view in new List<IView>() { _tankView, _topBarView })
+            {
+                if (_currentMouseState.Position.Within(view.Area))
+                {
+                    // Mouse is in the view's area. Notify whether it is a hover, click, or release.
+                    if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
+                    {
+                        view.MouseHover(_currentMouseState);
+                    }
+                    else if (_currentMouseState.LeftButton == ButtonState.Pressed)
+                    {
+                        view.MouseClick(_currentMouseState);
+                    }
+                    else
+                    {
+                        view.MouseRelease(_currentMouseState);
+                    }
+                }
+
+                view.Update(gameTime);
+            }
 
             base.Update(gameTime);
         }
@@ -88,7 +122,7 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.Black);
 
-            foreach (IView view in _views)
+            foreach (IView view in new List<IView>() { _tankView, _topBarView })
             {
                 var viewMatrix = _viewportAdapter.GetScaleMatrix() * view.PostScaleTransform;
 
@@ -105,6 +139,10 @@ namespace FishTank
             base.Draw(gameTime);
         }
 
+        private TankView _tankView;
+
+        private TopBarView _topBarView;
+
         /// <summary>
         /// Spritebatch is used to draw textures on the canvas
         /// </summary>
@@ -114,6 +152,8 @@ namespace FishTank
 
         private GraphicsDeviceManager _graphics;
 
-        private List<IView> _views;
+        private MouseState _currentMouseState;
+
+        private MouseState _previousMouseState;
     }
 }
