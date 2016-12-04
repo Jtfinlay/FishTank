@@ -6,6 +6,7 @@ using FishTank.Models;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using FishTank.ViewAdapters;
+using FishTank.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -37,7 +38,8 @@ namespace FishTank
         protected override void Initialize()
         {
             IsMouseVisible = true;
-            _models = new List<IInteractable>();
+
+            _gameView = new GameView();
 
             base.Initialize();
         }
@@ -49,11 +51,8 @@ namespace FishTank
         protected override void LoadContent()
         {
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
-            _backgroundTexture = Content.Load<Texture2D>("RollingHills.png");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _models.Add(new GoldFish(GraphicsDevice));
-
+            _gameView.LoadContent(_graphics.GraphicsDevice, Content);
         }
 
         /// <summary>
@@ -72,18 +71,13 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            float frameRateChange = gameTime.ElapsedGameTime.Milliseconds / ExpectedMillisecondsPerFrame;
+            //float frameRateChange = gameTime.ElapsedGameTime.Milliseconds / ExpectedMillisecondsPerFrame;
+            MouseState mouseState = Mouse.GetState();
 
-            HandleInputs();
+            Point virtualMousePosition = _viewportAdapter.PointToScreen(mouseState.Position);
+            MouseState virtualMouseState = mouseState.SetPosition(virtualMousePosition.ToVector2());
 
-            // Clear out stale interactables.
-            _models.RemoveAll((model) => model.State == InteractableState.Dead);
-
-            // Update interactables
-            foreach (IInteractable model in _models)
-            {
-                model.Update(_models);
-            }
+            _gameView.Update(gameTime, virtualMouseState);
 
             base.Update(gameTime);
         }
@@ -94,55 +88,42 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
+            // Draw top bar
+            //_spriteBatch.Begin(
+            //    samplerState: SamplerState.LinearClamp,
+            //    blendState: BlendState.AlphaBlend,
+            //    transformMatrix: _viewportAdapter.GetScaleMatrix());
+
+
+
+            //_spriteBatch.End();
+
+            // Draw Gameview
             _spriteBatch.Begin(
                 samplerState: SamplerState.LinearClamp,
                 blendState: BlendState.AlphaBlend,
                 transformMatrix: _viewportAdapter.GetScaleMatrix());
 
-            _spriteBatch.Draw(_backgroundTexture, new Vector2(-200, -200));
-
-            foreach (IInteractable model in _models)
-            {
-                model.Draw(_spriteBatch);
-            }
+            _gameView.Draw(gameTime, _spriteBatch);
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
 
-        private void HandleInputs()
-        {
-            // Handle mouse input events
-            _previousMouseState = _currentMouseState;
-            _currentMouseState = Mouse.GetState();
 
-            var mousePosition = _viewportAdapter.PointToScreen(_currentMouseState.Position);
-            var virtualMousePosition = new Vector2(mousePosition.X, mousePosition.Y);
-            if (_currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
-            {
-                _models.Add(new Pellet(GraphicsDevice, virtualMousePosition));
-            }
-        }
-
-        private List<IInteractable> _models;
-
-        private Texture2D _backgroundTexture;
-
-        private BoxingViewportAdapter _viewportAdapter;
-
-        private GraphicsDeviceManager _graphics;
 
         /// <summary>
         /// Spritebatch is used to draw textures on the canvas
         /// </summary>
         private SpriteBatch _spriteBatch;
 
-        // Mouse states used to track Mouse button press
-        private MouseState _currentMouseState;
-        private MouseState _previousMouseState;
+        private BoxingViewportAdapter _viewportAdapter;
 
+        private GraphicsDeviceManager _graphics;
+
+        private GameView _gameView;
     }
 }

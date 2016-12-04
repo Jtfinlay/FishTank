@@ -21,7 +21,7 @@ namespace FishTank
         {
             this.InitializeComponent();
 
-            ApplicationView.PreferredLaunchViewSize = new Size { Height = Constants.VirtualWidth, Width = Constants.VirtualWidth };
+            ApplicationView.PreferredLaunchViewSize = new Size { Height = Constants.VirtualTotalWidth, Width = Constants.VirtualTotalHeight};
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             // Create the game.
