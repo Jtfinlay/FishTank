@@ -14,16 +14,18 @@ namespace FishTank.Models
 {
     public class GoldFish : IInteractable
     {
-        public Vector2 Position { get; private set; }
+        public Rectangle Area { get; private set; }
 
         public InteractableState State { get; private set; }
 
         public GoldFish(GraphicsDevice graphicsDevice)
         {
             _random = new Random();
-            var rect = new Texture2D(graphicsDevice, 30, 30);
+            _safeArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
+            Area = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 0, 30, 30);
 
-            Color[] data = new Color[30 * 30];
+            var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
+            Color[] data = new Color[Area.Width * Area.Height];
             for (int i = 0; i < data.Length; ++i)
             {
                 data[i] = Color.Chocolate;
@@ -31,9 +33,6 @@ namespace FishTank.Models
             rect.SetData(data);
             _texture = rect;
 
-            _safeArea = graphicsDevice.Viewport.TitleSafeArea;
-
-            Position = new Vector2(_safeArea.X + Constants.VirtualWidth / 2, 0);
         }
 
         public void Update(List<IInteractable> models)
@@ -48,14 +47,14 @@ namespace FishTank.Models
             // Continue wandering to target if it is set
             if (_movementTarget != null)
             {
-                float distance = Vector2.Distance((Vector2)_movementTarget, Position);
-                if (distance < 30)
+                float distance = Vector2.Distance((Vector2)_movementTarget, Area.Center.ToVector2());
+                if (distance < Area.Width)
                 {
                     _movementTarget = null;
                     return;
                 }
 
-                Vector2 direction = Vector2.Normalize((Vector2)_movementTarget - Position);
+                Vector2 direction = Vector2.Normalize((Vector2)_movementTarget - Area.Center.ToVector2());
                 Translate(direction, _wanderSpeed);
                 return;
             }
@@ -66,11 +65,8 @@ namespace FishTank.Models
                 return;
             }
 
-            var angle = _random.NextDouble() * Math.PI * 2;
-            float radius = (float)Math.Sqrt(_random.NextDouble()) * _wanderDistance;
-            float x = Position.X + radius * (float)Math.Cos(angle);
-            float y = Position.Y + radius * (float)Math.Sin(angle);
-            _movementTarget = new Vector2(x, y);
+            
+            _movementTarget = CreateWanderTarget();
             return;
         }
 
@@ -80,17 +76,51 @@ namespace FishTank.Models
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Position, null);
+            spriteBatch.Draw(_texture, Area.Location.ToVector2(), null);
+        }
+
+        private Vector2 CreateWanderTarget()
+        {
+            var angle = _random.NextDouble() * Math.PI * 2;
+            float radius = (float)Math.Sqrt(_random.NextDouble()) * _wanderDistance;
+            float x = Area.Center.X + radius * (float)Math.Cos(angle);
+            float y = Area.Center.Y + radius * (float)Math.Sin(angle);
+
+            // If the fish is on the wall, encourage it to move away.
+            if (Area.Left <= 0)
+            {
+                x = Math.Abs(x);
+            }
+            if (Area.Right >= _safeArea.Width - Area.Width)
+            {
+                x = -1 * Math.Abs(x);
+            }
+            if (Area.Top <= 0)
+            {
+                y = Math.Abs(y);
+            }
+            if (Area.Bottom >= _safeArea.Height - Area.Height)
+            {
+                y = -1 * Math.Abs(y);
+            }
+
+            // Ensure target is within bounds
+            x = (x > 0) ? x : 0;
+            x = (x < _safeArea.Right - Area.Width) ? x : _safeArea.Right - Area.Width;
+            y = (y > 0) ? y : 0;
+            y = (y < _safeArea.Bottom - Area.Height) ? y : _safeArea.Bottom - Area.Height;
+
+            return new Vector2(x, y);
         }
 
         private void Translate(Vector2 direction, float speed)
         {
-            Vector2 nextPosition = Position + direction * speed;
+            Vector2 nextPosition = Area.Location.ToVector2() + direction * speed;
             nextPosition.X = (nextPosition.X > 0) ? nextPosition.X : 0;
-            nextPosition.X = (nextPosition.X < _safeArea.Right) ? nextPosition.X : _safeArea.Right;
+            nextPosition.X = (nextPosition.X < _safeArea.Right - Area.Width) ? nextPosition.X : _safeArea.Right - Area.Width;
             nextPosition.Y = (nextPosition.Y > 0) ? nextPosition.Y : 0;
-            nextPosition.Y = (nextPosition.Y < _safeArea.Bottom) ? nextPosition.Y : _safeArea.Bottom;
-            Position = nextPosition;
+            nextPosition.Y = (nextPosition.Y < _safeArea.Bottom - Area.Height) ? nextPosition.Y : _safeArea.Bottom - Area.Height;
+            Area = new Rectangle(nextPosition.ToPoint(), Area.Size);
         }
 
         /// <summary>
@@ -100,17 +130,18 @@ namespace FishTank.Models
         /// <returns>Bool indicating whether going after a source of food</returns>
         private bool SearchForFood(List<IInteractable> models)
         {
-            Pellet nearestPellet = models.Where((model) => model is Pellet)?.OrderBy(i => Vector2.Distance(i.Position, Position)).FirstOrDefault() as Pellet;
+            Pellet nearestPellet = models.Where((model) => model is Pellet)?
+                .OrderBy(i => Vector2.Distance(i.Area.Center.ToVector2(), Area.Center.ToVector2())).FirstOrDefault() as Pellet;
             if (nearestPellet != null)
             {
-                float distance = Vector2.Distance(nearestPellet.Position, Position);
+                float distance = Vector2.Distance(nearestPellet.Area.Center.ToVector2(), Area.Center.ToVector2());
                 if (distance < 30)
                 {
                     nearestPellet.Kill();
                     return true;
                 }
 
-                Vector2 direction = Vector2.Normalize(nearestPellet.Position - Position);
+                Vector2 direction = Vector2.Normalize(nearestPellet.Area.Center.ToVector2() - Area.Center.ToVector2());
                 Translate(direction, _maxSpeed);
                 return true;
             }

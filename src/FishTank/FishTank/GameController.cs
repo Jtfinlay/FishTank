@@ -53,7 +53,7 @@ namespace FishTank
         /// </summary>
         protected override void LoadContent()
         {
-            _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
+            _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualTotalWidth, Constants.VirtualTotalHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _tankView.LoadContent(_graphics.GraphicsDevice, Content);

@@ -14,7 +14,7 @@ namespace FishTank.Models.Interfaces
 
         void Draw(SpriteBatch spriteBatch);
 
-        Vector2 Position { get; }
+        Rectangle Area { get; }
 
         InteractableState State { get; }
     }
