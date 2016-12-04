@@ -8,15 +8,24 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 using System.Collections.Generic;
+using System;
+using FishTank.Utilities;
 
 namespace FishTank.Views
 {
     public class GameView : IView
     {
-        public GameView()
+        public Matrix OffsetMatrix { get; private set; }
+
+        public int Width => Constants.VirtualWidth;
+
+        public int Height => Constants.VirtualHeight;
+
+        public GameView(Matrix offsetMatrix)
         {
+            OffsetMatrix = offsetMatrix;
+
             _models = new List<IInteractable>();
         }
 
@@ -30,7 +39,6 @@ namespace FishTank.Views
 
         public void UnloadContent()
         {
-            throw new NotImplementedException();
         }
 
         public void Update(GameTime gameTime, MouseState virtualMouseState)
@@ -59,9 +67,13 @@ namespace FishTank.Views
 
         private void HandleInputs(MouseState virtualMouseState)
         {
+            var virtualPosition = virtualMouseState.Position.ToVector2();
+            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(OffsetMatrix));
+            var translatedMouseState = virtualMouseState.SetPosition(translatedPosition);
+
             // Handle mouse input events
             _previousMouseState = _currentMouseState;
-            _currentMouseState = virtualMouseState;
+            _currentMouseState = translatedMouseState;
 
             if (_currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
             {

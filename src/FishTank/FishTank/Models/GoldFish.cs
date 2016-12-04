@@ -44,11 +44,11 @@ namespace FishTank.Models
                 data[i] = Color.Chocolate;
             }
             rect.SetData(data);
-
             _texture = rect;
+
             Position = new Vector2(
                 graphicsDevice.Viewport.TitleSafeArea.X + Constants.VirtualWidth / 2, 
-                graphicsDevice.Viewport.TitleSafeArea.Y + Constants.VirtualHeight / 2);
+                0);
 
             _random = new Random();
         }

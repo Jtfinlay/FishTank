@@ -2,15 +2,12 @@
 // Copyright - James Finlay
 // 
 
-using FishTank.Models;
-using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using FishTank.ViewAdapters;
 using FishTank.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 
 namespace FishTank
 {
@@ -39,7 +36,8 @@ namespace FishTank
         {
             IsMouseVisible = true;
 
-            _gameView = new GameView();
+            _itemBarView = new ItemBarView();
+            _gameView = new GameView(Matrix.CreateTranslation(new Vector3(0, _itemBarView.Height, 0)));
 
             base.Initialize();
         }
@@ -53,6 +51,7 @@ namespace FishTank
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _gameView.LoadContent(_graphics.GraphicsDevice, Content);
+            _itemBarView.LoadContent(_graphics.GraphicsDevice, Content);
         }
 
         /// <summary>
@@ -61,7 +60,8 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            _gameView.UnloadContent();
+            _itemBarView.UnloadContent();
         }
 
         /// <summary>
@@ -78,6 +78,7 @@ namespace FishTank
             MouseState virtualMouseState = mouseState.SetPosition(virtualMousePosition.ToVector2());
 
             _gameView.Update(gameTime, virtualMouseState);
+            _itemBarView.Update(gameTime, virtualMouseState);
 
             base.Update(gameTime);
         }
@@ -91,20 +92,21 @@ namespace FishTank
             GraphicsDevice.Clear(Color.Black);
 
             // Draw top bar
-            //_spriteBatch.Begin(
-            //    samplerState: SamplerState.LinearClamp,
-            //    blendState: BlendState.AlphaBlend,
-            //    transformMatrix: _viewportAdapter.GetScaleMatrix());
-
-
-
-            //_spriteBatch.End();
-
-            // Draw Gameview
             _spriteBatch.Begin(
                 samplerState: SamplerState.LinearClamp,
                 blendState: BlendState.AlphaBlend,
                 transformMatrix: _viewportAdapter.GetScaleMatrix());
+
+            _itemBarView.Draw(gameTime, _spriteBatch);
+
+            _spriteBatch.End();
+
+            // Draw Gameview
+            var gameViewMatrix = _viewportAdapter.GetScaleMatrix() * _gameView.OffsetMatrix;
+            _spriteBatch.Begin(
+                samplerState: SamplerState.LinearClamp,
+                blendState: BlendState.AlphaBlend,
+                transformMatrix: gameViewMatrix);
 
             _gameView.Draw(gameTime, _spriteBatch);
 
@@ -125,5 +127,7 @@ namespace FishTank
         private GraphicsDeviceManager _graphics;
 
         private GameView _gameView;
+
+        private ItemBarView _itemBarView;
     }
 }

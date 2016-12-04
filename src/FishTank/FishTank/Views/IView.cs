@@ -11,6 +11,10 @@ namespace FishTank.Views
 {
     public interface IView
     {
+        int Width { get; }
+
+        int Height { get; }
+
         void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
 
         void UnloadContent();
