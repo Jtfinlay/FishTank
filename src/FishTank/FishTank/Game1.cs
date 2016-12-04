@@ -3,9 +3,13 @@
 // 
 
 using FishTank.Models;
+using FishTank.Models.Interfaces;
+using FishTank.Utilities;
+using FishTank.ViewAdapters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Diagnostics;
+using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace FishTank
 {
@@ -15,22 +19,8 @@ namespace FishTank
     public class Game1 : Game
     {
         public static readonly float ExpectedFramesPerSecond = 60f;
+
         public static readonly float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
-
-        /// <summary>
-        /// 
-        /// </summary>
-        GraphicsDeviceManager _graphics;
-
-        /// <summary>
-        /// Spritebatch is used to draw textures on the canvas
-        /// </summary>
-        SpriteBatch _spriteBatch;
-
-        /// <summary>
-        /// Global gold fish used to test fish AI
-        /// </summary>
-        GoldFish _fish;
 
         public Game1()
         {
@@ -47,6 +37,7 @@ namespace FishTank
         protected override void Initialize()
         {
             IsMouseVisible = true;
+            _models = new List<IInteractable>();
 
             base.Initialize();
         }
@@ -57,11 +48,12 @@ namespace FishTank
         /// </summary>
         protected override void LoadContent()
         {
+            _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualWidth, Constants.VirtualHeight);
+            _backgroundTexture = Content.Load<Texture2D>("RollingHills.png");
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _fish = new GoldFish(GraphicsDevice);
+            _models.Add(new GoldFish(GraphicsDevice));
 
-            // TODO: use this.Content to load your game content here
         }
 
         /// <summary>
@@ -82,7 +74,16 @@ namespace FishTank
         {
             float frameRateChange = gameTime.ElapsedGameTime.Milliseconds / ExpectedMillisecondsPerFrame;
 
-            _fish.Update();
+            HandleInputs();
+
+            // Clear out stale interactables.
+            _models.RemoveAll((model) => model.State == InteractableState.Dead);
+
+            // Update interactables
+            foreach (IInteractable model in _models)
+            {
+                model.Update(_models);
+            }
 
             base.Update(gameTime);
         }
@@ -95,13 +96,53 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(
+                samplerState: SamplerState.LinearClamp,
+                blendState: BlendState.AlphaBlend,
+                transformMatrix: _viewportAdapter.GetScaleMatrix());
 
-            _fish.Draw(_spriteBatch);
+            _spriteBatch.Draw(_backgroundTexture, new Vector2(-200, -200));
+
+            foreach (IInteractable model in _models)
+            {
+                model.Draw(_spriteBatch);
+            }
 
             _spriteBatch.End();
 
             base.Draw(gameTime);
         }
+
+        private void HandleInputs()
+        {
+            // Handle mouse input events
+            _previousMouseState = _currentMouseState;
+            _currentMouseState = Mouse.GetState();
+
+            var mousePosition = _viewportAdapter.PointToScreen(_currentMouseState.Position);
+            var virtualMousePosition = new Vector2(mousePosition.X, mousePosition.Y);
+            if (_currentMouseState.LeftButton == ButtonState.Pressed && _previousMouseState.LeftButton == ButtonState.Released)
+            {
+                _models.Add(new Pellet(GraphicsDevice, virtualMousePosition));
+            }
+        }
+
+        private List<IInteractable> _models;
+
+        private Texture2D _backgroundTexture;
+
+        private BoxingViewportAdapter _viewportAdapter;
+
+        private GraphicsDeviceManager _graphics;
+
+        /// <summary>
+        /// Spritebatch is used to draw textures on the canvas
+        /// </summary>
+        private SpriteBatch _spriteBatch;
+
+        // Mouse states used to track Mouse button press
+        private MouseState _currentMouseState;
+        private MouseState _previousMouseState;
+
     }
 }

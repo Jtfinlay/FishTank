@@ -2,6 +2,9 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Utilities;
+using Windows.Foundation;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -17,6 +20,9 @@ namespace FishTank
         public GamePage()
         {
             this.InitializeComponent();
+
+            ApplicationView.PreferredLaunchViewSize = new Size { Height = Constants.VirtualWidth, Width = Constants.VirtualWidth };
+            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
 
             // Create the game.
             var launchArguments = string.Empty;

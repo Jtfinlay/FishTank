@@ -2,43 +2,38 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Models.Interfaces;
+using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
 
 namespace FishTank.Models
 {
-    public enum FishState
-    {
-        None,
-        MovingToPoint,
-        RunFromAlien,
-        SearchForFood,
-    }
-    internal class GoldFish : Fish
+    public class GoldFish : IInteractable
     {
         /// <summary>
         ///  The maximum hunger of the fish
         /// </summary>
-        public override float MaxHunger => 100;
+        private const float MaxHunger = 100;
 
-        private const float MaxSpeed = 3.0f;
-
-        private FishState _state = FishState.None;
+        private const float _maxSpeed = 3.0f;
 
         private Random _random;
+
+        private Texture2D _texture;
 
         /// <summary>
         /// Expect fish to move every 4 seconds or so.
         /// </summary>
         private readonly float _probabilityToMovePerFrame = 1f / (3.5f * Game1.ExpectedFramesPerSecond);
 
-        /// <summary>
-        /// Animation representing the fish
-        /// </summary>
-        public override Texture2D Texture { get; set; }
+        public Vector2 Position { get; private set; }
 
-        public GoldFish(GraphicsDevice graphicsDevice) : base()
+        public InteractableState State { get; private set; }
+
+        public GoldFish(GraphicsDevice graphicsDevice)
         {
             var rect = new Texture2D(graphicsDevice, 30, 30);
 
@@ -49,47 +44,26 @@ namespace FishTank.Models
             }
             rect.SetData(data);
 
-            Texture = rect;
+            _texture = rect;
             Position = new Vector2(
                 graphicsDevice.Viewport.TitleSafeArea.X, 
-                graphicsDevice.Viewport.TitleSafeArea.Y + graphicsDevice.Viewport.TitleSafeArea.Height / 2);
+                graphicsDevice.Viewport.TitleSafeArea.Y + Constants.VirtualHeight / 2);
 
             _random = new Random();
         }
 
-        public override void Update()
+        public void Update(List<IInteractable> models)
         {
-            switch (_state)
-            {
-                case FishState.None:
-                    DetermineNextAction();
-                    break;
-                case FishState.MovingToPoint:
-                    MoveToPoint();
-                    break;
-                default:
-                    break;
-            }
+
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        /// <summary>
+        /// Draw the model on the canvas
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(Texture, Position, null);
-        }
-
-        private void MoveToPoint()
-        {
-            Position = Vector2.Add(Position, new Vector2(MaxSpeed, 0));
-        }
-
-        private void DetermineNextAction()
-        {
-            if (_random.NextDouble() > _probabilityToMovePerFrame)
-            {
-                // Doesn't meet probability check. Don't move to random location
-                return;
-            }
-            _state = FishState.MovingToPoint;
+            spriteBatch.Draw(_texture, Position, null);
         }
     }
 }
