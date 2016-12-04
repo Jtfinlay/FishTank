@@ -7,7 +7,6 @@ using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System;
 
 namespace FishTank.Models
 {
@@ -15,7 +14,7 @@ namespace FishTank.Models
     {
         public InteractableState State { get; private set; }
 
-        public Rectangle Area { get; private set; }
+        public Rectangle BoundaryBox { get; private set; }
 
         private Texture2D _texture;
 
@@ -26,10 +25,10 @@ namespace FishTank.Models
         public Pellet(GraphicsDevice graphicsDevice, Vector2 position)
         {
             _device = graphicsDevice;
-            Area = new Rectangle(position.ToPoint(), new Point(10, 10));
-            var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
+            BoundaryBox = new Rectangle(position.ToPoint(), new Point(10, 10));
+            var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
 
-            Color[] data = new Color[Area.Width * Area.Height];
+            Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
             for (int i = 0; i < data.Length; ++i)
             {
                 data[i] = Color.Orange;
@@ -47,15 +46,15 @@ namespace FishTank.Models
                 return;
             }
 
-            spriteBatch.Draw(_texture, Area.Location.ToVector2(), null);
+            spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), null);
         }
 
         public void Update(List<IInteractable> models)
         {
-            var position = Vector2.Add(Area.Location.ToVector2(), new Vector2(0, _fallSpeed));
-            Area = new Rectangle(position.ToPoint(), Area.Size);
+            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, _fallSpeed));
+            BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
 
-            if (Area.Bottom >= Constants.VirtualHeight)
+            if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {
                 this.State = InteractableState.Dead;
             }
