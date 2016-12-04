@@ -15,5 +15,9 @@ namespace FishTank.Utilities
         public const int VirtualHeight = 800;
 
         public const int VirtualWidth = 1300;
+
+        public const float ExpectedFramesPerSecond = 60f;
+
+        public const float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
     }
 }
