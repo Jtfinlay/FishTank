@@ -15,13 +15,13 @@ namespace FishTank.Views
 {
     public class TankView : IView
     {
-        public Matrix PostScaleTransform { get; private set; }
+        public Matrix PreTransformMatrix { get; private set; }
 
         public Rectangle Area { get; private set; }
 
         public TankView(int offsetX, int offsetY)
         {
-            PostScaleTransform = Matrix.CreateTranslation(new Vector3(offsetX, offsetY, 0));
+            PreTransformMatrix = Matrix.CreateTranslation(new Vector3(offsetX, offsetY, 0));
             _models = new List<IInteractable>();
 
             Area = new Rectangle(offsetX, offsetY, Constants.VirtualWidth, Constants.VirtualHeight);
@@ -69,7 +69,7 @@ namespace FishTank.Views
         {
             // The tank is offset from the top bar. Apply this transformation to the mouse position
             var virtualPosition = mouseState.Position.ToVector2();
-            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(PostScaleTransform));
+            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(PreTransformMatrix));
 
             _models.Add(new Pellet(_graphicsDevice, translatedPosition));
         }

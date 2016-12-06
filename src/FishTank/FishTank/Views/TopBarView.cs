@@ -18,7 +18,7 @@ namespace FishTank.Views
     {
         public event EventHandler OnPurchaseFish;
 
-        public Matrix PostScaleTransform => _postScaleTransform;
+        public Matrix PreTransformMatrix => _postScaleTransform;
 
         public Rectangle Area { get; private set; }
 

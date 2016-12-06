@@ -2,9 +2,6 @@
 // Copyright - James Finlay
 // 
 
-using FishTank.Utilities;
-using Windows.Foundation;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -15,7 +12,7 @@ namespace FishTank
     /// </summary>
     public sealed partial class GamePage : Page
     {
-        readonly GameController _game;
+        readonly AppController _game;
 
         public GamePage()
         {
@@ -23,7 +20,7 @@ namespace FishTank
 
             // Create the game.
             var launchArguments = string.Empty;
-            _game = MonoGame.Framework.XamlGame<GameController>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
+            _game = MonoGame.Framework.XamlGame<AppController>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
         }
     }
 }

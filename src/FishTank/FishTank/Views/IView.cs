@@ -10,7 +10,7 @@ namespace FishTank.Views
 {
     public interface IView : IClickable
     {
-        Matrix PostScaleTransform { get; }
+        Matrix PreTransformMatrix { get; }
 
         void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
 

@@ -2,23 +2,21 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Screens;
 using FishTank.Utilities;
 using FishTank.ViewAdapters;
-using FishTank.Views;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Collections.Generic;
 
 namespace FishTank
 {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class GameController : Game
+    public class AppController : Game
     {
-
-        public GameController()
+        public AppController()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -33,18 +31,9 @@ namespace FishTank
         protected override void Initialize()
         {
             IsMouseVisible = true;
-
-            _topBarView = new TopBarView();
-            _tankView = new TankView(0, _topBarView.Area.Height);
-
-            _topBarView.OnPurchaseFish += ItemBarView_OnPurchaseFish;
+            _screen = new GameScreen();
 
             base.Initialize();
-        }
-
-        private void ItemBarView_OnPurchaseFish(object sender, System.EventArgs e)
-        {
-            _tankView.AddGoldFish();
         }
 
         /// <summary>
@@ -55,11 +44,7 @@ namespace FishTank
         {
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualTotalWidth, Constants.VirtualTotalHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _tankView.LoadContent(_graphics.GraphicsDevice, Content);
-            _topBarView.LoadContent(_graphics.GraphicsDevice, Content);
-
-            _tankView.AddGoldFish();
+            _screen.LoadContent(GraphicsDevice, Content);
         }
 
         /// <summary>
@@ -68,10 +53,7 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
-            _topBarView.OnPurchaseFish -= ItemBarView_OnPurchaseFish;
-
-            _tankView.UnloadContent();
-            _topBarView.UnloadContent();
+            _screen.UnloadContent();
         }
 
         /// <summary>
@@ -89,27 +71,20 @@ namespace FishTank
             _previousMouseState = _currentMouseState;
             _currentMouseState = virtualMouseState;
 
-            foreach (IView view in new List<IView>() { _tankView, _topBarView })
+            // Perform mouse click events on the display
+            if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
             {
-                if (_currentMouseState.Position.Within(view.Area))
-                {
-                    // Mouse is in the view's area. Notify whether it is a hover, click, or release.
-                    if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
-                    {
-                        view.MouseHover(_currentMouseState);
-                    }
-                    else if (_currentMouseState.LeftButton == ButtonState.Pressed)
-                    {
-                        view.MouseClick(_currentMouseState);
-                    }
-                    else
-                    {
-                        view.MouseRelease(_currentMouseState);
-                    }
-                }
-
-                view.Update(gameTime);
+                _screen.MouseHover(_currentMouseState);
             }
+            else if (_currentMouseState.LeftButton == ButtonState.Pressed)
+            {
+                _screen.MouseClick(_currentMouseState);
+            }
+            else
+            {
+                _screen.MouseRelease(_currentMouseState);
+            }
+            _screen.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -122,30 +97,12 @@ namespace FishTank
         {
             GraphicsDevice.Clear(Color.Black);
 
-            _spriteBatch.Begin(
-                    samplerState: SamplerState.LinearClamp,
-                    blendState: BlendState.AlphaBlend,
-                    transformMatrix: _tankView.PostScaleTransform * _viewportAdapter.GetScaleMatrix());
-
-            _tankView.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.End();
-
-            _spriteBatch.Begin(
-                    samplerState: SamplerState.LinearClamp,
-                    blendState: BlendState.AlphaBlend,
-                    transformMatrix: _viewportAdapter.GetScaleMatrix());
-
-            _topBarView.Draw(gameTime, _spriteBatch);
-
-            _spriteBatch.End();
+            _screen.Draw(gameTime, _spriteBatch, _viewportAdapter.GetScaleMatrix());
 
             base.Draw(gameTime);
         }
 
-        private TankView _tankView;
-
-        private TopBarView _topBarView;
+        private IScreen _screen;
 
         /// <summary>
         /// Spritebatch is used to draw textures on the canvas
