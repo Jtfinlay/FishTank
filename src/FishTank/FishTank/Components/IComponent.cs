@@ -6,9 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace FishTank.Views
+namespace FishTank.Components
 {
-    public interface IView : IClickable
+    public interface IComponent : IClickable
     {
         Matrix PreTransformMatrix { get; }
 

@@ -2,11 +2,11 @@
 // Copyright - James Finlay
 // 
 
-using FishTank.Views;
+using FishTank.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace FishTank.Models
 {

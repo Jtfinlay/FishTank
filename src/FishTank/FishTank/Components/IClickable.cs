@@ -5,7 +5,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace FishTank.Views
+namespace FishTank.Components
 {
     public interface IClickable
     {

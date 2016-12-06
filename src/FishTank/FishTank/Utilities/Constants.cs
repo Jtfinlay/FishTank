@@ -2,6 +2,8 @@
 // Copyright - James Finlay
 // 
 
+using Microsoft.Xna.Framework;
+
 namespace FishTank.Utilities
 {
     public static class Constants
@@ -15,6 +17,8 @@ namespace FishTank.Utilities
         public const int VirtualHeight = VirtualTotalHeight - VirtualBarHeight;
 
         public const int VirtualWidth = VirtualTotalWidth;
+
+        public static readonly Rectangle VirtualArea = new Rectangle(0, 0, VirtualTotalWidth, VirtualTotalHeight);
 
         public const float ExpectedFramesPerSecond = 60f;
 

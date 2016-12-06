@@ -2,7 +2,8 @@
 // Copyright - James Finlay
 // 
 
-using FishTank.Views;
+using FishTank.Components;
+using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,6 +14,8 @@ namespace FishTank.Screens
 {
     public class GameScreen : IScreen
     {
+        public Rectangle Area => Constants.VirtualArea;
+
         public GameScreen()
         {
             _topBarView = new TopBarView();
@@ -81,7 +84,7 @@ namespace FishTank.Screens
             GetViewContainingPoint(mouseState.Position)?.MouseRelease(mouseState);
         }
 
-        private IView GetViewContainingPoint(Point point)
+        private IComponent GetViewContainingPoint(Point point)
         {
             if (_tankView.Area.Contains(point))
             {

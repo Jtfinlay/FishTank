@@ -12,9 +12,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FishTank.Views
+namespace FishTank.Components
 {
-    public class TopBarView : IView
+    public class TopBarView : IComponent
     {
         public event EventHandler OnPurchaseFish;
 

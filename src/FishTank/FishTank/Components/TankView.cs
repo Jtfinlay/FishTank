@@ -11,9 +11,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
-namespace FishTank.Views
+namespace FishTank.Components
 {
-    public class TankView : IView
+    public class TankView : IComponent
     {
         public Matrix PreTransformMatrix { get; private set; }
 
