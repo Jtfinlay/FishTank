@@ -6,15 +6,15 @@ namespace FishTank.Utilities
 {
     public static class Constants
     {
-        public const int VirtualTotalHeight = VirtualBarHeight + VirtualHeight;
+        public const int VirtualTotalHeight = 1080;
 
-        public const int VirtualTotalWidth = VirtualWidth;
+        public const int VirtualTotalWidth = 1920;
 
         public const int VirtualBarHeight = 100;
 
-        public const int VirtualHeight = 800;
+        public const int VirtualHeight = VirtualTotalHeight - VirtualBarHeight;
 
-        public const int VirtualWidth = 1300;
+        public const int VirtualWidth = VirtualTotalWidth;
 
         public const float ExpectedFramesPerSecond = 60f;
 

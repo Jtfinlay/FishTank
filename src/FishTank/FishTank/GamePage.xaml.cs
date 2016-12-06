@@ -21,9 +21,6 @@ namespace FishTank
         {
             this.InitializeComponent();
 
-            ApplicationView.PreferredLaunchViewSize = new Size { Height = Constants.VirtualTotalHeight, Width = Constants.VirtualTotalWidth};
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
-
             // Create the game.
             var launchArguments = string.Empty;
             _game = MonoGame.Framework.XamlGame<GameController>.Create(launchArguments, Window.Current.CoreWindow, swapChainPanel);
