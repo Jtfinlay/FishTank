@@ -13,13 +13,13 @@ using System.Collections.Generic;
 
 namespace FishTank.Components
 {
-    public class TankView : IComponent
+    public class TankComponent : IComponent
     {
         public Matrix PreTransformMatrix { get; private set; }
 
         public Rectangle Area { get; private set; }
 
-        public TankView(int offsetX, int offsetY)
+        public TankComponent(int offsetX, int offsetY)
         {
             PreTransformMatrix = Matrix.CreateTranslation(new Vector3(offsetX, offsetY, 0));
             _models = new List<IInteractable>();

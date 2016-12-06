@@ -14,7 +14,7 @@ using System.Linq;
 
 namespace FishTank.Components
 {
-    public class TopBarView : IComponent
+    public class ItemBarComponent : IComponent
     {
         public event EventHandler OnPurchaseFish;
 
@@ -22,7 +22,7 @@ namespace FishTank.Components
 
         public Rectangle Area { get; private set; }
 
-        public TopBarView()
+        public ItemBarComponent()
         {
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
         }

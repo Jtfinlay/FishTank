@@ -18,8 +18,8 @@ namespace FishTank.Screens
 
         public GameScreen()
         {
-            _topBarView = new TopBarView();
-            _tankView = new TankView(0, _topBarView.Area.Height);
+            _topBarView = new ItemBarComponent();
+            _tankView = new TankComponent(0, _topBarView.Area.Height);
 
             _topBarView.OnPurchaseFish += PurchaseGoldFish;
         }
@@ -102,8 +102,8 @@ namespace FishTank.Screens
             _tankView.AddGoldFish();
         }
 
-        private TankView _tankView;
+        private TankComponent _tankView;
 
-        private TopBarView _topBarView;
+        private ItemBarComponent _topBarView;
     }
 }
