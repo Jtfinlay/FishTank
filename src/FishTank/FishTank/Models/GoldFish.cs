@@ -32,7 +32,7 @@ namespace FishTank.Models
         {
             _random = new Random();
             _safeArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 0, 30, 30);
+            BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 100, 30, 30);
 
             var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
             Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];

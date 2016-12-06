@@ -8,9 +8,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System.Linq;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FishTank.Views
 {
@@ -79,10 +79,5 @@ namespace FishTank.Views
         private List<TopbarItem> _buttons;
 
         private Matrix _postScaleTransform = Matrix.CreateTranslation(0,0,0);
-
-        // Mouse states used to track Mouse button press
-        private MouseState _currentMouseState;
-
-        private MouseState _previousMouseState;
     }
 }
