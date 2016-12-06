@@ -44,7 +44,7 @@ namespace FishTank.Views
         public void Update(GameTime gameTime)
         {
             // Clear out stale interactables.
-            _models.RemoveAll((model) => model.State == InteractableState.Dead);
+            _models.RemoveAll((model) => model.State == InteractableState.Discard);
 
             // Update interactables
             foreach (IInteractable model in _models)

@@ -15,7 +15,7 @@ namespace FishTank.Models
     public class GoldFish : IInteractable
     {
         /// <summary>
-        /// Rectangel indicating hte boundary box for the gold fish
+        /// Rectangle indicating hte boundary box for the gold fish
         /// </summary>
         public Rectangle BoundaryBox { get; private set; }
 
@@ -38,7 +38,7 @@ namespace FishTank.Models
             Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
             for (int i = 0; i < data.Length; ++i)
             {
-                data[i] = Color.Chocolate;
+                data[i] = Color.White;
             }
             rect.SetData(data);
             _texture = rect;
@@ -50,6 +50,26 @@ namespace FishTank.Models
         /// <param name="models">List of all interactable objects on the field</param>
         public void Update(List<IInteractable> models)
         {
+            switch (State)
+            {
+                case InteractableState.Alive:
+                    UpdateAlive(models);
+                    break;
+                case InteractableState.Dead:
+                    UpdateDead();
+                    break;
+                case InteractableState.Discard:
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Update the GoldFish to perform living actions
+        /// </summary>
+        /// <param name="models">List of all interactable objects on the field</param>
+        private void UpdateAlive(List<IInteractable> models)
+        {
             // First, try to find food if nearby
             if (SearchForFood(models))
             {
@@ -58,6 +78,11 @@ namespace FishTank.Models
             }
 
             _currentHunger -= _hungerDropPerFrame;
+            if (_currentHunger <= 0)
+            {
+                State = InteractableState.Dead;
+                return;
+            }
 
             // Continue wandering to target if it is set
             if (_wanderingTarget != null)
@@ -80,9 +105,22 @@ namespace FishTank.Models
                 return;
             }
 
-            
             _wanderingTarget = CreateWanderDestination();
             return;
+        }
+
+        /// <summary>
+        /// Update the Goldfish in the dead state
+        /// </summary>
+        private void UpdateDead()
+        {
+            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
+            BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
+
+            if (BoundaryBox.Bottom >= Constants.VirtualHeight)
+            {
+                this.State = InteractableState.Discard;
+            }
         }
 
         /// <summary>
@@ -91,9 +129,20 @@ namespace FishTank.Models
         /// <param name="spriteBatch">Graphics resource for drawing</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            Color color = Color.Gold;
-            if (_currentHunger <= _hungerDangerValue) color = Color.Green;
-            else if (_currentHunger <= _hungerWarningValue) color = Color.Blue;
+            Color color = Color.Orange;
+            switch (State)
+            {
+                case InteractableState.Discard:
+                    // fish is destroyed but awaiting cleanup. Don't draw
+                    return;
+                case InteractableState.Dead:
+                    color = Color.Black;
+                    break;
+                case InteractableState.Alive:
+                    if (_currentHunger <= _hungerDangerValue) color = Color.Green;
+                    else if (_currentHunger <= _hungerWarningValue) color = Color.GreenYellow;
+                    break;
+            }
 
             spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), color: color);
         }
@@ -171,7 +220,7 @@ namespace FishTank.Models
                 if (distance < 30)
                 {
                     _currentHunger = _maxHunger;
-                    nearestPellet.Kill();
+                    nearestPellet.Eat();
                     return true;
                 }
 

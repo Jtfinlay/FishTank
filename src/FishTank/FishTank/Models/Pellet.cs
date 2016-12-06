@@ -20,8 +20,6 @@ namespace FishTank.Models
 
         private GraphicsDevice _device;
 
-        private const float _fallSpeed = 1.5f;
-
         public Pellet(GraphicsDevice graphicsDevice, Vector2 position)
         {
             _device = graphicsDevice;
@@ -40,7 +38,7 @@ namespace FishTank.Models
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (State == InteractableState.Dead)
+            if (State == InteractableState.Discard)
             {
                 // pellet is destroyed but awaiting cleanup. Don't draw
                 return;
@@ -51,18 +49,18 @@ namespace FishTank.Models
 
         public void Update(List<IInteractable> models)
         {
-            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, _fallSpeed));
+            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
             BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {
-                this.State = InteractableState.Dead;
+                this.State = InteractableState.Discard;
             }
         }
 
-        public void Kill()
+        public void Eat()
         {
-            State = InteractableState.Dead;
+            State = InteractableState.Discard;
         }
     }
 }

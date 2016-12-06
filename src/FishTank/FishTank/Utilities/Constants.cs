@@ -19,5 +19,7 @@ namespace FishTank.Utilities
         public const float ExpectedFramesPerSecond = 60f;
 
         public const float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
+
+        public const float FallSpeed = 1.5f;
     }
 }
