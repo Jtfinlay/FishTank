@@ -104,6 +104,7 @@
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppController.cs" />
+    <Compile Include="Screens\ButtonComponent.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Models\TopbarItem.cs" />
     <Compile Include="Models\GoldFish.cs" />
@@ -112,15 +113,18 @@
     <Compile Include="Models\Pellet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Screens\IScreen.cs" />
+    <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\Extensions.cs" />
+    <Compile Include="Utilities\MouseAction.cs" />
+    <Compile Include="Utilities\MouseEvent.cs" />
     <Compile Include="ViewAdapters\BoxingMode.cs" />
     <Compile Include="ViewAdapters\BoxingViewportAdapter.cs" />
     <Compile Include="ViewAdapters\ScalingViewportAdapter.cs" />
     <Compile Include="ViewAdapters\ViewportAdapter.cs" />
     <Compile Include="Components\IClickable.cs" />
-    <Compile Include="Components\TankView.cs" />
-    <Compile Include="Components\TopBarView.cs" />
+    <Compile Include="Components\TankComponent.cs" />
+    <Compile Include="Components\ItemBarComponent.cs" />
     <Compile Include="Components\IComponent.cs" />
   </ItemGroup>
   <ItemGroup>

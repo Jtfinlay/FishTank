@@ -72,18 +72,31 @@ namespace FishTank
             _currentMouseState = virtualMouseState;
 
             // Perform mouse click events on the display
-            if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
+            if (_screen.Area.Contains(_currentMouseState.Position) || _screen.Area.Contains(_previousMouseState.Position))
             {
-                _screen.MouseHover(_currentMouseState);
+                MouseAction action = MouseAction.Hover;
+                if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
+                {
+                    if (_screen.Area.Contains(_currentMouseState.Position) && !_screen.Area.Contains(_previousMouseState.Position))
+                    {
+                        action = MouseAction.HoverStart;
+                    }
+                    else if (!_screen.Area.Contains(_currentMouseState.Position) && _screen.Area.Contains(_previousMouseState.Position))
+                    {
+                        action = MouseAction.HoverExit;
+                    }
+                }
+                else if (_currentMouseState.LeftButton == ButtonState.Pressed)
+                {
+                    action = MouseAction.Click;
+                }
+                else if (_currentMouseState.LeftButton == ButtonState.Released)
+                {
+                    action = MouseAction.Release;
+                }
+                _screen.MouseEvent(new MouseEvent(_currentMouseState, action));
             }
-            else if (_currentMouseState.LeftButton == ButtonState.Pressed)
-            {
-                _screen.MouseClick(_currentMouseState);
-            }
-            else
-            {
-                _screen.MouseRelease(_currentMouseState);
-            }
+
             _screen.Update(gameTime);
 
             base.Update(gameTime);

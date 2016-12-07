@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using FishTank.Utilities;
 
 namespace FishTank.Models
 {
@@ -38,17 +39,19 @@ namespace FishTank.Models
             spriteBatch.Draw(_texture, Area.Location.ToVector2() + new Vector2(_padding,_padding), null);
         }
 
-        public void MouseHover(MouseState mouseState)
+        public void MouseEvent(MouseEvent mouseEvent)
         {
-        }
-
-        public void MouseClick(MouseState mouseState)
-        {
-            OnClicked?.Invoke(this, new EventArgs());
-        }
-
-        public void MouseRelease(MouseState mouseState)
-        {
+            switch (mouseEvent.Action)
+            {
+                case MouseAction.Click:
+                    OnClicked?.Invoke(this, new EventArgs());
+                    break;
+                case MouseAction.Hover:
+                case MouseAction.HoverExit:
+                case MouseAction.Release:
+                default:
+                    break;
+            }
         }
 
         private Texture2D _texture;

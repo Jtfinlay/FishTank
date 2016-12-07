@@ -8,7 +8,6 @@ using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
 namespace FishTank.Components
@@ -63,18 +62,22 @@ namespace FishTank.Components
             }
         }
 
-        public void MouseHover(MouseState mouseState) { }
-
-        public void MouseClick(MouseState mouseState)
+        public void MouseEvent(MouseEvent mouseEvent)
         {
-            // The tank is offset from the top bar. Apply this transformation to the mouse position
-            var virtualPosition = mouseState.Position.ToVector2();
-            var translatedPosition = Vector2.Transform(virtualPosition, Matrix.Invert(PreTransformMatrix));
-
-            _models.Add(new Pellet(_graphicsDevice, translatedPosition));
+            switch (mouseEvent.Action)
+            {
+                case MouseAction.Click:
+                    // The tank is offset from the top bar. Apply this transformation to the mouse position
+                    var translatedPosition = Vector2.Transform(mouseEvent.Location, Matrix.Invert(PreTransformMatrix));
+                    _models.Add(new Pellet(_graphicsDevice, translatedPosition));
+                    break;
+                case MouseAction.Hover:
+                case MouseAction.HoverExit:
+                case MouseAction.Release:
+                default:
+                    break;
+            }
         }
-
-        public void MouseRelease(MouseState mouseState) { }
 
         private Texture2D _backgroundTexture;
 

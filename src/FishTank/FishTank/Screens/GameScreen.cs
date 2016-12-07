@@ -69,21 +69,6 @@ namespace FishTank.Screens
             spriteBatch.End();
         }
 
-        public void MouseHover(MouseState mouseState)
-        {
-            GetViewContainingPoint(mouseState.Position)?.MouseHover(mouseState);
-        }
-
-        public void MouseClick(MouseState mouseState)
-        {
-            GetViewContainingPoint(mouseState.Position)?.MouseClick(mouseState);
-        }
-
-        public void MouseRelease(MouseState mouseState)
-        {
-            GetViewContainingPoint(mouseState.Position)?.MouseRelease(mouseState);
-        }
-
         private IComponent GetViewContainingPoint(Point point)
         {
             if (_tankView.Area.Contains(point))
@@ -100,6 +85,11 @@ namespace FishTank.Screens
         private void PurchaseGoldFish(object sender, EventArgs e)
         {
             _tankView.AddGoldFish();
+        }
+
+        public void MouseEvent(MouseEvent mouseEvent)
+        {
+            GetViewContainingPoint(mouseEvent.Position)?.MouseEvent(mouseEvent);
         }
 
         private TankComponent _tankView;

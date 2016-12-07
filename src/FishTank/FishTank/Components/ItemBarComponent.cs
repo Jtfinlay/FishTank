@@ -59,19 +59,9 @@ namespace FishTank.Components
         {
         }
 
-        public void MouseHover(MouseState mouseState)
+        public void MouseEvent(MouseEvent mouseEvent)
         {
-            _buttons.Where((button) => mouseState.Position.Within(button.Area)).FirstOrDefault()?.MouseHover(mouseState);
-        }
-
-        public void MouseClick(MouseState mouseState)
-        {
-            _buttons.Where((button) => mouseState.Position.Within(button.Area)).FirstOrDefault()?.MouseClick(mouseState);
-        }
-
-        public void MouseRelease(MouseState mouseState)
-        {
-            _buttons.Where((button) => mouseState.Position.Within(button.Area)).FirstOrDefault()?.MouseRelease(mouseState);
+            _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent);
         }
 
         private Texture2D _texture;
