@@ -2,7 +2,7 @@
 // Copyright - James Finlay
 // 
 
-using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 
 namespace FishTank.Components

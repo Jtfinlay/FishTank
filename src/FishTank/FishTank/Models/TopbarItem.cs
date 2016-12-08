@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
 
 namespace FishTank.Models
 {

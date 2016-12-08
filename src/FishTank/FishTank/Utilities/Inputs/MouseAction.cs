@@ -2,7 +2,7 @@
 // Copyright - James Finlay
 // 
 
-namespace FishTank.Utilities
+namespace FishTank.Utilities.Inputs
 {
     /// <summary>
     /// Used by <see cref="MouseEvent"/> to identiy mouse action taken on target element.

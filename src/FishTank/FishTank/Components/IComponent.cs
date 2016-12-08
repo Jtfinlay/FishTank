@@ -5,6 +5,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace FishTank.Components
 {
@@ -16,7 +17,7 @@ namespace FishTank.Components
 
         void UnloadContent();
 
-        void Update(GameTime gameTime);
+        void Update(GameTime gameTime, MouseState currentMouseState);
 
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }

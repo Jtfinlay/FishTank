@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace FishTank.Utilities
+namespace FishTank.Utilities.Inputs
 {
     /// <summary>
     /// Class to identify the mouse actions performed on an object

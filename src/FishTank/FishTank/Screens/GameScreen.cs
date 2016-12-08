@@ -4,6 +4,7 @@
 
 using FishTank.Components;
 using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,6 +15,8 @@ namespace FishTank.Screens
 {
     public class GameScreen : IScreen
     {
+        public event OnNavigateEventHandler OnNavigate;
+
         public Rectangle Area => Constants.VirtualArea;
 
         public GameScreen()
@@ -40,10 +43,10 @@ namespace FishTank.Screens
             _topBarView.UnloadContent();
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, MouseState currentMouseState)
         {
-            _tankView.Update(gameTime);
-            _topBarView.Update(gameTime);
+            _tankView.Update(gameTime, currentMouseState);
+            _topBarView.Update(gameTime, currentMouseState);
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)
@@ -69,6 +72,11 @@ namespace FishTank.Screens
             spriteBatch.End();
         }
 
+        public void MouseEvent(MouseEvent mouseEvent)
+        {
+            GetViewContainingPoint(mouseEvent.Position)?.MouseEvent(mouseEvent);
+        }
+
         private IComponent GetViewContainingPoint(Point point)
         {
             if (_tankView.Area.Contains(point))
@@ -85,11 +93,6 @@ namespace FishTank.Screens
         private void PurchaseGoldFish(object sender, EventArgs e)
         {
             _tankView.AddGoldFish();
-        }
-
-        public void MouseEvent(MouseEvent mouseEvent)
-        {
-            GetViewContainingPoint(mouseEvent.Position)?.MouseEvent(mouseEvent);
         }
 
         private TankComponent _tankView;

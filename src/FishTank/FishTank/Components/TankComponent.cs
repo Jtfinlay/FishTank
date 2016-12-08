@@ -5,9 +5,11 @@
 using FishTank.Models;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 
 namespace FishTank.Components
@@ -40,7 +42,7 @@ namespace FishTank.Components
 
         public void UnloadContent() { }
 
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, MouseState currentMouseState)
         {
             // Clear out stale interactables.
             _models.RemoveAll((model) => model.State == InteractableState.Discard);

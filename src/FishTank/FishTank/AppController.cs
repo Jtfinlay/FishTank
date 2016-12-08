@@ -4,10 +4,13 @@
 
 using FishTank.Screens;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
+using FishTank.Utilities.Inputs;
 using FishTank.ViewAdapters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace FishTank
 {
@@ -31,7 +34,8 @@ namespace FishTank
         protected override void Initialize()
         {
             IsMouseVisible = true;
-            _screen = new GameScreen();
+            _screen = new MainMenuScreen();
+            _screen.OnNavigate += NavigateToScreen;
 
             base.Initialize();
         }
@@ -53,6 +57,7 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
+            _screen.OnNavigate -= NavigateToScreen;
             _screen.UnloadContent();
         }
 
@@ -77,14 +82,7 @@ namespace FishTank
                 MouseAction action = MouseAction.Hover;
                 if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
                 {
-                    if (_screen.Area.Contains(_currentMouseState.Position) && !_screen.Area.Contains(_previousMouseState.Position))
-                    {
-                        action = MouseAction.HoverStart;
-                    }
-                    else if (!_screen.Area.Contains(_currentMouseState.Position) && _screen.Area.Contains(_previousMouseState.Position))
-                    {
-                        action = MouseAction.HoverExit;
-                    }
+                    action = MouseAction.Hover;
                 }
                 else if (_currentMouseState.LeftButton == ButtonState.Pressed)
                 {
@@ -97,7 +95,7 @@ namespace FishTank
                 _screen.MouseEvent(new MouseEvent(_currentMouseState, action));
             }
 
-            _screen.Update(gameTime);
+            _screen.Update(gameTime, _currentMouseState);
 
             base.Update(gameTime);
         }
@@ -114,6 +112,22 @@ namespace FishTank
 
             base.Draw(gameTime);
         }
+
+        /// <summary>
+        /// Invoked to switch to a new menu or game
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void NavigateToScreen(object sender, NavigationEventArgs e)
+        {
+            _screen.OnNavigate -= NavigateToScreen;
+            _screen.UnloadContent();
+
+            _screen = Activator.CreateInstance(e.Target) as IScreen;
+            _screen.LoadContent(GraphicsDevice, Content);
+            _screen.OnNavigate += NavigateToScreen;
+        }
+
 
         private IScreen _screen;
 
