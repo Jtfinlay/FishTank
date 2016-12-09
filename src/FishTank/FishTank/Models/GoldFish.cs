@@ -12,7 +12,7 @@ using System.Linq;
 
 namespace FishTank.Models
 {
-    public class GoldFish : IInteractable
+    public class GuppyFish : IInteractable
     {
         /// <summary>
         /// Rectangle indicating hte boundary box for the gold fish
@@ -28,11 +28,11 @@ namespace FishTank.Models
         /// Basic fish that chases food and dies
         /// </summary>
         /// <param name="graphicsDevice">Graphics resource for texture creation</param>
-        public GoldFish(GraphicsDevice graphicsDevice)
+        public GuppyFish(GraphicsDevice graphicsDevice)
         {
             _random = new Random();
             _safeArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 100, 30, 30);
+            BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
 
             var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
             Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
@@ -255,12 +255,12 @@ namespace FishTank.Models
         /// <summary>
         /// Maximum speed of the gold fish. Used when targeting food or running from aliens
         /// </summary>
-        private const float _maxSpeed = 3.0f;
+        private const float _maxSpeed = 4.0f;
 
         /// <summary>
         /// Slow wandering speed of the fish when no important targets around.
         /// </summary>
-        private const float _wanderSpeed = 1.5f;
+        private const float _wanderSpeed = 2f;
 
         /// <summary>
         /// If fish is wandering, this is set to maintain destination

@@ -123,13 +123,13 @@ namespace FishTank
             _screen.OnNavigate -= NavigateToScreen;
             _screen.UnloadContent();
 
-            _screen = Activator.CreateInstance(e.Target) as IScreen;
+            _screen = Activator.CreateInstance(e.Target) as Screen;
             _screen.LoadContent(GraphicsDevice, Content);
             _screen.OnNavigate += NavigateToScreen;
         }
 
 
-        private IScreen _screen;
+        private Screen _screen;
 
         /// <summary>
         /// Spritebatch is used to draw textures on the canvas

@@ -15,25 +15,31 @@ using System.Linq;
 
 namespace FishTank.Components
 {
-    public class ItemBarComponent : IComponent
+    public class ItemBarComponent : Component
     {
         public event EventHandler OnPurchaseFish;
-
-        public Matrix PreTransformMatrix => _postScaleTransform;
-
-        public Rectangle Area { get; private set; }
 
         public ItemBarComponent()
         {
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
-            var buyGoldFish = new TopbarItem(graphicsDevice, new Rectangle(0, 0, Area.Height, Area.Height));
-            buyGoldFish.OnClicked += (s,e) => OnPurchaseFish?.Invoke(this, new EventArgs());
+            var buyGuppyFish = new TopbarItem(graphicsDevice, new Rectangle(0, 0, Area.Height, Area.Height));
+            var upgradeFood = new TopbarItem(graphicsDevice, new Rectangle(Area.Height, 0, Area.Height, Area.Height));
+            var upgradeFoodDrop = new TopbarItem(graphicsDevice, new Rectangle(2 * Area.Height, 0, Area.Height, Area.Height));
+            var buyPiranhaFish = new TopbarItem(graphicsDevice, new Rectangle(3*Area.Height, 0, Area.Height, Area.Height));
+            var buyBlasterUpgrade = new TopbarItem(graphicsDevice, new Rectangle(4*Area.Height, 0, Area.Height, Area.Height));
+            var buyEgg = new TopbarItem(graphicsDevice, new Rectangle(5*Area.Height, 0, Area.Height, Area.Height));
 
-            _buttons = new List<TopbarItem>() { buyGoldFish };
+            var otherItem1 = new TopbarItem(graphicsDevice, new Rectangle(6 * Area.Height, 0, Area.Height, Area.Height));
+            var otherItem2 = new TopbarItem(graphicsDevice, new Rectangle(7 * Area.Height, 0, Area.Height, Area.Height));
+
+
+            buyGuppyFish.OnClicked += (s,e) => OnPurchaseFish?.Invoke(this, new EventArgs());
+
+            _buttons = new List<TopbarItem>() { buyGuppyFish, upgradeFood, upgradeFoodDrop, buyPiranhaFish, buyBlasterUpgrade, buyEgg, otherItem1, otherItem2};
 
             var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
 
@@ -46,21 +52,21 @@ namespace FishTank.Components
             _texture = rect;
         }
 
-        public void UnloadContent()
+        public override void UnloadContent()
         {
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, new Vector2(0, 0), null);
             _buttons.ForEach((button) => button.Draw(spriteBatch));
         }
 
-        public void Update(GameTime gameTime, MouseState currentMouseState)
+        public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
         }
 
-        public void MouseEvent(MouseEvent mouseEvent)
+        public override void MouseEvent(MouseEvent mouseEvent)
         {
             _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent);
         }

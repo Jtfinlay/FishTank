@@ -2,6 +2,7 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,16 +10,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FishTank.Components
 {
-    public interface IComponent : IClickable
+    public abstract class Component : IClickable
     {
-        Matrix PreTransformMatrix { get; }
+        public Rectangle Area { get; protected set; }
 
-        void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
+        public abstract void MouseEvent(MouseEvent mouseEvent);
 
-        void UnloadContent();
+        public abstract void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
 
-        void Update(GameTime gameTime, MouseState currentMouseState);
+        public abstract void UnloadContent();
 
-        void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        public abstract void Update(GameTime gameTime, MouseState currentMouseState);
+
+        public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch);
     }
 }

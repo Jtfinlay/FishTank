@@ -14,11 +14,9 @@ using System.Collections.Generic;
 
 namespace FishTank.Components
 {
-    public class TankComponent : IComponent
+    public class TankComponent : Component
     {
         public Matrix PreTransformMatrix { get; private set; }
-
-        public Rectangle Area { get; private set; }
 
         public TankComponent(int offsetX, int offsetY)
         {
@@ -26,23 +24,24 @@ namespace FishTank.Components
             _models = new List<IInteractable>();
 
             Area = new Rectangle(offsetX, offsetY, Constants.VirtualWidth, Constants.VirtualHeight);
+            _drawArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _graphicsDevice = graphicsDevice;
 
-            _backgroundTexture = content.Load<Texture2D>("RollingHills.png");
+            _backgroundTexture = content.Load<Texture2D>("backgrounds\\background2.png");
         }
 
         public void AddGoldFish()
         {
-            _models.Add(new GoldFish(_graphicsDevice));
+            _models.Add(new GuppyFish(_graphicsDevice));
         }
 
-        public void UnloadContent() { }
+        public override void UnloadContent() { }
 
-        public void Update(GameTime gameTime, MouseState currentMouseState)
+        public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
             // Clear out stale interactables.
             _models.RemoveAll((model) => model.State == InteractableState.Discard);
@@ -54,9 +53,9 @@ namespace FishTank.Components
             }
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_backgroundTexture, new Vector2(0, 0));
+            spriteBatch.Draw(_backgroundTexture, destinationRectangle: _drawArea);
 
             foreach (IInteractable model in _models)
             {
@@ -64,7 +63,7 @@ namespace FishTank.Components
             }
         }
 
-        public void MouseEvent(MouseEvent mouseEvent)
+        public override void MouseEvent(MouseEvent mouseEvent)
         {
             switch (mouseEvent.Action)
             {
@@ -80,6 +79,8 @@ namespace FishTank.Components
                     break;
             }
         }
+
+        private Rectangle _drawArea;
 
         private Texture2D _backgroundTexture;
 

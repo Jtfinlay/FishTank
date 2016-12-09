@@ -3,7 +3,6 @@
 // 
 
 using FishTank.Components;
-using FishTank.Utilities;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -13,35 +12,26 @@ using Microsoft.Xna.Framework.Input;
 
 namespace FishTank.Screens
 {
-    public class MainMenuScreen : IScreen
+    public class MainMenuScreen : Screen
     {
-        public event OnNavigateEventHandler OnNavigate;
-
-        public Rectangle Area => Constants.VirtualArea;
-
         public MainMenuScreen()
         {
             _playButton = new ButtonComponent(new Rectangle(Area.Width/2-150, Area.Height/2-75, 300, 150), "Play");
-            _playButton.OnClick += _playButton_OnClick;
+            _playButton.OnClick += OnPlayButtonClick;
         }
 
-        private void _playButton_OnClick(object sender, System.EventArgs e)
-        {
-            OnNavigate?.Invoke(this, new NavigationEventArgs(typeof(GameScreen)));
-        }
-
-        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _playButton.LoadContent(graphicsDevice, content);
         }
 
-        public void UnloadContent()
+        public override void UnloadContent()
         {
             _playButton.UnloadContent();
-            _playButton.OnClick -= _playButton_OnClick;
+            _playButton.OnClick -= OnPlayButtonClick;
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)
         {
             spriteBatch.Begin(
                 samplerState: SamplerState.LinearClamp,
@@ -53,17 +43,22 @@ namespace FishTank.Screens
             spriteBatch.End();
         }
 
-        public void Update(GameTime gameTime, MouseState currentMouseState)
+        public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
             _playButton.Update(gameTime, currentMouseState);
         }
 
-        public void MouseEvent(MouseEvent mouseEvent)
+        public override void MouseEvent(MouseEvent mouseEvent)
         {
             if (_playButton.Area.Contains(mouseEvent.Location))
             {
                 _playButton.MouseEvent(mouseEvent);
             }
+        }
+
+        private void OnPlayButtonClick(object sender, System.EventArgs e)
+        {
+            Navigate(new NavigationEventArgs(typeof(GameScreen)));
         }
 
         private ButtonComponent _playButton;

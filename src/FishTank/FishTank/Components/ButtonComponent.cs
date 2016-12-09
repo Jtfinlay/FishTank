@@ -12,15 +12,11 @@ using System;
 
 namespace FishTank.Components
 {
-    public class ButtonComponent : IComponent
+    public class ButtonComponent : Component
     {
         public event EventHandler OnClick;
 
-        public Rectangle Area { get; private set; }
-
         public string ButtonText { get; set; }
-
-        public Matrix PreTransformMatrix { get; private set; }
 
         public ButtonComponent(Rectangle area, string buttonText)
         {
@@ -28,7 +24,7 @@ namespace FishTank.Components
             ButtonText = buttonText;
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
 
@@ -42,11 +38,11 @@ namespace FishTank.Components
             _fishFont = content.Load<SpriteFont>("FishFingers_70");
         }
 
-        public void UnloadContent()
+        public override void UnloadContent()
         {
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Color backgroundColor = _isMouseOver ? Color.Blue : Color.LightBlue;
             Color fontColor = _isMouseOver ? Color.White : Color.Black;
@@ -55,12 +51,12 @@ namespace FishTank.Components
             spriteBatch.DrawString(_fishFont, ButtonText, Area, Alignment.Center, fontColor);
         }
 
-        public void Update(GameTime gameTime, MouseState currentMouseState)
+        public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
             _isMouseOver = Area.Contains(currentMouseState.Position);
         }
 
-        public void MouseEvent(MouseEvent mouseEvent)
+        public override void MouseEvent(MouseEvent mouseEvent)
         {
             if (mouseEvent.Action == MouseAction.Click)
             {

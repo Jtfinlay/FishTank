@@ -12,7 +12,7 @@ namespace FishTank.Utilities
 
         public const int VirtualTotalWidth = 1920;
 
-        public const int VirtualBarHeight = 100;
+        public const int VirtualBarHeight = 175;
 
         public const int VirtualHeight = VirtualTotalHeight - VirtualBarHeight;
 

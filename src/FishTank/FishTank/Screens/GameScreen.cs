@@ -13,11 +13,8 @@ using System;
 
 namespace FishTank.Screens
 {
-    public class GameScreen : IScreen
+    public class GameScreen : Screen
     {
-        public event OnNavigateEventHandler OnNavigate;
-
-        public Rectangle Area => Constants.VirtualArea;
 
         public GameScreen()
         {
@@ -27,7 +24,7 @@ namespace FishTank.Screens
             _topBarView.OnPurchaseFish += PurchaseGoldFish;
         }
 
-        public void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _tankView.LoadContent(graphicsDevice, content);
             _topBarView.LoadContent(graphicsDevice, content);
@@ -35,7 +32,7 @@ namespace FishTank.Screens
             _tankView.AddGoldFish();
         }
 
-        public void UnloadContent()
+        public override void UnloadContent()
         {
             _topBarView.OnPurchaseFish -= PurchaseGoldFish;
 
@@ -43,13 +40,13 @@ namespace FishTank.Screens
             _topBarView.UnloadContent();
         }
 
-        public void Update(GameTime gameTime, MouseState currentMouseState)
+        public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
             _tankView.Update(gameTime, currentMouseState);
             _topBarView.Update(gameTime, currentMouseState);
         }
 
-        public void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)
         {
             // Draw the fish tank
             spriteBatch.Begin(
@@ -72,12 +69,12 @@ namespace FishTank.Screens
             spriteBatch.End();
         }
 
-        public void MouseEvent(MouseEvent mouseEvent)
+        public override void MouseEvent(MouseEvent mouseEvent)
         {
             GetViewContainingPoint(mouseEvent.Position)?.MouseEvent(mouseEvent);
         }
 
-        private IComponent GetViewContainingPoint(Point point)
+        private Component GetViewContainingPoint(Point point)
         {
             if (_tankView.Area.Contains(point))
             {

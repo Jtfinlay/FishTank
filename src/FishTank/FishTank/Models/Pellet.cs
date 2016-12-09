@@ -23,7 +23,7 @@ namespace FishTank.Models
         public Pellet(GraphicsDevice graphicsDevice, Vector2 position)
         {
             _device = graphicsDevice;
-            BoundaryBox = new Rectangle(position.ToPoint(), new Point(10, 10));
+            BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
             var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
 
             Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];

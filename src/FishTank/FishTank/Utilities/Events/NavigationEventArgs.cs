@@ -4,7 +4,6 @@
 
 using FishTank.Screens;
 using System;
-using System.Linq;
 using System.Reflection;
 
 namespace FishTank.Utilities.Events
@@ -15,9 +14,9 @@ namespace FishTank.Utilities.Events
 
         public NavigationEventArgs(Type target)
         {
-            if (!target.GetInterfaces().Contains(typeof(IScreen)))
+            if (!typeof(Screen).IsAssignableFrom(target))
             {
-                throw new ArgumentException(string.Format("{0} does not inherit from {1}", nameof(target), nameof(IScreen)));
+                throw new ArgumentException(string.Format("{0} does not inherit from {1}", nameof(target), nameof(Screen)));
             }
 
             Target = target;
