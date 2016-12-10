@@ -30,13 +30,13 @@ namespace FishTank.Components
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _graphicsDevice = graphicsDevice;
-
+            _content = content;
             _backgroundTexture = content.Load<Texture2D>("backgrounds\\background2.png");
         }
 
         public void AddGoldFish()
         {
-            _models.Add(new GuppyFish(_graphicsDevice));
+            _models.Add(new GuppyFish(_graphicsDevice, _content));
         }
 
         public override void UnloadContent() { }
@@ -87,5 +87,7 @@ namespace FishTank.Components
         private List<IInteractable> _models;
 
         private GraphicsDevice _graphicsDevice;
+
+        private ContentManager _content;
     }
 }

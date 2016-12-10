@@ -100,16 +100,18 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\LevelItems.cs" />
+    <Compile Include="Models\Levels\Level.cs" />
+    <Compile Include="Models\Levels\LevelItemTypes.cs" />
     <Compile Include="GamePage.xaml.cs">
       <DependentUpon>GamePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppController.cs" />
     <Compile Include="Components\ButtonComponent.cs" />
     <Compile Include="Models\Levels\Level1.cs" />
+    <Compile Include="Models\Levels\LevelItem.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Models\TopbarItem.cs" />
-    <Compile Include="Models\GoldFish.cs" />
+    <Compile Include="Models\GuppyFish.cs" />
     <Compile Include="Models\Interfaces\IInteractable.cs" />
     <Compile Include="Models\Interfaces\InteractableState.cs" />
     <Compile Include="Models\Pellet.cs" />
@@ -135,7 +137,12 @@
     <Content Include="Content\backgrounds\background2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\BlackLock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\BlackLock_Small.png" />
     <Content Include="Content\Fishfingers.ttf" />
+    <None Include="Content\FishFingers_30.spritefont" />
     <None Include="Content\FishFingers_70.spritefont" />
     <None Include="project.json" />
   </ItemGroup>
@@ -146,6 +153,10 @@
     <None Include="FishTank_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Guppy.png" />
+    <Content Include="Content\Guppy_Dead.png" />
+    <Content Include="Content\Guppy_Hungry.png" />
+    <Content Include="Content\Guppy_Starving.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

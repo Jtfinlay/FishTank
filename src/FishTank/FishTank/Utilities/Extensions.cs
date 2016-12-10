@@ -51,5 +51,19 @@ namespace FishTank.Utilities
 
             spriteBatch.DrawString(font, text, pos, color, 0, origin, 1, SpriteEffects.None, 0);
         }
+
+        /// <summary>
+        /// Draw given texture by the provided, and the texture's, center point
+        /// </summary>
+        /// <param name="spriteBatch">Helper object for drawing text strings and sprites in one or more optimized batches.</param>
+        /// <param name="texture">Texture to draw</param>
+        /// <param name="position">Position to draw the center of the texture</param>
+        /// <param name="color">An optional color mask. Uses Microsoft.Xna.Framework.Color.White if null.</param>
+        public static void DrawCenterAt(this SpriteBatch spriteBatch, Texture2D texture, Vector2 position, Color? color)
+        {
+            // Get top left position to draw at
+            var drawPosition = position - new Vector2((texture.Width / 2), (texture.Height/2));
+            spriteBatch.Draw(texture, drawPosition, color: color);
+        }
     }
 }

@@ -3,6 +3,7 @@
 // 
 
 using FishTank.Models;
+using FishTank.Models.Levels;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -19,27 +20,25 @@ namespace FishTank.Components
     {
         public event EventHandler OnPurchaseFish;
 
-        public ItemBarComponent()
+        public ItemBarComponent(Level level)
         {
+            _level = level;
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
-            var buyGuppyFish = new TopbarItem(graphicsDevice, new Rectangle(0, 0, Area.Height, Area.Height));
-            var upgradeFood = new TopbarItem(graphicsDevice, new Rectangle(Area.Height, 0, Area.Height, Area.Height));
-            var upgradeFoodDrop = new TopbarItem(graphicsDevice, new Rectangle(2 * Area.Height, 0, Area.Height, Area.Height));
-            var buyPiranhaFish = new TopbarItem(graphicsDevice, new Rectangle(3*Area.Height, 0, Area.Height, Area.Height));
-            var buyBlasterUpgrade = new TopbarItem(graphicsDevice, new Rectangle(4*Area.Height, 0, Area.Height, Area.Height));
-            var buyEgg = new TopbarItem(graphicsDevice, new Rectangle(5*Area.Height, 0, Area.Height, Area.Height));
+            _buttons = new List<TopbarItem>();
+            for (int i = 0; i < Constants.TopBarItems; i++)
+            {
+                var topBarItem = new TopbarItem(_level.Items[i], new Rectangle(i * Area.Height, 0, Area.Height, Area.Height));
+                topBarItem.LoadContent(graphicsDevice, content);
+                topBarItem.OnPurchased += OnItemPurchase;
+                _buttons.Add(topBarItem);
+            }
 
-            var otherItem1 = new TopbarItem(graphicsDevice, new Rectangle(6 * Area.Height, 0, Area.Height, Area.Height));
-            var otherItem2 = new TopbarItem(graphicsDevice, new Rectangle(7 * Area.Height, 0, Area.Height, Area.Height));
 
-
-            buyGuppyFish.OnClicked += (s,e) => OnPurchaseFish?.Invoke(this, new EventArgs());
-
-            _buttons = new List<TopbarItem>() { buyGuppyFish, upgradeFood, upgradeFoodDrop, buyPiranhaFish, buyBlasterUpgrade, buyEgg, otherItem1, otherItem2};
+            //buyGuppyFish.OnClicked += (s,e) => OnPurchaseFish?.Invoke(this, new EventArgs());
 
             var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
 
@@ -54,12 +53,17 @@ namespace FishTank.Components
 
         public override void UnloadContent()
         {
+            _buttons.ForEach((item) =>
+            {
+                item.OnPurchased -= OnItemPurchase;
+                item.UnloadContent();
+            });
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(_texture, new Vector2(0, 0), null);
-            _buttons.ForEach((button) => button.Draw(spriteBatch));
+            _buttons.ForEach((button) => button.Draw(gameTime, spriteBatch));
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
@@ -70,6 +74,17 @@ namespace FishTank.Components
         {
             _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent);
         }
+
+        private void OnItemPurchase(object sender, EventArgs e)
+        {
+            TopbarItem item = sender as TopbarItem;
+            if (item.ItemType == LevelItemTypes.GuppyFish)
+            {
+                OnPurchaseFish?.Invoke(this, null);
+            }
+        }
+
+        private Level _level;
 
         private Texture2D _texture;
 

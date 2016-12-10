@@ -123,7 +123,7 @@ namespace FishTank
             _screen.OnNavigate -= NavigateToScreen;
             _screen.UnloadContent();
 
-            _screen = Activator.CreateInstance(e.Target) as Screen;
+            _screen = Activator.CreateInstance(e.Target, e) as Screen;
             _screen.LoadContent(GraphicsDevice, Content);
             _screen.OnNavigate += NavigateToScreen;
         }

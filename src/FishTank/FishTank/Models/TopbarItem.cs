@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Input;
+using FishTank.Models.Levels;
+using FishTank.Utilities;
 
 namespace FishTank.Models
 {
@@ -18,13 +20,19 @@ namespace FishTank.Models
 
         public Matrix PreTransformMatrix { get; }
 
-        public event EventHandler OnClicked;
+        public event EventHandler OnPurchased;
 
-        public TopbarItem(GraphicsDevice graphicsDevice, Rectangle area)
+        public LevelItemTypes ItemType { get; private set; }
+
+        public TopbarItem(LevelItem item, Rectangle area)
         {
             Area = area;
+            ItemType = item?.Type ?? LevelItemTypes.Locked;
+        }
 
-            var rect = new Texture2D(graphicsDevice, Area.Width - _padding*2, Area.Height - _padding*2);
+        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        {
+            var rect = new Texture2D(graphicsDevice, Area.Width - _padding * 2, Area.Height - _padding * 2);
 
             Color[] data = new Color[Area.Width * Area.Height];
             for (int i = 0; i < data.Length; ++i)
@@ -33,11 +41,31 @@ namespace FishTank.Models
             }
             rect.SetData(data);
             _texture = rect;
+            _fishFont = content.Load<SpriteFont>("FishFingers_30");
+            switch (ItemType)
+            {
+                case LevelItemTypes.GuppyFish:
+                    _icon = content.Load<Texture2D>("Guppy.png");
+                    break;
+                case LevelItemTypes.Locked:
+                    _icon = content.Load<Texture2D>("BlackLock_Small.png");
+                    break;
+            }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void UnloadContent()
         {
-            spriteBatch.Draw(_texture, Area.Location.ToVector2() + new Vector2(_padding,_padding), null);
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(_texture, Area.Location.ToVector2() + new Vector2(_padding, _padding), null);
+            spriteBatch.DrawCenterAt(_icon, Area.Center.ToVector2() + new Vector2(0, -20), null);
+
+            if (ItemType != LevelItemTypes.Locked)
+            {
+                spriteBatch.DrawString(_fishFont, "100g", Area, Alignment.Bottom, Color.White);
+            }
         }
 
         public override void MouseEvent(MouseEvent mouseEvent)
@@ -45,7 +73,7 @@ namespace FishTank.Models
             switch (mouseEvent.Action)
             {
                 case MouseAction.Click:
-                    OnClicked?.Invoke(this, new EventArgs());
+                    OnPurchased?.Invoke(this, new EventArgs());
                     break;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
@@ -55,27 +83,14 @@ namespace FishTank.Models
             }
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void UnloadContent()
-        {
-            throw new NotImplementedException();
-        }
-
         public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
             throw new NotImplementedException();
         }
 
-        public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
-        {
-            throw new NotImplementedException();
-        }
-
         private Texture2D _texture;
+        private Texture2D _icon;
+        private SpriteFont _fishFont;
 
         private const int _padding = 10;
     }

@@ -2,9 +2,9 @@
 // Copyright - James Finlay
 // 
 
-namespace FishTank.Components
+namespace FishTank.Models.Levels
 {
-    public enum LevelItems
+    public enum LevelItemTypes
     {
         Locked = 0,
 

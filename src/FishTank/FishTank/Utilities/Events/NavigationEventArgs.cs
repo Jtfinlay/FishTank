@@ -2,6 +2,7 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Models.Levels;
 using FishTank.Screens;
 using System;
 using System.Reflection;
@@ -11,6 +12,8 @@ namespace FishTank.Utilities.Events
     public class NavigationEventArgs : EventArgs
     {
         public Type Target { get; set; }
+
+        public Level Level {get; set;}
 
         public NavigationEventArgs(Type target)
         {

@@ -5,6 +5,7 @@
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -28,20 +29,16 @@ namespace FishTank.Models
         /// Basic fish that chases food and dies
         /// </summary>
         /// <param name="graphicsDevice">Graphics resource for texture creation</param>
-        public GuppyFish(GraphicsDevice graphicsDevice)
+        public GuppyFish(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _random = new Random();
             _safeArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
 
-            var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
-            Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.White;
-            }
-            rect.SetData(data);
-            _texture = rect;
+            _textureHealthy = content.Load<Texture2D>("Guppy.png");
+            _textureHungry = content.Load<Texture2D>("Guppy_Hungry.png");
+            _textureStarving = content.Load<Texture2D>("Guppy_Starving.png");
+            _textureDead = content.Load<Texture2D>("Guppy_Dead.png");
         }
 
         /// <summary>
@@ -129,22 +126,26 @@ namespace FishTank.Models
         /// <param name="spriteBatch">Graphics resource for drawing</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            Color color = Color.Orange;
+            Texture2D texture = null;
             switch (State)
             {
                 case InteractableState.Discard:
                     // fish is destroyed but awaiting cleanup. Don't draw
                     return;
                 case InteractableState.Dead:
-                    color = Color.Black;
+                    texture = _textureDead;
                     break;
                 case InteractableState.Alive:
-                    if (_currentHunger <= _hungerDangerValue) color = Color.Green;
-                    else if (_currentHunger <= _hungerWarningValue) color = Color.GreenYellow;
+                    if (_currentHunger <= _hungerDangerValue) texture = _textureStarving;
+                    else if (_currentHunger <= _hungerWarningValue) texture = _textureHungry;
+                    else texture = _textureHealthy;
                     break;
             }
 
-            spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), color: color);
+            if (texture != null)
+            {
+                spriteBatch.Draw(texture, BoundaryBox.Location.ToVector2(), null);
+            }
         }
 
         /// <summary>
@@ -280,7 +281,7 @@ namespace FishTank.Models
         /// <summary>
         /// Drawable texture showing the fish
         /// </summary>
-        private Texture2D _texture;
+        private Texture2D _textureHealthy, _textureHungry, _textureStarving, _textureDead;
 
         /// <summary>
         /// Random object used for probability checks

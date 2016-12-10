@@ -3,7 +3,7 @@
 // 
 
 using FishTank.Components;
-using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -16,9 +16,14 @@ namespace FishTank.Screens
     public class GameScreen : Screen
     {
 
-        public GameScreen()
+        public GameScreen(NavigationEventArgs e)
         {
-            _topBarView = new ItemBarComponent();
+            if (e?.Level == null)
+            {
+                throw new ArgumentNullException($"{nameof(e)}'s level cannot be null.");
+            }
+
+            _topBarView = new ItemBarComponent(e.Level);
             _tankView = new TankComponent(0, _topBarView.Area.Height);
 
             _topBarView.OnPurchaseFish += PurchaseGoldFish;

@@ -3,6 +3,7 @@
 // 
 
 using FishTank.Components;
+using FishTank.Models.Levels;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -58,7 +59,7 @@ namespace FishTank.Screens
 
         private void OnPlayButtonClick(object sender, System.EventArgs e)
         {
-            Navigate(new NavigationEventArgs(typeof(GameScreen)));
+            Navigate(new NavigationEventArgs(typeof(GameScreen)) { Level = new Level1() });
         }
 
         private ButtonComponent _playButton;
