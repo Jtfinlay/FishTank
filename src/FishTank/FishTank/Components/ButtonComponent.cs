@@ -16,12 +16,15 @@ namespace FishTank.Components
     {
         public event EventHandler OnClick;
 
+        public string FontName { get; private set; }
+
         public string ButtonText { get; set; }
 
-        public ButtonComponent(Rectangle area, string buttonText)
+        public ButtonComponent(Rectangle area, string buttonText, string fontName = "FishFingers_70")
         {
             Area = area;
             ButtonText = buttonText;
+            FontName = fontName;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
@@ -35,7 +38,7 @@ namespace FishTank.Components
             }
             rect.SetData(data);
             _texture = rect;
-            _fishFont = content.Load<SpriteFont>("FishFingers_70");
+            _fishFont = content.Load<SpriteFont>(FontName);
         }
 
         public override void UnloadContent()

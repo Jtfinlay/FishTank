@@ -242,7 +242,7 @@ namespace FishTank.Models
             return false;
         }
 
-        private readonly TimeSpan _dropCoinTime = TimeSpan.FromSeconds(20);
+        private readonly TimeSpan _dropCoinTime = TimeSpan.FromSeconds(15);
 
         private TimeSpan _timeSinceCoinDrop = TimeSpan.Zero;
 

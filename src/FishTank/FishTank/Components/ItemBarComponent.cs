@@ -20,14 +20,29 @@ namespace FishTank.Components
     {
         public event EventHandler OnPurchaseFish;
 
+        public int GoldAmount
+        {
+            get
+            {
+                return _gameStatusBar.GoldAmount;
+            }
+            set
+            {
+                _gameStatusBar.GoldAmount = value;
+            }
+        }
+
         public ItemBarComponent(Level level)
         {
             _level = level;
+
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
+            _gameStatusBar = new GameStatusBar(_level, Area);
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
+            _gameStatusBar.LoadContent(graphicsDevice, content);
             _buttons = new List<TopbarItem>();
             for (int i = 0; i < Constants.TopBarItems; i++)
             {
@@ -37,11 +52,7 @@ namespace FishTank.Components
                 _buttons.Add(topBarItem);
             }
 
-
-            //buyGuppyFish.OnClicked += (s,e) => OnPurchaseFish?.Invoke(this, new EventArgs());
-
             var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
-
             Color[] data = new Color[Area.Width * Area.Height];
             for (int i = 0; i < data.Length; ++i)
             {
@@ -53,6 +64,7 @@ namespace FishTank.Components
 
         public override void UnloadContent()
         {
+            _gameStatusBar.UnloadContent();
             _buttons.ForEach((item) =>
             {
                 item.OnPurchased -= OnItemPurchase;
@@ -64,6 +76,7 @@ namespace FishTank.Components
         {
             spriteBatch.Draw(_texture, new Vector2(0, 0), null);
             _buttons.ForEach((button) => button.Draw(gameTime, spriteBatch));
+            _gameStatusBar.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
@@ -78,8 +91,14 @@ namespace FishTank.Components
         private void OnItemPurchase(object sender, EventArgs e)
         {
             TopbarItem item = sender as TopbarItem;
+            if (item.GoldValue > GoldAmount)
+            {
+                // not enough gold
+                return;
+            }
             if (item.ItemType == LevelItemTypes.GuppyFish)
             {
+                GoldAmount -= item.GoldValue;
                 OnPurchaseFish?.Invoke(this, null);
             }
         }
@@ -89,6 +108,8 @@ namespace FishTank.Components
         private Texture2D _texture;
 
         private List<TopbarItem> _buttons;
+
+        private GameStatusBar _gameStatusBar;
 
         private Matrix _postScaleTransform = Matrix.CreateTranslation(0,0,0);
     }

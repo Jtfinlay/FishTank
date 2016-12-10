@@ -10,12 +10,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace FishTank.Components
 {
     public class TankComponent : Component
     {
+        public event EventHandler OnCoinClick;
+
         public Matrix PreTransformMatrix { get; private set; }
 
         public TankComponent(int offsetX, int offsetY)
@@ -120,7 +123,7 @@ namespace FishTank.Components
 
         private void Coin_OnClick(object sender, System.EventArgs e)
         {
-            // TODO
+            OnCoinClick?.Invoke(sender, e);
         }
 
         private Rectangle _drawArea;

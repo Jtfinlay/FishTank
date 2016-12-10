@@ -3,14 +3,14 @@
 // 
 
 using FishTank.Components;
-using FishTank.Utilities.Inputs;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Input;
 using FishTank.Models.Levels;
 using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace FishTank.Models
 {
@@ -23,6 +23,8 @@ namespace FishTank.Models
         public event EventHandler OnPurchased;
 
         public LevelItemTypes ItemType { get; private set; }
+
+        public int GoldValue { get; private set; } = 100;
 
         public TopbarItem(LevelItem item, Rectangle area)
         {
@@ -41,7 +43,7 @@ namespace FishTank.Models
             }
             rect.SetData(data);
             _texture = rect;
-            _fishFont = content.Load<SpriteFont>("FishFingers_30");
+            _fishFont = content.Load<SpriteFont>("Arial_20");
             switch (ItemType)
             {
                 case LevelItemTypes.GuppyFish:

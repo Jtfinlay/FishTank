@@ -23,6 +23,39 @@ namespace FishTank.Utilities
                 && (point.Y > area.Top) && (point.Y < area.Bottom);
         }
 
+        public static Rectangle ApplyPadding(this Rectangle rectangle, int padding, Alignment sides)
+        {
+            var result = rectangle;
+            var x = rectangle.Left;
+            var y = rectangle.Top;
+            var width = rectangle.Width;
+            var height = rectangle.Height;
+
+            if (sides.HasFlag(Alignment.Left))
+            {
+                result.X += padding;
+                result.Width -= padding;
+            }
+
+            if (sides.HasFlag(Alignment.Top))
+            {
+                result.Y += padding;
+                result.Height -= padding;
+            }
+
+            if (sides.HasFlag(Alignment.Right))
+            {
+                result.Width -= padding;
+            }
+
+            if (sides.HasFlag(Alignment.Bottom))
+            {
+                result.Height -= padding;
+            }
+
+            return result;
+        }
+
         public static void DrawString(this SpriteBatch spriteBatch, SpriteFont font, string text, Rectangle bounds, Alignment align, Color color)
         {
             Vector2 size = font.MeasureString(text);

@@ -101,6 +101,8 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Components\Coin.cs" />
+    <Compile Include="Components\CoinBankBar.cs" />
+    <Compile Include="Components\GameStatusBar.cs" />
     <Compile Include="Models\Levels\Level.cs" />
     <Compile Include="Models\Levels\LevelItemTypes.cs" />
     <Compile Include="GamePage.xaml.cs">
@@ -143,7 +145,7 @@
     </Content>
     <Content Include="Content\BlackLock_Small.png" />
     <Content Include="Content\Fishfingers.ttf" />
-    <None Include="Content\FishFingers_30.spritefont" />
+    <None Include="Content\Arial_20.spritefont" />
     <None Include="Content\FishFingers_70.spritefont" />
     <None Include="project.json" />
   </ItemGroup>

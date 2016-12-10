@@ -25,8 +25,15 @@ namespace FishTank.Screens
 
             _topBarView = new ItemBarComponent(e.Level);
             _tankView = new TankComponent(0, _topBarView.Area.Height);
+            _tankView.OnCoinClick += _tankView_OnCoinClick;
 
             _topBarView.OnPurchaseFish += PurchaseGoldFish;
+        }
+
+        private void _tankView_OnCoinClick(object sender, EventArgs e)
+        {
+            Coin coin = sender as Coin;
+            _topBarView.GoldAmount += coin.GoldValue;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)

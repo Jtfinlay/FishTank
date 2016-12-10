@@ -14,7 +14,7 @@ namespace FishTank.Utilities
 
         public const int VirtualBarHeight = 175;
 
-        public const int TopBarItems = 8;
+        public const int TopBarItems = 9;
 
         public const int VirtualHeight = VirtualTotalHeight - VirtualBarHeight;
 
@@ -27,5 +27,7 @@ namespace FishTank.Utilities
         public const float ExpectedMillisecondsPerFrame = 1000f / ExpectedFramesPerSecond;
 
         public const float FallSpeed = 1.5f;
+
+        public const int Padding = 10;
     }
 }

@@ -21,6 +21,8 @@ namespace FishTank.Components
 
         public Rectangle Area { get; private set; }
 
+        public int GoldValue { get; private set; } = 125;
+
         public Coin(GraphicsDevice graphicsDevice, Vector2 position)
         {
             Area = new Rectangle(position.ToPoint(), new Point(20, 20));

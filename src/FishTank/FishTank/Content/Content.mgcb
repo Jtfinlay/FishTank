@@ -19,9 +19,9 @@
 /processorParam:TextureFormat=Compressed
 /build:FishFingers_70.spritefont
 
-#begin FishFingers_30.spritefont
+#begin Arial_20.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:TextureFormat=Compressed
-/build:FishFingers_30.spritefont
+/build:Arial_20.spritefont
 
