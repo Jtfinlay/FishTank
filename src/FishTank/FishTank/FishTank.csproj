@@ -103,6 +103,7 @@
     <Compile Include="Components\Coin.cs" />
     <Compile Include="Components\CoinBankBar.cs" />
     <Compile Include="Components\GameStatusBar.cs" />
+    <Compile Include="Content\ContentBuilder.cs" />
     <Compile Include="Models\Levels\Level.cs" />
     <Compile Include="Models\Levels\LevelItemTypes.cs" />
     <Compile Include="GamePage.xaml.cs">

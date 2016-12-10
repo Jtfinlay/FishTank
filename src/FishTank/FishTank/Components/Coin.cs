@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using FishTank.Utilities.Inputs;
 using System;
+using FishTank.Content;
 
 namespace FishTank.Components
 {
@@ -26,27 +27,18 @@ namespace FishTank.Components
         public Coin(GraphicsDevice graphicsDevice, Vector2 position)
         {
             Area = new Rectangle(position.ToPoint(), new Point(20, 20));
-            var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
-
-            Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.Gold;
-            }
-            rect.SetData(data);
-
-            _texture = rect;
+            ContentBuilder.Instance.CreateRectangleTexture(TextureName, BoundaryBox.Width, BoundaryBox.Height);
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             if (State == InteractableState.Discard)
             {
-                // pellet is destroyed but awaiting cleanup. Don't draw
+                // coin is destroyed but awaiting cleanup. Don't draw
                 return;
             }
 
-            spriteBatch.Draw(_texture, BoundaryBox.Location.ToVector2(), null);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location.ToVector2(), Color.Gold);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)
@@ -71,6 +63,6 @@ namespace FishTank.Components
             return false;
         }
 
-        private Texture2D _texture;
+        public readonly string TextureName = "CoinRectangleAsset";
     }
 }

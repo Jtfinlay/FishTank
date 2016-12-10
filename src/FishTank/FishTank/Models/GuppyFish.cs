@@ -2,6 +2,7 @@
 // Copyright - James Finlay
 // 
 
+using FishTank.Content;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
@@ -37,10 +38,11 @@ namespace FishTank.Models
             _safeArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_safeArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
 
-            _textureHealthy = content.Load<Texture2D>("Guppy.png");
-            _textureHungry = content.Load<Texture2D>("Guppy_Hungry.png");
-            _textureStarving = content.Load<Texture2D>("Guppy_Starving.png");
-            _textureDead = content.Load<Texture2D>("Guppy_Dead.png");
+            // Preload assets
+            ContentBuilder.Instance.LoadTextureByName(_healthyAssetName);
+            ContentBuilder.Instance.LoadTextureByName(_hungryAssetName);
+            ContentBuilder.Instance.LoadTextureByName(_starvingAssetName);
+            ContentBuilder.Instance.LoadTextureByName(_deadAssetName);
         }
 
         /// <summary>
@@ -136,25 +138,25 @@ namespace FishTank.Models
         /// <param name="spriteBatch">Graphics resource for drawing</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            Texture2D texture = null;
+            string assetName = null;
             switch (State)
             {
                 case InteractableState.Discard:
                     // fish is destroyed but awaiting cleanup. Don't draw
                     return;
                 case InteractableState.Dead:
-                    texture = _textureDead;
+                    assetName = _deadAssetName;
                     break;
                 case InteractableState.Alive:
-                    if (_currentHunger <= _hungerDangerValue) texture = _textureStarving;
-                    else if (_currentHunger <= _hungerWarningValue) texture = _textureHungry;
-                    else texture = _textureHealthy;
+                    if (_currentHunger <= _hungerDangerValue) assetName = _starvingAssetName;
+                    else if (_currentHunger <= _hungerWarningValue) assetName = _hungryAssetName;
+                    else assetName = _healthyAssetName;
                     break;
             }
 
-            if (texture != null)
+            if (!string.IsNullOrWhiteSpace(assetName))
             {
-                spriteBatch.Draw(texture, BoundaryBox.Location.ToVector2(), null);
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null);
             }
         }
 
@@ -295,7 +297,13 @@ namespace FishTank.Models
         /// <summary>
         /// Drawable texture showing the fish
         /// </summary>
-        private Texture2D _textureHealthy, _textureHungry, _textureStarving, _textureDead;
+        private readonly string _healthyAssetName = "Guppy.png";
+
+        private readonly string _hungryAssetName = "Guppy_Hungry.png";
+
+        private readonly string _starvingAssetName = "Guppy_Starving.png";
+
+        private readonly string _deadAssetName = "Guppy_Dead.png";
 
         /// <summary>
         /// Random object used for probability checks

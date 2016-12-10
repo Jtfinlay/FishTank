@@ -3,6 +3,7 @@
 // 
 
 using FishTank.Components;
+using FishTank.Content;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -38,6 +39,7 @@ namespace FishTank.Screens
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
+            ContentBuilder.Instantiate(graphicsDevice, content);
             _tankView.LoadContent(graphicsDevice, content);
             _topBarView.LoadContent(graphicsDevice, content);
 
@@ -50,6 +52,7 @@ namespace FishTank.Screens
 
             _tankView.UnloadContent();
             _topBarView.UnloadContent();
+            ContentBuilder.Instance.UnloadContent();
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
