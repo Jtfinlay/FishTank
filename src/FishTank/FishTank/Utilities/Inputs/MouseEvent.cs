@@ -11,7 +11,7 @@ namespace FishTank.Utilities.Inputs
         /// <summary>
         /// Location where the mouse event occurred
         /// </summary>
-        public Point Position { get; private set; }
+        public Point Position { get; set; }
 
         /// <summary>
         /// Location where the mouse event occurred

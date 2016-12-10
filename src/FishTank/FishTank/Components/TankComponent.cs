@@ -36,10 +36,25 @@ namespace FishTank.Components
 
         public void AddGoldFish()
         {
-            _models.Add(new GuppyFish(_graphicsDevice, _content));
+            GuppyFish fish = new GuppyFish(_graphicsDevice, _content);
+            fish.OnCoinDrop += Fish_OnCoinDrop;
+            _models.Add(fish);
         }
 
-        public override void UnloadContent() { }
+        public override void UnloadContent()
+        {
+            _models.ForEach((model) =>
+            {
+                if (model is GuppyFish)
+                {
+                    (model as GuppyFish).OnCoinDrop -= Fish_OnCoinDrop;
+                }
+                else if (model is Coin)
+                {
+                    (model as Coin).OnClick -= Coin_OnClick;
+                }
+            });
+        }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
@@ -47,9 +62,10 @@ namespace FishTank.Components
             _models.RemoveAll((model) => model.State == InteractableState.Discard);
 
             // Update interactables
-            foreach (IInteractable model in _models)
+            // Create new list since our updates may trigger new items
+            foreach (IInteractable model in new List<IInteractable>(_models))
             {
-                model.Update(_models);
+                model.Update(_models, gameTime);
             }
         }
 
@@ -63,21 +79,48 @@ namespace FishTank.Components
             }
         }
 
-        public override void MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(MouseEvent mouseEvent)
         {
             switch (mouseEvent.Action)
             {
                 case MouseAction.Click:
                     // The tank is offset from the top bar. Apply this transformation to the mouse position
                     var translatedPosition = Vector2.Transform(mouseEvent.Location, Matrix.Invert(PreTransformMatrix));
+                    mouseEvent.Position = translatedPosition.ToPoint();
+
+                    foreach (IInteractable model in _models)
+                    {
+                        // First try to pass mouse click on to clickable models. Complete on first successful item
+                        IClickable clickable = model as IClickable;
+                        if (clickable?.Area.Contains(mouseEvent.Location) ?? false)
+                        {
+                            if (clickable.MouseEvent(mouseEvent))
+                            {
+                                return true;
+                            }
+                        }
+                    }
                     _models.Add(new Pellet(_graphicsDevice, translatedPosition));
-                    break;
+                    return true;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
                 case MouseAction.Release:
                 default:
                     break;
             }
+            return false;
+        }
+
+        private void Fish_OnCoinDrop(object sender, System.EventArgs e)
+        {
+            Coin coin = new Coin(_graphicsDevice, (sender as GuppyFish).BoundaryBox.Center.ToVector2());
+            coin.OnClick += Coin_OnClick;
+            _models.Add(coin);
+        }
+
+        private void Coin_OnClick(object sender, System.EventArgs e)
+        {
+            // TODO
         }
 
         private Rectangle _drawArea;

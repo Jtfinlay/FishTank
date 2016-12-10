@@ -49,12 +49,13 @@ namespace FishTank.Screens
             _playButton.Update(gameTime, currentMouseState);
         }
 
-        public override void MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(MouseEvent mouseEvent)
         {
             if (_playButton.Area.Contains(mouseEvent.Location))
             {
-                _playButton.MouseEvent(mouseEvent);
+                return _playButton.MouseEvent(mouseEvent);
             }
+            return false;
         }
 
         private void OnPlayButtonClick(object sender, System.EventArgs e)

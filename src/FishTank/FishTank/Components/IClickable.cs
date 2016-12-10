@@ -21,6 +21,7 @@ namespace FishTank.Components
         /// Invoked when a mouse action was performed on the element
         /// </summary>
         /// <param name="mouseEvent">Contains details of the action performed</param>
-        void MouseEvent(MouseEvent mouseEvent);
+        /// <returns>Boolean indicating whether this object has taken action from event</returns>
+        bool MouseEvent(MouseEvent mouseEvent);
     }
 }

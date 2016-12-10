@@ -18,7 +18,7 @@ namespace FishTank.Models.Interfaces
         /// checking, and more.
         /// </summary>
         /// <param name="models"></param>
-        void Update(List<IInteractable> models);
+        void Update(List<IInteractable> models, GameTime gameTime);
 
         /// <summary>
         /// Called when the interactable should draw itself

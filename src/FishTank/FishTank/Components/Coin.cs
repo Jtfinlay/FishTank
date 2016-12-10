@@ -7,26 +7,29 @@ using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using FishTank.Utilities.Inputs;
+using System;
 
-namespace FishTank.Models
+namespace FishTank.Components
 {
-    public class Pellet : IInteractable
+    public class Coin : IInteractable, IClickable
     {
+        public event EventHandler OnClick;
+        public Rectangle BoundaryBox => Area;
+
         public InteractableState State { get; private set; }
 
-        public Rectangle BoundaryBox { get; private set; }
+        public Rectangle Area { get; private set; }
 
-        private Texture2D _texture;
-
-        public Pellet(GraphicsDevice graphicsDevice, Vector2 position)
+        public Coin(GraphicsDevice graphicsDevice, Vector2 position)
         {
-            BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
+            Area = new Rectangle(position.ToPoint(), new Point(20, 20));
             var rect = new Texture2D(graphicsDevice, BoundaryBox.Width, BoundaryBox.Height);
 
             Color[] data = new Color[BoundaryBox.Width * BoundaryBox.Height];
             for (int i = 0; i < data.Length; ++i)
             {
-                data[i] = Color.LightGreen;
+                data[i] = Color.Gold;
             }
             rect.SetData(data);
 
@@ -47,17 +50,25 @@ namespace FishTank.Models
         public void Update(List<IInteractable> models, GameTime gameTime)
         {
             var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
-            BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
+            Area = new Rectangle(position.ToPoint(), BoundaryBox.Size);
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {
-                this.State = InteractableState.Discard;
+                State = InteractableState.Discard;
             }
         }
 
-        public void Eat()
+        public bool MouseEvent(MouseEvent mouseEvent)
         {
-            State = InteractableState.Discard;
+            if (mouseEvent.Action == MouseAction.Click)
+            {
+                OnClick?.Invoke(this, null);
+                State = InteractableState.Discard;
+                return true;
+            }
+            return false;
         }
+
+        private Texture2D _texture;
     }
 }

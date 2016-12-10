@@ -68,19 +68,20 @@ namespace FishTank.Models
             }
         }
 
-        public override void MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(MouseEvent mouseEvent)
         {
             switch (mouseEvent.Action)
             {
                 case MouseAction.Click:
                     OnPurchased?.Invoke(this, new EventArgs());
-                    break;
+                    return true;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
                 case MouseAction.Release:
                 default:
                     break;
             }
+            return false;
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)

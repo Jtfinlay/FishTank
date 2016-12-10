@@ -14,7 +14,7 @@ namespace FishTank.Components
     {
         public Rectangle Area { get; protected set; }
 
-        public abstract void MouseEvent(MouseEvent mouseEvent);
+        public abstract bool MouseEvent(MouseEvent mouseEvent);
 
         public abstract void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
 

@@ -70,9 +70,9 @@ namespace FishTank.Components
         {
         }
 
-        public override void MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(MouseEvent mouseEvent)
         {
-            _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent);
+            return _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent) ?? false;
         }
 
         private void OnItemPurchase(object sender, EventArgs e)

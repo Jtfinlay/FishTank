@@ -56,12 +56,14 @@ namespace FishTank.Components
             _isMouseOver = Area.Contains(currentMouseState.Position);
         }
 
-        public override void MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(MouseEvent mouseEvent)
         {
             if (mouseEvent.Action == MouseAction.Click)
             {
                 OnClick?.Invoke(this, null);
+                return true;
             }
+            return false;
         }
 
         private bool _isMouseOver;

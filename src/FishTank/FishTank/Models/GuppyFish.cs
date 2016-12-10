@@ -15,6 +15,8 @@ namespace FishTank.Models
 {
     public class GuppyFish : IInteractable
     {
+        public event EventHandler OnCoinDrop;
+
         /// <summary>
         /// Rectangle indicating hte boundary box for the gold fish
         /// </summary>
@@ -45,12 +47,12 @@ namespace FishTank.Models
         /// Search for nearby food, continue ongoing actions, or wander around the tank
         /// </summary>
         /// <param name="models">List of all interactable objects on the field</param>
-        public void Update(List<IInteractable> models)
+        public void Update(List<IInteractable> models, GameTime gameTime)
         {
             switch (State)
             {
                 case InteractableState.Alive:
-                    UpdateAlive(models);
+                    UpdateAlive(models, gameTime);
                     break;
                 case InteractableState.Dead:
                     UpdateDead();
@@ -65,8 +67,16 @@ namespace FishTank.Models
         /// Update the GoldFish to perform living actions
         /// </summary>
         /// <param name="models">List of all interactable objects on the field</param>
-        private void UpdateAlive(List<IInteractable> models)
+        private void UpdateAlive(List<IInteractable> models, GameTime gameTime)
         {
+            // Check whether to drop coin
+            _timeSinceCoinDrop += gameTime.ElapsedGameTime;
+            if (_timeSinceCoinDrop >= _dropCoinTime)
+            {
+                _timeSinceCoinDrop = TimeSpan.Zero;
+                OnCoinDrop?.Invoke(this, null);
+            }
+
             // First, try to find food if nearby
             if (SearchForFood(models))
             {
@@ -231,6 +241,10 @@ namespace FishTank.Models
             }
             return false;
         }
+
+        private readonly TimeSpan _dropCoinTime = TimeSpan.FromSeconds(20);
+
+        private TimeSpan _timeSinceCoinDrop = TimeSpan.Zero;
 
         /// <summary>
         ///  The maximum hunger of the fish
