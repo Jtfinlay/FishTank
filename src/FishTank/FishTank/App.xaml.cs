@@ -41,9 +41,14 @@ namespace FishTank
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            this.UnhandledException += App_UnhandledException;
 
             ApplicationView.PreferredLaunchViewSize = new Size { Height = Constants.VirtualTotalHeight, Width = Constants.VirtualTotalWidth };
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+        }
+
+        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
         }
 
         /// <summary>

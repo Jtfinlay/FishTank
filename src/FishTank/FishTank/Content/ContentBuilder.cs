@@ -19,9 +19,13 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.ApplicationModel.Resources;
 
 namespace FishTank.Content
 {
+    /// <summary>
+    /// Provides simple access to game resources such as fonts, strings, and textures.
+    /// </summary>
     public class ContentBuilder
     {
         public static ContentBuilder Instance { get; private set; }
@@ -31,6 +35,13 @@ namespace FishTank.Content
             return Instance = new ContentBuilder(graphicsDevice, content);
         }
 
+        /// <summary>
+        /// Create a rectangular Texture2D with given asset name
+        /// </summary>
+        /// <param name="assetName">Key value to </param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public Texture2D CreateRectangleTexture(string assetName, int width, int height)
         {
             Texture2D loadedAsset = null;
@@ -64,7 +75,7 @@ namespace FishTank.Content
                 }
                 catch (ContentLoadException)
                 {
-                    // If it doesn't exist, then load 'unknown' asset. If this fails then let it burn.
+                    // If it doesn't exist, then load 'unknown' asset.
                     loadedAsset = _content.Load<Texture2D>(TextureNames.UnknownAsset);
                 }
                 _loadedTextures.Add(assetName, loadedAsset);
@@ -92,14 +103,20 @@ namespace FishTank.Content
             Instance = null;
         }
 
+        public string GetString(string resource)
+        {
+            return _resourceLoader.GetString(resource);
+        }
+
         private ContentBuilder(GraphicsDevice graphicsDevice, ContentManager content)
         {
             _graphics = graphicsDevice;
             _content = content;
             _loadedTextures = new Dictionary<string, Texture2D>();
             _loadedFonts = new Dictionary<string, SpriteFont>();
+            _resourceLoader = new ResourceLoader();
 
-            //LoadTextureByName(TextureNames.UnknownAsset);
+            LoadTextureByName(TextureNames.UnknownAsset);
         }
 
         private GraphicsDevice _graphics;
@@ -109,5 +126,7 @@ namespace FishTank.Content
         private Dictionary<string, Texture2D> _loadedTextures;
 
         private Dictionary<string, SpriteFont> _loadedFonts;
+
+        private ResourceLoader _resourceLoader;
     }
 }

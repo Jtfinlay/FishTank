@@ -64,7 +64,7 @@ namespace FishTank.Models
 
             if (color != null)
             {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null);
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), color ?? Color.White);
             }
         }
 

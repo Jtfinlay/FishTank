@@ -154,6 +154,7 @@
     <Content Include="Content\Fishfingers.ttf" />
     <None Include="Content\Arial_20.spritefont" />
     <None Include="Content\FishFingers_70.spritefont" />
+    <PRIResource Include="Content\strings\en-US\Resources.resw" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

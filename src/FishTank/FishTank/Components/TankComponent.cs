@@ -25,7 +25,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace FishTank.Components
 {
@@ -141,7 +140,7 @@ namespace FishTank.Components
 
         private void Fish_OnCoinDrop(object sender, System.EventArgs e)
         {
-            Coin coin = new Coin(_graphicsDevice, (sender as GuppyFish).BoundaryBox.Center.ToVector2());
+            Coin coin = new Coin(_graphicsDevice, (sender as Fish).BoundaryBox.Center.ToVector2());
             coin.OnClick += Coin_OnClick;
             _models.Add(coin);
         }

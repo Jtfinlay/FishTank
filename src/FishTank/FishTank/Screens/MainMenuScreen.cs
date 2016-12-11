@@ -15,6 +15,7 @@
 //
 
 using FishTank.Components;
+using FishTank.Content;
 using FishTank.Models.Levels;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
@@ -27,14 +28,14 @@ namespace FishTank.Screens
 {
     public class MainMenuScreen : Screen
     {
-        public MainMenuScreen()
-        {
-            _playButton = new ButtonComponent(new Rectangle(Area.Width/2-150, Area.Height/2-75, 300, 150), "Play");
-            _playButton.OnClick += OnPlayButtonClick;
-        }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
+            ContentBuilder.Instantiate(graphicsDevice, content);
+
+            _playButton = new ButtonComponent(new Rectangle(Area.Width / 2 - 150, Area.Height / 2 - 75, 300, 150), ContentBuilder.Instance.GetString("Play"));
+            _playButton.OnClick += OnPlayButtonClick;
+
             _playButton.LoadContent(graphicsDevice, content);
         }
 
@@ -42,6 +43,7 @@ namespace FishTank.Screens
         {
             _playButton.UnloadContent();
             _playButton.OnClick -= OnPlayButtonClick;
+            ContentBuilder.Instance.UnloadContent();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix transformMatrix)

@@ -28,7 +28,7 @@ namespace FishTank.Instrumentation
             [CallerMemberName] string caller = null,
             [CallerFilePath] string filePath = null)
         {
-            Debug.WriteLine($"{filePath}::L{lineNumber} - {message}");
+            Debug.WriteLine($"{filePath}::{lineNumber} - {message}");
         }
 
     }

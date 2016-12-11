@@ -88,6 +88,11 @@ namespace FishTank.Models
 
         public override bool MouseEvent(MouseEvent mouseEvent)
         {
+            if (ItemType == LevelItemType.Locked)
+            {
+                return false;
+            }
+
             switch (mouseEvent.Action)
             {
                 case MouseAction.Click:
