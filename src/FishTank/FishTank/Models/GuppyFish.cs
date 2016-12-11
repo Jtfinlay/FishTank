@@ -15,6 +15,7 @@
 //
 
 using FishTank.Content;
+using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
@@ -34,6 +35,8 @@ namespace FishTank.Models
         /// <param name="graphicsDevice">Graphics resource for texture creation</param>
         public GuppyFish(GraphicsDevice graphicsDevice, ContentManager content) : base()
         {
+            Log.LogVerbose("Creating guppy fish");
+
             _dropCoinTime = TimeSpan.FromSeconds(15);
             _maxSpeed = 4.0f;
             _maxHunger = 1.0f;

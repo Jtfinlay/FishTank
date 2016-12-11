@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Instrumentation;
 using FishTank.Screens;
 using FishTank.Utilities;
 using FishTank.Utilities.Events;
@@ -45,6 +46,8 @@ namespace FishTank
         /// </summary>
         protected override void Initialize()
         {
+            Log.LogVerbose("Initializing");
+
             IsMouseVisible = true;
             _screen = new MainMenuScreen();
             _screen.OnNavigate += NavigateToScreen;
@@ -58,6 +61,8 @@ namespace FishTank
         /// </summary>
         protected override void LoadContent()
         {
+            Log.LogVerbose("Loading content");
+
             _viewportAdapter = new BoxingViewportAdapter(Window, GraphicsDevice, Constants.VirtualTotalWidth, Constants.VirtualTotalHeight);
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _screen.LoadContent(GraphicsDevice, Content);
@@ -69,6 +74,8 @@ namespace FishTank
         /// </summary>
         protected override void UnloadContent()
         {
+            Log.LogVerbose("Unloading content");
+
             _screen.OnNavigate -= NavigateToScreen;
             _screen.UnloadContent();
         }
@@ -80,6 +87,11 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (gameTime.IsRunningSlowly)
+            {
+                Log.LogVerbose($"Running slow: {gameTime.ElapsedGameTime}");
+            }
+
             MouseState mouseState = Mouse.GetState();
 
             Point virtualMousePosition = _viewportAdapter.PointToScreen(mouseState.Position);
@@ -118,6 +130,11 @@ namespace FishTank
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            if (gameTime.IsRunningSlowly)
+            {
+                Log.LogVerbose($"Running slow: {gameTime.ElapsedGameTime}");
+            }
+
             GraphicsDevice.Clear(Color.Black);
 
             _screen.Draw(gameTime, _spriteBatch, _viewportAdapter.GetScaleMatrix());
@@ -132,6 +149,7 @@ namespace FishTank
         /// <param name="e"></param>
         private void NavigateToScreen(object sender, NavigationEventArgs e)
         {
+            Log.LogVerbose($"Navigating to screen: {e.Target.ToString()}");
             _screen.OnNavigate -= NavigateToScreen;
             _screen.UnloadContent();
 

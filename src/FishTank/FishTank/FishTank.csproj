@@ -106,6 +106,7 @@
     <Compile Include="Content\ContentBuilder.cs" />
     <Compile Include="Content\FontNames.cs" />
     <Compile Include="Content\TextureNames.cs" />
+    <Compile Include="Instrumentation\Log.cs" />
     <Compile Include="Models\Fish.cs" />
     <Compile Include="Models\Levels\Level.cs" />
     <Compile Include="Models\Levels\LevelItemTypes.cs" />

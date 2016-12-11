@@ -15,6 +15,7 @@
 //
 
 using FishTank.Content;
+using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
@@ -29,6 +30,8 @@ namespace FishTank.Models
     {
         public Piranha() : base()
         {
+            Log.LogVerbose("Creating piranha");
+
             _dropCoinTime = TimeSpan.FromSeconds(20);
             _maxSpeed = 4.0f;
             _maxHunger = 1.0f;

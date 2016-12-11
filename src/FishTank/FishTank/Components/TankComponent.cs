@@ -99,7 +99,6 @@ namespace FishTank.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Debug.WriteLine($"Draw: {gameTime.ElapsedGameTime}. Is Running slow: {gameTime.IsRunningSlowly}");
             spriteBatch.Draw(_backgroundTexture, destinationRectangle: _drawArea);
 
             foreach (IInteractable model in _models)
