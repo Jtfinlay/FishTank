@@ -26,6 +26,8 @@ namespace FishTank.Models.Levels
 
         public int LevelId { get; protected set; }
 
+        public int InitialGold { get; protected set; }
+
         public string LevelName => $"Level {WorldId} - {LevelId}";
     }
 }

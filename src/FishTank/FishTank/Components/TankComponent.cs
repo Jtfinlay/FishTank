@@ -16,6 +16,7 @@
 
 using FishTank.Models;
 using FishTank.Models.Interfaces;
+using FishTank.Models.Levels;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -24,6 +25,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace FishTank.Components
 {
@@ -49,9 +51,20 @@ namespace FishTank.Components
             _backgroundTexture = content.Load<Texture2D>("backgrounds\\background2.png");
         }
 
-        public void AddGoldFish()
+        public void CreateFish(LevelItemType type)
         {
-            GuppyFish fish = new GuppyFish(_graphicsDevice, _content);
+            Fish fish = null;
+            switch (type)
+            {
+                case LevelItemType.GuppyFish:
+                    fish = new GuppyFish(_graphicsDevice, _content);
+                    break;
+                case LevelItemType.PiranhaFish:
+                    fish = new Piranha();
+                    break;
+                default:
+                    throw new ArgumentException($"Unexpected item type: {type}");
+            }
             fish.OnCoinDrop += Fish_OnCoinDrop;
             _models.Add(fish);
         }
@@ -86,6 +99,7 @@ namespace FishTank.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+            Debug.WriteLine($"Draw: {gameTime.ElapsedGameTime}. Is Running slow: {gameTime.IsRunningSlowly}");
             spriteBatch.Draw(_backgroundTexture, destinationRectangle: _drawArea);
 
             foreach (IInteractable model in _models)

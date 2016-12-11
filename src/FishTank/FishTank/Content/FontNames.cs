@@ -14,17 +14,12 @@
 //  limitations under the License.
 //
 
-namespace FishTank.Models.Levels
+namespace FishTank.Content
 {
-    public class Level1 : Level
+    public static class FontNames
     {
-        public Level1()
-        {
-            WorldId = 1;
-            LevelId = 1;
-            Items[0] = new LevelItem(LevelItemType.GuppyFish, 100);
-            Items[2] = new LevelItem(LevelItemType.PiranhaFish, 200);
-            InitialGold = int.MaxValue;
-        }
+        public static readonly string Arial_20 = "Arial_20";
+
+        public static readonly string FishFingers_70 = "FishFingers_70";
     }
 }

@@ -14,17 +14,18 @@
 //  limitations under the License.
 //
 
-namespace FishTank.Models.Levels
+namespace FishTank.Content
 {
-    public class Level1 : Level
+    public static class TextureNames
     {
-        public Level1()
-        {
-            WorldId = 1;
-            LevelId = 1;
-            Items[0] = new LevelItem(LevelItemType.GuppyFish, 100);
-            Items[2] = new LevelItem(LevelItemType.PiranhaFish, 200);
-            InitialGold = int.MaxValue;
-        }
+        public static readonly string BlackLockAsset = "BlackLock_Small.png";
+
+        public static readonly string GuppyAsset = "Guppy.png";
+
+        public static readonly string PiranhaAsset = "PiranhaAsset";
+
+        public static readonly string TopbarItemAsset = "TopBarItemAsset";
+
+        public static readonly string UnknownAsset = "Unknown.png";
     }
 }

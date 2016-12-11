@@ -14,17 +14,18 @@
 //  limitations under the License.
 //
 
-namespace FishTank.Models.Levels
+using FishTank.Models.Levels;
+using System;
+
+namespace FishTank.Utilities.Events
 {
-    public class Level1 : Level
+    public class PurchaseEventArgs : EventArgs
     {
-        public Level1()
+        public LevelItem Item { get; set; }
+
+        public PurchaseEventArgs(LevelItem item)
         {
-            WorldId = 1;
-            LevelId = 1;
-            Items[0] = new LevelItem(LevelItemType.GuppyFish, 100);
-            Items[2] = new LevelItem(LevelItemType.PiranhaFish, 200);
-            InitialGold = int.MaxValue;
+            Item = item;
         }
     }
 }

@@ -14,9 +14,11 @@
 //  limitations under the License.
 // 
 
+using FishTank.Content;
 using FishTank.Models;
 using FishTank.Models.Levels;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -30,7 +32,7 @@ namespace FishTank.Components
 {
     public class ItemBarComponent : Component
     {
-        public event EventHandler OnPurchaseFish;
+        public event EventHandler<PurchaseEventArgs> OnPurchaseFish;
 
         public int GoldAmount
         {
@@ -50,6 +52,8 @@ namespace FishTank.Components
 
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
             _gameStatusBar = new GameStatusBar(_level, Area);
+
+            GoldAmount = level.InitialGold;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
@@ -64,14 +68,7 @@ namespace FishTank.Components
                 _buttons.Add(topBarItem);
             }
 
-            var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
-            Color[] data = new Color[Area.Width * Area.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.Coral;
-            }
-            rect.SetData(data);
-            _texture = rect;
+            ContentBuilder.Instance.CreateRectangleTexture(_assetName, Area.Width, Area.Height);
         }
 
         public override void UnloadContent()
@@ -86,7 +83,7 @@ namespace FishTank.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Vector2(0, 0), null);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), new Vector2(0, 0), Color.Coral);
             _buttons.ForEach((button) => button.Draw(gameTime, spriteBatch));
             _gameStatusBar.Draw(gameTime, spriteBatch);
         }
@@ -100,7 +97,7 @@ namespace FishTank.Components
             return _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent) ?? false;
         }
 
-        private void OnItemPurchase(object sender, EventArgs e)
+        private void OnItemPurchase(object sender, PurchaseEventArgs e)
         {
             TopbarItem item = sender as TopbarItem;
             if (item.GoldValue > GoldAmount)
@@ -108,21 +105,22 @@ namespace FishTank.Components
                 // not enough gold
                 return;
             }
-            if (item.ItemType == LevelItemTypes.GuppyFish)
+            switch (item.ItemType)
             {
-                GoldAmount -= item.GoldValue;
-                OnPurchaseFish?.Invoke(this, null);
+                case LevelItemType.GuppyFish:
+                case LevelItemType.PiranhaFish:
+                    GoldAmount -= item.GoldValue;
+                    OnPurchaseFish?.Invoke(this, e);
+                    break;
             }
         }
 
         private Level _level;
 
-        private Texture2D _texture;
+        private readonly string _assetName = "ItemBarComponentAsset";
 
         private List<TopbarItem> _buttons;
 
         private GameStatusBar _gameStatusBar;
-
-        private Matrix _postScaleTransform = Matrix.CreateTranslation(0,0,0);
     }
 }

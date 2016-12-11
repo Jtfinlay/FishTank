@@ -104,6 +104,8 @@
     <Compile Include="Components\CoinBankBar.cs" />
     <Compile Include="Components\GameStatusBar.cs" />
     <Compile Include="Content\ContentBuilder.cs" />
+    <Compile Include="Content\FontNames.cs" />
+    <Compile Include="Content\TextureNames.cs" />
     <Compile Include="Models\Fish.cs" />
     <Compile Include="Models\Levels\Level.cs" />
     <Compile Include="Models\Levels\LevelItemTypes.cs" />
@@ -114,6 +116,7 @@
     <Compile Include="Components\ButtonComponent.cs" />
     <Compile Include="Models\Levels\Level1.cs" />
     <Compile Include="Models\Levels\LevelItem.cs" />
+    <Compile Include="Models\Piranha.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Models\TopbarItem.cs" />
     <Compile Include="Models\GuppyFish.cs" />
@@ -126,6 +129,7 @@
     <Compile Include="Utilities\Alignment.cs" />
     <Compile Include="Utilities\Constants.cs" />
     <Compile Include="Utilities\Events\NavigationEventArgs.cs" />
+    <Compile Include="Utilities\Events\PurchaseEventArgs.cs" />
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Inputs\MouseAction.cs" />
     <Compile Include="Utilities\Inputs\MouseEvent.cs" />
@@ -165,6 +169,7 @@
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Unknown.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

@@ -22,7 +22,7 @@ namespace FishTank.Models.Levels
     {
         public event EventHandler OnPurchase;
 
-        public LevelItemTypes Type { get; private set; }
+        public LevelItemType Type { get; private set; }
 
         public int CurrentLevel { get; private set; } = 1;
 
@@ -30,7 +30,7 @@ namespace FishTank.Models.Levels
 
         public int Cost { get; private set; }
 
-        public LevelItem(LevelItemTypes type, int cost)
+        public LevelItem(LevelItemType type, int cost)
         {
             Type = type;
             Cost = cost;

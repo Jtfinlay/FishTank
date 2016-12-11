@@ -77,6 +77,11 @@ namespace FishTank.Models
             }
         }
 
+        public void Eat()
+        {
+            State = InteractableState.Discard;
+        }
+
         /// <summary>
         /// If fish is hungry, find nearby food and move to consume it
         /// </summary>

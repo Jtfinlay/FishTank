@@ -16,7 +16,7 @@
 
 namespace FishTank.Models.Levels
 {
-    public enum LevelItemTypes
+    public enum LevelItemType
     {
         Locked = 0,
 

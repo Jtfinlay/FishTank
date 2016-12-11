@@ -15,8 +15,10 @@
 // 
 
 using FishTank.Components;
+using FishTank.Content;
 using FishTank.Models.Levels;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -32,37 +34,35 @@ namespace FishTank.Models
 
         public Matrix PreTransformMatrix { get; }
 
-        public event EventHandler OnPurchased;
+        public event EventHandler<PurchaseEventArgs> OnPurchased;
 
-        public LevelItemTypes ItemType { get; private set; }
+        public LevelItemType ItemType => _model?.Type ?? LevelItemType.Locked;
 
-        public int GoldValue { get; private set; } = 100;
+        public int GoldValue => _model.Cost;
 
         public TopbarItem(LevelItem item, Rectangle area)
         {
-            Area = area;
-            ItemType = item?.Type ?? LevelItemTypes.Locked;
+            Area = area.ApplyPadding(Constants.Padding, Alignment.Bottom | Alignment.Left | Alignment.Right | Alignment.Top);
+            _model = item;
         }
 
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
-            var rect = new Texture2D(graphicsDevice, Area.Width - _padding * 2, Area.Height - _padding * 2);
+            // Create / preload textures
+            ContentBuilder.Instance.CreateRectangleTexture(_textureAssetName, Area.Width, Area.Height);
+            ContentBuilder.Instance.LoadFontByName(_fontName);
 
-            Color[] data = new Color[Area.Width * Area.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.Red;
-            }
-            rect.SetData(data);
-            _texture = rect;
-            _fishFont = content.Load<SpriteFont>("Arial_20");
+
             switch (ItemType)
             {
-                case LevelItemTypes.GuppyFish:
-                    _icon = content.Load<Texture2D>("Guppy.png");
+                case LevelItemType.PiranhaFish:
+                    _iconAssetName = TextureNames.PiranhaAsset;
                     break;
-                case LevelItemTypes.Locked:
-                    _icon = content.Load<Texture2D>("BlackLock_Small.png");
+                case LevelItemType.GuppyFish:
+                    _iconAssetName = TextureNames.GuppyAsset;
+                    break;
+                case LevelItemType.Locked:
+                    _iconAssetName = TextureNames.BlackLockAsset;
                     break;
             }
         }
@@ -73,12 +73,16 @@ namespace FishTank.Models
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, Area.Location.ToVector2() + new Vector2(_padding, _padding), null);
-            spriteBatch.DrawCenterAt(_icon, Area.Center.ToVector2() + new Vector2(0, -20), null);
+            Texture2D iconAsset = ContentBuilder.Instance.LoadTextureByName(_iconAssetName);
+            Texture2D backgroundAsset = ContentBuilder.Instance.LoadTextureByName(_textureAssetName);
+            SpriteFont font = ContentBuilder.Instance.LoadFontByName(_fontName);
 
-            if (ItemType != LevelItemTypes.Locked)
+            spriteBatch.Draw(backgroundAsset, Area.Location.ToVector2(), Color.Red);
+            spriteBatch.DrawCenterAt(iconAsset, Area.Center.ToVector2() + new Vector2(0, -20), null);
+
+            if (ItemType != LevelItemType.Locked)
             {
-                spriteBatch.DrawString(_fishFont, "100g", Area, Alignment.Bottom, Color.White);
+                spriteBatch.DrawString(font, $"{_model.Cost}g", Area, Alignment.Bottom, Color.White);
             }
         }
 
@@ -87,7 +91,7 @@ namespace FishTank.Models
             switch (mouseEvent.Action)
             {
                 case MouseAction.Click:
-                    OnPurchased?.Invoke(this, new EventArgs());
+                    OnPurchased?.Invoke(this, new PurchaseEventArgs(_model));
                     return true;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
@@ -103,10 +107,12 @@ namespace FishTank.Models
             throw new NotImplementedException();
         }
 
-        private Texture2D _texture;
-        private Texture2D _icon;
-        private SpriteFont _fishFont;
+        private LevelItem _model;
 
-        private const int _padding = 10;
+        private string _iconAssetName;
+
+        private readonly string _textureAssetName = TextureNames.TopbarItemAsset;
+
+        private readonly string _fontName = FontNames.Arial_20;
     }
 }

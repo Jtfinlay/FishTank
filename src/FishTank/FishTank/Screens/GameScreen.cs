@@ -16,6 +16,7 @@
 
 using FishTank.Components;
 using FishTank.Content;
+using FishTank.Models.Levels;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -40,7 +41,7 @@ namespace FishTank.Screens
             _tankView = new TankComponent(0, _topBarView.Area.Height);
             _tankView.OnCoinClick += _tankView_OnCoinClick;
 
-            _topBarView.OnPurchaseFish += PurchaseGoldFish;
+            _topBarView.OnPurchaseFish += PurchaseFish;
         }
 
         private void _tankView_OnCoinClick(object sender, EventArgs e)
@@ -55,12 +56,13 @@ namespace FishTank.Screens
             _tankView.LoadContent(graphicsDevice, content);
             _topBarView.LoadContent(graphicsDevice, content);
 
-            _tankView.AddGoldFish();
+            _tankView.CreateFish(LevelItemType.GuppyFish);
+            _tankView.CreateFish(LevelItemType.GuppyFish);
         }
 
         public override void UnloadContent()
         {
-            _topBarView.OnPurchaseFish -= PurchaseGoldFish;
+            _topBarView.OnPurchaseFish -= PurchaseFish;
 
             _tankView.UnloadContent();
             _topBarView.UnloadContent();
@@ -114,9 +116,9 @@ namespace FishTank.Screens
             return null;
         }
 
-        private void PurchaseGoldFish(object sender, EventArgs e)
+        private void PurchaseFish(object sender, PurchaseEventArgs e)
         {
-            _tankView.AddGoldFish();
+            _tankView.CreateFish(e.Item.Type);
         }
 
         private TankComponent _tankView;
