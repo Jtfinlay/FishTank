@@ -54,7 +54,6 @@ namespace FishTank.Screens
             _topBarView.LoadContent(graphicsDevice, content);
 
             _tankView.CreateFish(LevelItemType.GuppyFish);
-            _tankView.CreateFish(LevelItemType.GuppyFish);
         }
 
         public override void UnloadContent()

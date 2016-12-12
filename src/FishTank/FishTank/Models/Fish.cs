@@ -54,6 +54,7 @@ namespace FishTank.Models
             {
                 case InteractableState.Alive:
                     UpdateAlive(models, gameTime);
+                    Translate(_currentVelocity);
                     break;
                 case InteractableState.Dead:
                     UpdateDead();
@@ -61,6 +62,15 @@ namespace FishTank.Models
                 case InteractableState.Discard:
                 default:
                     break;
+            }
+
+            if (_currentVelocity.X > 0)
+            {
+                _facingLeft = false;
+            }
+            else if (_currentVelocity.X < 0)
+            {
+                _facingLeft = true;
             }
         }
 
@@ -99,13 +109,14 @@ namespace FishTank.Models
                 }
 
                 Vector2 direction = Vector2.Normalize((Vector2)_wanderingTarget - BoundaryBox.Center.ToVector2());
-                Translate(direction, _wanderSpeed);
+                MoveTowards(direction);
                 return;
             }
 
             // Perform probability check to see whether to wander
             if (_random.NextDouble() > _chanceToMovePerFrame)
             {
+                SlowDown();
                 return;
             }
 
@@ -121,17 +132,75 @@ namespace FishTank.Models
         protected abstract bool SearchForFood(List<IInteractable> models);
 
         /// <summary>
-        /// Move gold fish towards the given target at given speed
+        /// Accelerate fish's velocity towards given direction
+        /// </summary>
+        /// <param name="direction">Direction to move towards</param>
+        protected void MoveTowards(Vector2 direction)
+        {
+            float acceleration = (_wanderingTarget == null) ? _maxAccelerationRate : _wanderAccelerationRate;
+            float maxSpeed = (_wanderingTarget == null) ? _maxSpeed : _wanderSpeed;
+
+            _currentVelocity += acceleration * direction;
+
+            float currentSpeed = _currentVelocity.Length();
+            if (currentSpeed > maxSpeed)
+            {
+                Vector2 velocityDirection = _currentVelocity / _currentVelocity.Length();
+                _currentVelocity = velocityDirection * maxSpeed;
+            }
+        }
+
+        protected void SlowDown()
+        {
+            if (_currentVelocity.Length() == 0)
+            {
+                return;
+            }
+
+            Vector2 currentDirection = _currentVelocity / _currentVelocity.Length();
+            Vector2 targetVelocity = _currentVelocity - _maxAccelerationRate * currentDirection;
+
+            // We want to get to rest. Not switch directions
+            if (_currentVelocity.X > 0 && targetVelocity.X < 0) targetVelocity.X = 0;
+            if (_currentVelocity.X < 0 && targetVelocity.X > 0) targetVelocity.X = 0;
+            if (_currentVelocity.Y > 0 && targetVelocity.Y < 0) targetVelocity.Y = 0;
+            if (_currentVelocity.Y < 0 && targetVelocity.Y > 0) targetVelocity.Y = 0;
+
+            _currentVelocity = targetVelocity;
+        }
+
+        /// <summary>
+        /// Move gold fish towards direction at given speed
         /// </summary>
         /// <param name="direction">Destination vector to target</param>
         /// <param name="speed">Amount to move every frame</param>
         protected void Translate(Vector2 direction, float speed)
         {
-            Vector2 nextPosition = BoundaryBox.Location.ToVector2() + direction * speed;
+            Translate(direction * speed);
+        }
+
+        /// <summary>
+        /// Moved fish with given velocity
+        /// </summary>
+        /// <param name="velocity">Direction & magnitude to translate fish position</param>
+        protected void Translate(Vector2 velocity)
+        {
+            Vector2 nextPosition = BoundaryBox.Location.ToVector2() + velocity;
+
+            float rightBoundary = _swimArea.Right - BoundaryBox.Width;
+            float bottomBoundary = _swimArea.Bottom - BoundaryBox.Height;
+
+            // Ensure position is not out of bounds
             nextPosition.X = (nextPosition.X > 0) ? nextPosition.X : 0;
-            nextPosition.X = (nextPosition.X < _swimArea.Right - BoundaryBox.Width) ? nextPosition.X : _swimArea.Right - BoundaryBox.Width;
+            nextPosition.X = (nextPosition.X < rightBoundary) ? nextPosition.X : rightBoundary;
             nextPosition.Y = (nextPosition.Y > 0) ? nextPosition.Y : 0;
-            nextPosition.Y = (nextPosition.Y < _swimArea.Bottom - BoundaryBox.Height) ? nextPosition.Y : _swimArea.Bottom - BoundaryBox.Height;
+            nextPosition.Y = (nextPosition.Y < bottomBoundary) ? nextPosition.Y : bottomBoundary;
+
+            // If at edge of boundaries, velocity should be at rest
+            _currentVelocity.X = (nextPosition.X == 0 || nextPosition.X == rightBoundary) ? 0 : _currentVelocity.X;
+            _currentVelocity.Y = (nextPosition.Y == 0 || nextPosition.Y == bottomBoundary) ? 0 : _currentVelocity.Y;
+
+
             BoundaryBox = new Rectangle(nextPosition.ToPoint(), BoundaryBox.Size);
         }
 
@@ -140,8 +209,7 @@ namespace FishTank.Models
         /// </summary>
         private void UpdateDead()
         {
-            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
-            BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
+            Translate(new Vector2(0, Constants.FallSpeed));
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {
@@ -231,7 +299,13 @@ namespace FishTank.Models
         /// <summary>
         /// maximum speed of the gold fish. Used when targeting food. Required.
         /// </summary>
-        protected float _maxSpeed;
+        protected const float _maxSpeed = 4.0f;
+
+        protected const float _maxAccelerationRate = .5f;
+
+        protected Vector2 _currentVelocity;
+
+        protected bool _facingLeft = true;
 
         /// <summary>
         /// Timespan tracking the time since the last coin drop
@@ -247,6 +321,8 @@ namespace FishTank.Models
         /// Slow wandering speed of the fish when no important targets around.
         /// </summary>
         private const float _wanderSpeed = 2f;
+
+        private const float _wanderAccelerationRate = .1f;
 
         /// <summary>
         /// Distance to wander 

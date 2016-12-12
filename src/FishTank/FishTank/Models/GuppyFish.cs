@@ -38,7 +38,6 @@ namespace FishTank.Models
             Log.LogVerbose("Creating guppy fish");
 
             _dropCoinTime = TimeSpan.FromSeconds(15);
-            _maxSpeed = 4.0f;
             _maxHunger = 1.0f;
             _currentHunger = _maxHunger;
 
@@ -76,7 +75,8 @@ namespace FishTank.Models
 
             if (!string.IsNullOrWhiteSpace(assetName))
             {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null);
+                SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
             }
         }
 
@@ -110,7 +110,7 @@ namespace FishTank.Models
                 }
 
                 Vector2 direction = Vector2.Normalize(nearestPellet.BoundaryBox.Center.ToVector2() - BoundaryBox.Center.ToVector2());
-                Translate(direction, _maxSpeed);
+                MoveTowards(direction);
                 return true;
             }
             return false;

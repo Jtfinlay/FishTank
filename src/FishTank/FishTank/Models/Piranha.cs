@@ -33,8 +33,7 @@ namespace FishTank.Models
             Log.LogVerbose("Creating piranha");
 
             _dropCoinTime = TimeSpan.FromSeconds(20);
-            _maxSpeed = 4.0f;
-            _maxHunger = 1.0f;
+            _maxHunger = 2.0f;
             _currentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
@@ -88,7 +87,7 @@ namespace FishTank.Models
                 }
 
                 Vector2 direction = Vector2.Normalize(nearestGuppy.BoundaryBox.Center.ToVector2() - BoundaryBox.Center.ToVector2());
-                Translate(direction, _maxSpeed);
+                MoveTowards(direction);
                 return true;
             }
             return false;
