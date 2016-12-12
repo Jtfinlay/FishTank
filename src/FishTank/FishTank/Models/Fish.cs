@@ -299,9 +299,9 @@ namespace FishTank.Models
         /// <summary>
         /// maximum speed of the gold fish. Used when targeting food. Required.
         /// </summary>
-        protected const float _maxSpeed = 4.0f;
+        protected const float _maxSpeed = 4.5f;
 
-        protected const float _maxAccelerationRate = .5f;
+        protected const float _maxAccelerationRate = 0.6f;
 
         protected Vector2 _currentVelocity;
 
@@ -322,7 +322,7 @@ namespace FishTank.Models
         /// </summary>
         private const float _wanderSpeed = 2f;
 
-        private const float _wanderAccelerationRate = .1f;
+        private const float _wanderAccelerationRate = .05f;
 
         /// <summary>
         /// Distance to wander 
