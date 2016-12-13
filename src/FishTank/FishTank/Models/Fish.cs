@@ -16,6 +16,7 @@
 
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,26 +24,50 @@ using System.Collections.Generic;
 
 namespace FishTank.Models
 {
+
+    /// <summary>
+    /// Abstract base class for all fish types
+    /// </summary>
     public abstract class Fish : IInteractable
     {
-        public event EventHandler OnCoinDrop;
-
-        /// <summary>
-        /// Rectangle indicating the boundary box for the gold fish
-        /// </summary>
-        public Rectangle BoundaryBox { get; protected set; }
+        public event EventHandler<ItemDropEventArgs> OnItemDrop;
 
         /// <summary>
         /// State of the goldfish indicating whether interactable with other objects
         /// </summary>
         public InteractableState State { get; protected set; }
 
+        /// <summary>
+        /// Rectangle indicating the boundary box for the gold fish
+        /// </summary>
+        public Rectangle BoundaryBox { get; protected set; }
+
+        public abstract void Draw(SpriteBatch spriteBatch);
+
+        /// <summary>
+        /// Perform regular actions if the fish is alive
+        /// </summary>
+        /// <param name="models">List of all interactable objects on the field</param>
+        /// <param name="gameTime">Provides a snapshot of timing values</param>
+        /// <remarks>Movement should go as far as setting velocity. Translation is performed by base class</remarks>
+        protected abstract void UpdateAlive(List<IInteractable> models, GameTime gameTime);
+
+        /// <summary>
+        /// If fish is hungry, find nearby food and move to consume it
+        /// </summary>
+        /// <param name="models">List of  all interactable objects on the field</param>
+        /// <returns>Bool indicating whether targeting a source of food</returns>
+        protected abstract bool SearchForFood(List<IInteractable> models);
+
         public Fish()
         {
             _random = new Random();
         }
 
-        public abstract void Draw(SpriteBatch spriteBatch);
+        protected void InvokeOnItemDrop(object sender, ItemDropEventArgs eventArgs)
+        {
+            OnItemDrop?.Invoke(sender, eventArgs);
+        }
 
         /// <summary>
         /// Search for nearby food, continue ongoing actions, or wander around the tank
@@ -74,30 +99,11 @@ namespace FishTank.Models
             }
         }
 
-        protected virtual void UpdateAlive(List<IInteractable> models, GameTime gameTime)
+        /// <summary>
+        /// Wander around if no other target exists
+        /// </summary>
+        protected void WanderAround()
         {
-            // Check whether to drop coin
-            _timeSinceCoinDrop += gameTime.ElapsedGameTime;
-            if (_timeSinceCoinDrop >= _dropCoinTime)
-            {
-                _timeSinceCoinDrop = TimeSpan.Zero;
-                OnCoinDrop?.Invoke(this, null);
-            }
-
-            // First, try to find food if nearby
-            if (SearchForFood(models))
-            {
-                _wanderingTarget = null;
-                return;
-            }
-
-            _currentHunger -= _hungerDropPerFrame;
-            if (_currentHunger <= 0)
-            {
-                State = InteractableState.Dead;
-                return;
-            }
-
             // Continue wandering to target if it is set
             if (_wanderingTarget != null)
             {
@@ -121,15 +127,7 @@ namespace FishTank.Models
             }
 
             _wanderingTarget = CreateWanderDestination();
-            return;
         }
-
-        /// <summary>
-        /// If fish is hungry, find nearby food and move to consume it
-        /// </summary>
-        /// <param name="models">List of  all interactable objects on the field</param>
-        /// <returns>Bool indicating whether targeting a source of food</returns>
-        protected abstract bool SearchForFood(List<IInteractable> models);
 
         /// <summary>
         /// Accelerate fish's velocity towards given direction
@@ -137,8 +135,8 @@ namespace FishTank.Models
         /// <param name="direction">Direction to move towards</param>
         protected void MoveTowards(Vector2 direction)
         {
-            float acceleration = (_wanderingTarget == null) ? _maxAccelerationRate : _wanderAccelerationRate;
-            float maxSpeed = (_wanderingTarget == null) ? _maxSpeed : _wanderSpeed;
+            float acceleration = (_wanderingTarget == null) ? _maxAccelerationRate : _maxWanderAccelerationRate;
+            float maxSpeed = (_wanderingTarget == null) ? _maxSpeed : _maxWanderSpeed;
 
             _currentVelocity += acceleration * direction;
 
@@ -150,6 +148,9 @@ namespace FishTank.Models
             }
         }
 
+        /// <summary>
+        /// Slow the fish's movement down until it is at rest
+        /// </summary>
         protected void SlowDown()
         {
             if (_currentVelocity.Length() == 0)
@@ -205,26 +206,13 @@ namespace FishTank.Models
         }
 
         /// <summary>
-        /// Update the Goldfish in the dead state
-        /// </summary>
-        private void UpdateDead()
-        {
-            Translate(new Vector2(0, Constants.FallSpeed));
-
-            if (BoundaryBox.Bottom >= Constants.VirtualHeight)
-            {
-                State = InteractableState.Discard;
-            }
-        }
-
-        /// <summary>
         /// Create a destination for this goldfish to wander to
         /// </summary>
         /// <returns>Destination vector</returns>
         private Vector2 CreateWanderDestination()
         {
             var angle = _random.NextDouble() * Math.PI * 2;
-            float radius = (float)Math.Sqrt(_random.NextDouble()) * _wanderDistance;
+            float radius = (float)Math.Sqrt(_random.NextDouble()) * _maxWanderDistance;
             float x = BoundaryBox.Center.X + radius * (float)Math.Cos(angle);
             float y = BoundaryBox.Center.Y + radius * (float)Math.Sin(angle);
 
@@ -255,6 +243,24 @@ namespace FishTank.Models
             return new Vector2(x, y);
         }
 
+        /// <summary>
+        /// Update the Goldfish in the dead state
+        /// </summary>
+        private void UpdateDead()
+        {
+            Translate(new Vector2(0, Constants.FallSpeed));
+
+            if (BoundaryBox.Bottom >= Constants.VirtualHeight)
+            {
+                State = InteractableState.Discard;
+            }
+        }
+
+        /// <summary>
+        /// Whether the fish is facing left or right. This is used to 
+        /// prevent fish from turning when it gets to rest
+        /// </summary>
+        protected bool _facingLeft = true;
 
         /// <summary>
         /// Rectangle holding the size of the game field.
@@ -262,72 +268,39 @@ namespace FishTank.Models
         protected Rectangle _swimArea;
 
         /// <summary>
-        /// The amount current hunger decriments per frame
-        /// </summary>
-        private const float _hungerDropPerFrame = 1 / (Constants.ExpectedFramesPerSecond * 25);
-
-        /// <summary>
-        /// Current hunger of the fish. At zero the fish dies
-        /// </summary>
-        protected float _currentHunger;
-
-        /// <summary>
-        ///  The maximum hunger of the fish
-        /// </summary>
-        protected float _maxHunger;
-
-        /// <summary>
-        /// Value where fish hits first level of hunger.
-        /// </summary>
-        protected const float _hungerStartsValue = .7f;
-        
-        /// <summary>
-        /// Value where fish hits 'warning' level of hunger.
-        /// </summary>
-        protected const float _hungerWarningValue = .5f;
-
-        /// <summary>
-        /// Value where fish hits 'danger' elvel of hunger
-        /// </summary>
-        protected const float _hungerDangerValue = .2f;
-
-        /// <summary>
-        /// Timespan indicating how often the fish should drop a coin. Required.
-        /// </summary>
-        protected TimeSpan _dropCoinTime;
-
-        /// <summary>
-        /// maximum speed of the gold fish. Used when targeting food. Required.
+        /// Maximum speed of the fish.
         /// </summary>
         protected const float _maxSpeed = 4.5f;
 
+        /// <summary>
+        /// Maximum acceleration of the fish.
+        /// </summary>
         protected const float _maxAccelerationRate = 0.6f;
 
-        protected Vector2 _currentVelocity;
-
-        protected bool _facingLeft = true;
-
         /// <summary>
-        /// Timespan tracking the time since the last coin drop
+        /// Current movement velocity of the fish
         /// </summary>
-        protected TimeSpan _timeSinceCoinDrop = TimeSpan.Zero;
+        protected Vector2 _currentVelocity;
 
         /// <summary>
         /// If fish is wandering, this is set to maintain destination
         /// </summary>
-        private Vector2? _wanderingTarget = null;
+        protected Vector2? _wanderingTarget = null;
 
         /// <summary>
-        /// Slow wandering speed of the fish when no important targets around.
+        /// Slower wandering speed when no important targets around
         /// </summary>
-        private const float _wanderSpeed = 2f;
-
-        private const float _wanderAccelerationRate = .05f;
+        private const float _maxWanderSpeed = 2f;
 
         /// <summary>
-        /// Distance to wander 
+        /// Slow wandering acceleration when no important targets around
         /// </summary>
-        private const float _wanderDistance = 300;
+        private const float _maxWanderAccelerationRate = .05f;
+
+        /// <summary>
+        /// The max distance to wander
+        /// </summary>
+        private const float _maxWanderDistance = 300;
 
         /// <summary>
         /// Random object used for probability checks
@@ -338,6 +311,5 @@ namespace FishTank.Models
         /// Expect fish to wander around every 3 seconds
         /// </summary>
         private readonly float _chanceToMovePerFrame = 1f / (3f * Constants.ExpectedFramesPerSecond);
-
     }
 }

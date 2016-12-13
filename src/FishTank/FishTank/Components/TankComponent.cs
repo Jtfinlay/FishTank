@@ -18,6 +18,7 @@ using FishTank.Models;
 using FishTank.Models.Interfaces;
 using FishTank.Models.Levels;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -56,7 +57,7 @@ namespace FishTank.Components
             switch (type)
             {
                 case LevelItemType.GuppyFish:
-                    fish = new GuppyFish(_graphicsDevice, _content);
+                    fish = new GuppyFish();
                     break;
                 case LevelItemType.PiranhaFish:
                     fish = new Piranha();
@@ -64,7 +65,7 @@ namespace FishTank.Components
                 default:
                     throw new ArgumentException($"Unexpected item type: {type}");
             }
-            fish.OnCoinDrop += Fish_OnCoinDrop;
+            fish.OnItemDrop += Fish_OnItemDrop;
             _models.Add(fish);
         }
 
@@ -72,9 +73,9 @@ namespace FishTank.Components
         {
             _models.ForEach((model) =>
             {
-                if (model is GuppyFish)
+                if (model is Fish)
                 {
-                    (model as GuppyFish).OnCoinDrop -= Fish_OnCoinDrop;
+                    (model as Fish).OnItemDrop -= Fish_OnItemDrop;
                 }
                 else if (model is Coin)
                 {
@@ -138,11 +139,18 @@ namespace FishTank.Components
             return false;
         }
 
-        private void Fish_OnCoinDrop(object sender, System.EventArgs e)
+        private void Fish_OnItemDrop(object sender, ItemDropEventArgs e)
         {
-            Coin coin = new Coin(_graphicsDevice, (sender as Fish).BoundaryBox.Center.ToVector2());
-            coin.OnClick += Coin_OnClick;
-            _models.Add(coin);
+            if (e.ItemType == typeof(Coin))
+            {
+                Coin coin = new Coin(_graphicsDevice, e.Position);
+                coin.OnClick += Coin_OnClick;
+                _models.Add(coin);
+            }
+            else if (e.ItemType == typeof(Pellet))
+            {
+                _models.Add(new Pellet(_graphicsDevice, e.Position));
+            }
         }
 
         private void Coin_OnClick(object sender, System.EventArgs e)

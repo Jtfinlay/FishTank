@@ -19,7 +19,6 @@ using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -27,13 +26,17 @@ using System.Linq;
 
 namespace FishTank.Models
 {
-    public class GuppyFish : Fish
+    /// <summary>
+    /// Class instance for the guppy fish. This is the simplest fish available in the game. It
+    /// chases food, drops coins, and dies.
+    /// </summary>
+    public class GuppyFish : EconomicFish
     {
         /// <summary>
         /// Basic fish that chases food and dies
         /// </summary>
         /// <param name="graphicsDevice">Graphics resource for texture creation</param>
-        public GuppyFish(GraphicsDevice graphicsDevice, ContentManager content) : base()
+        public GuppyFish() : base()
         {
             Log.LogVerbose("Creating guppy fish");
 
@@ -80,6 +83,9 @@ namespace FishTank.Models
             }
         }
 
+        /// <summary>
+        /// Invoked by another entity that has targeted this fish as food
+        /// </summary>
         public void Eat()
         {
             State = InteractableState.Discard;
@@ -92,7 +98,7 @@ namespace FishTank.Models
         /// <returns>Bool indicating whether targeting a source of food</returns>
         protected override bool SearchForFood(List<IInteractable> models)
         {
-            if (_currentHunger > _hungerStartsValue)
+            if (_currentHunger > _hungerStartValue)
             {
                 return false;
             }

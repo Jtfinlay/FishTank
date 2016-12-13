@@ -107,6 +107,8 @@
     <Compile Include="Content\FontNames.cs" />
     <Compile Include="Content\TextureNames.cs" />
     <Compile Include="Instrumentation\Log.cs" />
+    <Compile Include="Models\EconomicFish.cs" />
+    <Compile Include="Models\FeederFish.cs" />
     <Compile Include="Models\Fish.cs" />
     <Compile Include="Models\Levels\Level.cs" />
     <Compile Include="Models\Levels\LevelItemTypes.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Screens\MainMenuScreen.cs" />
     <Compile Include="Utilities\Alignment.cs" />
     <Compile Include="Utilities\Constants.cs" />
+    <Compile Include="Utilities\Events\ItemDropEventArgs.cs" />
     <Compile Include="Utilities\Events\NavigationEventArgs.cs" />
     <Compile Include="Utilities\Events\PurchaseEventArgs.cs" />
     <Compile Include="Utilities\Extensions.cs" />

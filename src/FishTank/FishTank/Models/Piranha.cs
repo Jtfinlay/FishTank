@@ -26,7 +26,7 @@ using System.Linq;
 
 namespace FishTank.Models
 {
-    public class Piranha : Fish
+    public class Piranha : EconomicFish
     {
         public Piranha() : base()
         {
@@ -69,7 +69,7 @@ namespace FishTank.Models
 
         protected override bool SearchForFood(List<IInteractable> models)
         {
-            if (_currentHunger > _hungerStartsValue)
+            if (_currentHunger > _hungerStartValue)
             {
                 return false;
             }
