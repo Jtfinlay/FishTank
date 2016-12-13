@@ -29,7 +29,7 @@ namespace FishTank.Models
 
         public Rectangle BoundaryBox { get; private set; }
 
-        public Pellet(GraphicsDevice graphicsDevice, Vector2 position)
+        public Pellet(Vector2 position)
         {
             BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
             ContentBuilder.Instance.CreateRectangleTexture(TextureName, BoundaryBox.Width, BoundaryBox.Height);

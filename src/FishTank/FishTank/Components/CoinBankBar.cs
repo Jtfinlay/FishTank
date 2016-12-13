@@ -14,10 +14,10 @@
 //  limitations under the License.
 //
 
+using FishTank.Content;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -32,39 +32,25 @@ namespace FishTank.Components
             Area = area;
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
-            var coinRect = new Texture2D(graphicsDevice, 20, 20);
-            Color[] data = new Color[Area.Width * Area.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.White;
-            }
-            coinRect.SetData(data);
-            _coinIconTexture = coinRect;
-
-            var bgRect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
-            data = new Color[Area.Width * Area.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.White;
-            }
-            bgRect.SetData(data);
-            _backgroundTexture = bgRect;
-            _fishFont = content.Load<SpriteFont>("Arial_20");
+            // Preload assets
+            ContentBuilder.Instance.CreateRectangleTexture(_assetName, Area.Width, Area.Height);
+            ContentBuilder.Instance.LoadTextureByName(_coinAssetName);
+            ContentBuilder.Instance.LoadFontByName(_fontAssetName);
         }
 
-        public override void UnloadContent()
-        {
-        }
+        public override void UnloadContent() { }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_backgroundTexture, Area.Location.ToVector2(), Color.Black);
-            spriteBatch.DrawString(_fishFont, _goldAmountString, Area.ApplyPadding(Constants.Padding, Alignment.Right), Alignment.Right, Color.White);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), Area.Location.ToVector2(), Color.Black);
+            spriteBatch.DrawString(ContentBuilder.Instance.LoadFontByName(_fontAssetName), _goldAmountString, Area.ApplyPadding(Constants.Padding, Alignment.Right), Alignment.Right, Color.White);
 
-            var coinIconPosition = Area.Location.ToVector2() + new Vector2(Constants.Padding, (Area.Height / 2) - (_coinIconTexture.Height / 2));
-            spriteBatch.Draw(_coinIconTexture, coinIconPosition, Color.Gold);
+
+            Texture2D coinAsset = ContentBuilder.Instance.LoadTextureByName(_coinAssetName);
+            var coinIconPosition = Area.Location.ToVector2() + new Vector2(Constants.Padding, (Area.Height / 2) - (coinAsset.Height / 2));
+            spriteBatch.Draw(coinAsset, coinIconPosition, Color.Gold);
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
@@ -78,10 +64,10 @@ namespace FishTank.Components
 
         private string _goldAmountString => $"{GoldAmount}g";
 
-        private SpriteFont _fishFont;
+        private readonly string _assetName = TextureNames.CoinBankBarAsset;
 
-        private Texture2D _backgroundTexture;
+        private readonly string _coinAssetName = TextureNames.CoinAsset;
 
-        private Texture2D _coinIconTexture;
+        private readonly string _fontAssetName = FontNames.Arial_20;
     }
 }

@@ -14,6 +14,7 @@
 //  limitations under the License.
 // 
 
+using FishTank.Content;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
@@ -32,38 +33,31 @@ namespace FishTank.Components
 
         public string ButtonText { get; set; }
 
-        public ButtonComponent(Rectangle area, string buttonText, string fontName = "FishFingers_70")
+        public ButtonComponent(Rectangle area, string buttonText, string fontName = null)
         {
+            fontName = string.IsNullOrWhiteSpace(fontName) ? FontNames.FishFingers_70 : fontName;
+
             Area = area;
             ButtonText = buttonText;
             FontName = fontName;
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
-            var rect = new Texture2D(graphicsDevice, Area.Width, Area.Height);
-
-            Color[] data = new Color[Area.Width * Area.Height];
-            for (int i = 0; i < data.Length; ++i)
-            {
-                data[i] = Color.White;
-            }
-            rect.SetData(data);
-            _texture = rect;
-            _fishFont = content.Load<SpriteFont>(FontName);
+            // Preload assets
+            ContentBuilder.Instance.CreateRectangleTexture(_backgroundAssetName, Area.Width, Area.Height);
+            ContentBuilder.Instance.LoadFontByName(FontName);
         }
 
-        public override void UnloadContent()
-        {
-        }
+        public override void UnloadContent() { }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             Color backgroundColor = _isMouseOver ? Color.Blue : Color.LightBlue;
             Color fontColor = _isMouseOver ? Color.White : Color.Black;
 
-            spriteBatch.Draw(_texture, Area.Location.ToVector2(), backgroundColor);
-            spriteBatch.DrawString(_fishFont, ButtonText, Area, Alignment.Center, fontColor);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_backgroundAssetName), Area.Location.ToVector2(), backgroundColor);
+            spriteBatch.DrawString(ContentBuilder.Instance.LoadFontByName(FontName), ButtonText, Area, Alignment.Center, fontColor);
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
@@ -83,8 +77,6 @@ namespace FishTank.Components
 
         private bool _isMouseOver;
 
-        private Texture2D _texture;
-
-        private SpriteFont _fishFont;
+        private string _backgroundAssetName => $"ButtonComponentAsset{Area.Width}x{Area.Height}";
     }
 }

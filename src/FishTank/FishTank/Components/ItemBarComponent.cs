@@ -21,7 +21,6 @@ using FishTank.Utilities;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -56,14 +55,14 @@ namespace FishTank.Components
             GoldAmount = level.InitialGold;
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
-            _gameStatusBar.LoadContent(graphicsDevice, content);
+            _gameStatusBar.LoadContent();
             _buttons = new List<TopbarItem>();
             for (int i = 0; i < Constants.TopBarItems; i++)
             {
                 var topBarItem = new TopbarItem(_level.Items[i], new Rectangle(i * Area.Height, 0, Area.Height, Area.Height));
-                topBarItem.LoadContent(graphicsDevice, content);
+                topBarItem.LoadContent();
                 topBarItem.OnPurchased += OnItemPurchase;
                 _buttons.Add(topBarItem);
             }
@@ -117,7 +116,7 @@ namespace FishTank.Components
 
         private Level _level;
 
-        private readonly string _assetName = "ItemBarComponentAsset";
+        private readonly string _assetName = TextureNames.ItemBarComponentAsset;
 
         private List<TopbarItem> _buttons;
 

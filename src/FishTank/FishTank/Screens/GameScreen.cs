@@ -50,8 +50,8 @@ namespace FishTank.Screens
         public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
         {
             ContentBuilder.Instantiate(graphicsDevice, content);
-            _tankView.LoadContent(graphicsDevice, content);
-            _topBarView.LoadContent(graphicsDevice, content);
+            _tankView.LoadContent();
+            _topBarView.LoadContent();
 
             _tankView.CreateFish(LevelItemType.GuppyFish);
             _tankView.CreateFish(LevelItemType.GuppyFish);

@@ -20,7 +20,13 @@ namespace FishTank.Content
     {
         public static readonly string BlackLockAsset = "BlackLock_Small.png";
 
+        public static readonly string CoinBankBarAsset = "CoinBankBarAsset";
+
+        public static readonly string CoinAsset = "CoinRectangleAsset";
+
         public static readonly string GuppyAsset = "Guppy.png";
+
+        public static readonly string ItemBarComponentAsset = "ItemBarComponentAsset";
 
         public static readonly string PiranhaAsset = "PiranhaAsset";
 

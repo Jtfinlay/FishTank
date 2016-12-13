@@ -36,10 +36,10 @@ namespace FishTank.Components
 
         public int GoldValue { get; private set; } = 125;
 
-        public Coin(GraphicsDevice graphicsDevice, Vector2 position)
+        public Coin(Vector2 position)
         {
             Area = new Rectangle(position.ToPoint(), new Point(20, 20));
-            ContentBuilder.Instance.CreateRectangleTexture(TextureName, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -50,7 +50,7 @@ namespace FishTank.Components
                 return;
             }
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location.ToVector2(), Color.Gold);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), Color.Gold);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)
@@ -75,6 +75,6 @@ namespace FishTank.Components
             return false;
         }
 
-        public readonly string TextureName = "CoinRectangleAsset";
+        private readonly string _assetName = TextureNames.CoinAsset;
     }
 }

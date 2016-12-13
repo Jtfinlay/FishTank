@@ -14,6 +14,7 @@
 //  limitations under the License.
 // 
 
+using FishTank.Content;
 using FishTank.Models;
 using FishTank.Models.Interfaces;
 using FishTank.Models.Levels;
@@ -21,7 +22,6 @@ using FishTank.Utilities;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -44,11 +44,10 @@ namespace FishTank.Components
             _drawArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
-            _graphicsDevice = graphicsDevice;
-            _content = content;
-            _backgroundTexture = content.Load<Texture2D>("backgrounds\\background2.png");
+            // Preload content
+            ContentBuilder.Instance.LoadTextureByName(_backgroundAssetName);
         }
 
         public void CreateFish(LevelItemType type)
@@ -99,7 +98,7 @@ namespace FishTank.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_backgroundTexture, destinationRectangle: _drawArea);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_backgroundAssetName), destinationRectangle: _drawArea);
 
             foreach (IInteractable model in _models)
             {
@@ -128,7 +127,7 @@ namespace FishTank.Components
                             }
                         }
                     }
-                    _models.Add(new Pellet(_graphicsDevice, translatedPosition));
+                    _models.Add(new Pellet(translatedPosition));
                     return true;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
@@ -143,13 +142,13 @@ namespace FishTank.Components
         {
             if (e.ItemType == typeof(Coin))
             {
-                Coin coin = new Coin(_graphicsDevice, e.Position);
+                Coin coin = new Coin(e.Position);
                 coin.OnClick += Coin_OnClick;
                 _models.Add(coin);
             }
             else if (e.ItemType == typeof(Pellet))
             {
-                _models.Add(new Pellet(_graphicsDevice, e.Position));
+                _models.Add(new Pellet(e.Position));
             }
         }
 
@@ -160,12 +159,8 @@ namespace FishTank.Components
 
         private Rectangle _drawArea;
 
-        private Texture2D _backgroundTexture;
-
         private List<IInteractable> _models;
 
-        private GraphicsDevice _graphicsDevice;
-
-        private ContentManager _content;
+        private readonly string _backgroundAssetName = "backgrounds\\background2.png";
     }
 }

@@ -46,12 +46,11 @@ namespace FishTank.Models
             _model = item;
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
             // Create / preload textures
             ContentBuilder.Instance.CreateRectangleTexture(_textureAssetName, Area.Width, Area.Height);
             ContentBuilder.Instance.LoadFontByName(_fontName);
-
 
             switch (ItemType)
             {

@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Content;
 using FishTank.Models.Levels;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
@@ -49,11 +50,11 @@ namespace FishTank.Components
             _coinBank = new CoinBankBar(new Rectangle(Area.Right - (225 + Constants.Padding), Constants.Padding * 3 + 50, 225, 50));
         }
 
-        public override void LoadContent(GraphicsDevice graphicsDevice, ContentManager content)
+        public override void LoadContent()
         {
-            _fishFont = content.Load<SpriteFont>("Arial_20");
-            _menuButton.LoadContent(graphicsDevice, content);
-            _coinBank.LoadContent(graphicsDevice, content);
+            ContentBuilder.Instance.LoadFontByName(_fontName);
+            _menuButton.LoadContent();
+            _coinBank.LoadContent();
         }
 
         public override bool MouseEvent(MouseEvent mouseEvent)
@@ -61,22 +62,18 @@ namespace FishTank.Components
             return false;
         }
 
-        public override void UnloadContent()
-        {
-        }
+        public override void UnloadContent() { }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.DrawString(_fishFont, _levelName, Area, Alignment.Right | Alignment.Bottom, Color.Black);
+            spriteBatch.DrawString(ContentBuilder.Instance.LoadFontByName(_fontName), _levelName, Area, Alignment.Right | Alignment.Bottom, Color.Black);
             _menuButton.Draw(gameTime, spriteBatch);
             _coinBank.Draw(gameTime, spriteBatch);
         }
 
-        public override void Update(GameTime gameTime, MouseState currentMouseState)
-        {
-        }
+        public override void Update(GameTime gameTime, MouseState currentMouseState) { }
 
-        private SpriteFont _fishFont;
+        private readonly string _fontName = FontNames.Arial_20;
 
         private ButtonComponent _menuButton;
 

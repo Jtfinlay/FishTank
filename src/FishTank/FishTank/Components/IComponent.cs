@@ -28,7 +28,7 @@ namespace FishTank.Components
 
         public abstract bool MouseEvent(MouseEvent mouseEvent);
 
-        public abstract void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
+        public abstract void LoadContent();
 
         public abstract void UnloadContent();
 

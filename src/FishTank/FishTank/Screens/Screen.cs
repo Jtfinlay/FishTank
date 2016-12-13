@@ -18,6 +18,7 @@ using FishTank.Components;
 using FishTank.Utilities;
 using FishTank.Utilities.Events;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -30,6 +31,13 @@ namespace FishTank.Screens
         public event EventHandler<NavigationEventArgs> OnNavigate;
 
         public abstract void Draw(GameTime gameTime, SpriteBatch spriteBatch, Matrix viewMatrix);
+
+        public abstract void LoadContent(GraphicsDevice graphicsDevice, ContentManager content);
+
+        public override void LoadContent()
+        {
+            throw new NotImplementedException();
+        }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
