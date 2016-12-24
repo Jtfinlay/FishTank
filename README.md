@@ -4,4 +4,4 @@ An insaniquarium-inspired game made for Windows Store (C#) through Monogame. Loo
 
 ## Installation
 
-Built in Visual Studio 2015 with Universal App framework. Requires [Monogame 3.5](pA6%3TTKCYK*).
+Built in Visual Studio 2015 with Universal App framework. Requires [Monogame 3.5](http://www.monogame.net/downloads/).
