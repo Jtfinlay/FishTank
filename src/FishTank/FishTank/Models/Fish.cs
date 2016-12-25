@@ -201,7 +201,6 @@ namespace FishTank.Models
             _currentVelocity.X = (nextPosition.X == 0 || nextPosition.X == rightBoundary) ? 0 : _currentVelocity.X;
             _currentVelocity.Y = (nextPosition.Y == 0 || nextPosition.Y == bottomBoundary) ? 0 : _currentVelocity.Y;
 
-
             BoundaryBox = new Rectangle(nextPosition.ToPoint(), BoundaryBox.Size);
         }
 

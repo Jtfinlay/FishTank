@@ -61,6 +61,9 @@ namespace FishTank.Components
                 case LevelItemType.PiranhaFish:
                     fish = new Piranha();
                     break;
+                case LevelItemType.FeederFish:
+                    fish = new FeederFish();
+                    break;
                 default:
                     throw new ArgumentException($"Unexpected item type: {type}");
             }
@@ -127,7 +130,7 @@ namespace FishTank.Components
                             }
                         }
                     }
-                    _models.Add(new Pellet(translatedPosition));
+                    _models.Add(new Pellet(translatedPosition, new Vector2(0,0)));
                     return true;
                 case MouseAction.Hover:
                 case MouseAction.HoverExit:
@@ -148,7 +151,7 @@ namespace FishTank.Components
             }
             else if (e.ItemType == typeof(Pellet))
             {
-                _models.Add(new Pellet(e.Position));
+                _models.Add(new Pellet(e.Position, e.Velocity));
             }
         }
 

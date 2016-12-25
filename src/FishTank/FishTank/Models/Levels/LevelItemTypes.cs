@@ -27,5 +27,7 @@ namespace FishTank.Models.Levels
         FoodDropRateUpgrade,
         BlasterUpgrade,
         EggPiece,
+
+        FeederFish,
     }
 }

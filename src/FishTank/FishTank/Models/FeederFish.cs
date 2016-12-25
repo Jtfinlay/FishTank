@@ -25,6 +25,9 @@ using System.Collections.Generic;
 
 namespace FishTank.Models
 {
+    /// <summary>
+    /// Unique helper fish that swims around dropping pellets for other fish to collect.
+    /// </summary>
     public class FeederFish : Fish
     {
         public FeederFish() : base()
@@ -72,7 +75,7 @@ namespace FishTank.Models
         /// <summary>
         /// Timespan for how often the fish drops a food pellet
         /// </summary>
-        private readonly TimeSpan _timeBetweenFoodDrops = TimeSpan.FromSeconds(10);
+        private readonly TimeSpan _timeBetweenFoodDrops = TimeSpan.FromSeconds(8);
 
         private const float _pelletLaunchSpeed = 6f;
     }

@@ -25,14 +25,19 @@ namespace FishTank.Models
 {
     public class Pellet : IInteractable
     {
+        public readonly string TextureName = "PelletRectangleAsset";
+
         public InteractableState State { get; private set; }
 
         public Rectangle BoundaryBox { get; private set; }
 
-        public Pellet(Vector2 position)
+        public Pellet(Vector2 position, Vector2 velocity)
         {
             BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
             ContentBuilder.Instance.CreateRectangleTexture(TextureName, BoundaryBox.Width, BoundaryBox.Height);
+            _velocity = velocity;
+            _velocity.Y = Constants.FallSpeed;
+            _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -48,8 +53,28 @@ namespace FishTank.Models
 
         public void Update(List<IInteractable> models, GameTime gameTime)
         {
-            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
-            BoundaryBox = new Rectangle(position.ToPoint(), BoundaryBox.Size);
+            var targetVelocity = _velocity + (_velocity.X > 0 ? -1 : 1) * _acceleration;
+            if (targetVelocity.X < 0 && _velocity.X >= 0) targetVelocity.X = 0;
+            if (targetVelocity.X > 0 && _velocity.X <= 0) targetVelocity.X = 0;
+
+            _velocity = targetVelocity;
+
+            var nextPosition = Vector2.Add(BoundaryBox.Location.ToVector2(), _velocity);
+
+            float rightBoundary = _swimArea.Right - BoundaryBox.Width;
+            float bottomBoundary = _swimArea.Bottom - BoundaryBox.Height;
+
+            // Ensure position is not out of bounds
+            nextPosition.X = (nextPosition.X > 0) ? nextPosition.X : 0;
+            nextPosition.X = (nextPosition.X < rightBoundary) ? nextPosition.X : rightBoundary;
+            nextPosition.Y = (nextPosition.Y > 0) ? nextPosition.Y : 0;
+            nextPosition.Y = (nextPosition.Y < bottomBoundary) ? nextPosition.Y : bottomBoundary;
+
+            // If at edge of boundaries, velocity should be at rest
+            _velocity.X = (nextPosition.X == 0 || nextPosition.X == rightBoundary) ? 0 : targetVelocity.X;
+            _velocity.Y = (nextPosition.Y == 0 || nextPosition.Y == bottomBoundary) ? 0 : targetVelocity.Y;
+
+            BoundaryBox = new Rectangle(nextPosition.ToPoint(), BoundaryBox.Size);
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {
@@ -62,6 +87,10 @@ namespace FishTank.Models
             State = InteractableState.Discard;
         }
 
-        public readonly string TextureName = "PelletRectangleAsset";
+        private Rectangle _swimArea;
+
+        private Vector2 _velocity;
+
+        private Vector2 _acceleration = new Vector2(0.1f, 0);
     }
 }
