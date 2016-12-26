@@ -109,11 +109,12 @@ namespace FishTank.Components
             }
         }
 
-        public override bool MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(InputEvent mouseEvent)
         {
             switch (mouseEvent.Action)
             {
-                case MouseAction.Click:
+                case InputAction.Click:
+                case InputAction.TouchTap:
                     // The tank is offset from the top bar. Apply this transformation to the mouse position
                     var translatedPosition = Vector2.Transform(mouseEvent.Location, Matrix.Invert(PreTransformMatrix));
                     mouseEvent.Position = translatedPosition.ToPoint();
@@ -132,9 +133,9 @@ namespace FishTank.Components
                     }
                     _models.Add(new Pellet(translatedPosition, new Vector2(0,0)));
                     return true;
-                case MouseAction.Hover:
-                case MouseAction.HoverExit:
-                case MouseAction.Release:
+                case InputAction.Hover:
+                case InputAction.HoverExit:
+                case InputAction.Release:
                 default:
                     break;
             }

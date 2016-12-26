@@ -57,7 +57,7 @@ namespace FishTank.Components
         {
         }
 
-        public override bool MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(InputEvent mouseEvent)
         {
             return false;
         }

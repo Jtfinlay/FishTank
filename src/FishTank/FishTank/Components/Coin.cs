@@ -64,9 +64,10 @@ namespace FishTank.Components
             }
         }
 
-        public bool MouseEvent(MouseEvent mouseEvent)
+        public bool MouseEvent(InputEvent mouseEvent)
         {
-            if (mouseEvent.Action == MouseAction.Click)
+            if (mouseEvent.Action == InputAction.Click ||
+                mouseEvent.Action == InputAction.TouchTap)
             {
                 OnClick?.Invoke(this, null);
                 State = InteractableState.Discard;

@@ -85,7 +85,7 @@ namespace FishTank.Models
             }
         }
 
-        public override bool MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(InputEvent mouseEvent)
         {
             if (ItemType == LevelItemType.Locked)
             {
@@ -94,12 +94,13 @@ namespace FishTank.Models
 
             switch (mouseEvent.Action)
             {
-                case MouseAction.Click:
+                case InputAction.Click:
+                case InputAction.TouchTap:
                     OnPurchased?.Invoke(this, new PurchaseEventArgs(_model));
                     return true;
-                case MouseAction.Hover:
-                case MouseAction.HoverExit:
-                case MouseAction.Release:
+                case InputAction.Hover:
+                case InputAction.HoverExit:
+                case InputAction.Release:
                 default:
                     break;
             }

@@ -96,7 +96,7 @@ namespace FishTank.Screens
             spriteBatch.End();
         }
 
-        public override bool MouseEvent(MouseEvent mouseEvent)
+        public override bool MouseEvent(InputEvent mouseEvent)
         {
             return GetViewContainingPoint(mouseEvent.Position)?.MouseEvent(mouseEvent) ?? false;
         }

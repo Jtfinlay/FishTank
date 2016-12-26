@@ -23,6 +23,7 @@ using FishTank.ViewAdapters;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using System;
 
 namespace FishTank
@@ -49,6 +50,8 @@ namespace FishTank
             Log.LogVerbose("Initializing");
 
             IsMouseVisible = true;
+            TouchPanel.EnabledGestures = GestureType.Tap | GestureType.DoubleTap;
+
             _screen = new MainMenuScreen();
             _screen.OnNavigate += NavigateToScreen;
 
@@ -92,6 +95,19 @@ namespace FishTank
                 Log.LogVerbose($"Running slow: {gameTime.ElapsedGameTime}");
             }
 
+            // Touch screen logic
+            GestureSample gesture = default(GestureSample);
+            while (TouchPanel.IsGestureAvailable)
+            {
+                gesture = TouchPanel.ReadGesture();
+                if (gesture.GestureType == GestureType.Tap || gesture.GestureType == GestureType.DoubleTap)
+                {
+                    Point virtualTouchPosition = _viewportAdapter.PointToScreen(gesture.Position.ToPoint());
+                    _screen.MouseEvent(new InputEvent(InputAction.TouchTap, virtualTouchPosition));
+                }
+            }
+
+            // Mouse logic
             MouseState mouseState = Mouse.GetState();
 
             Point virtualMousePosition = _viewportAdapter.PointToScreen(mouseState.Position);
@@ -103,20 +119,20 @@ namespace FishTank
             // Perform mouse click events on the display
             if (_screen.Area.Contains(_currentMouseState.Position) || _screen.Area.Contains(_previousMouseState.Position))
             {
-                MouseAction action = MouseAction.Hover;
+                InputAction action = InputAction.Hover;
                 if (_currentMouseState.LeftButton == _previousMouseState.LeftButton)
                 {
-                    action = MouseAction.Hover;
+                    action = InputAction.Hover;
                 }
                 else if (_currentMouseState.LeftButton == ButtonState.Pressed)
                 {
-                    action = MouseAction.Click;
+                    action = InputAction.Click;
                 }
                 else if (_currentMouseState.LeftButton == ButtonState.Released)
                 {
-                    action = MouseAction.Release;
+                    action = InputAction.Release;
                 }
-                _screen.MouseEvent(new MouseEvent(_currentMouseState, action));
+                _screen.MouseEvent(new InputEvent(_currentMouseState, action));
             }
 
             _screen.Update(gameTime, _currentMouseState);

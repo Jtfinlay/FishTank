@@ -17,9 +17,9 @@
 namespace FishTank.Utilities.Inputs
 {
     /// <summary>
-    /// Used by <see cref="MouseEvent"/> to identiy mouse action taken on target element.
+    /// Used by <see cref="InputEvent"/> to identiy mouse action taken on target element.
     /// </summary>
-    public enum MouseAction
+    public enum InputAction
     {
         /// <summary>
         /// Left button was pressed
@@ -45,5 +45,10 @@ namespace FishTank.Utilities.Inputs
         /// Mouse was previously hovering over target element and was just moved away.
         /// </summary>
         HoverExit,
+
+        /// <summary>
+        /// Tap gesture for touch screen
+        /// </summary>
+        TouchTap,
     }
 }
