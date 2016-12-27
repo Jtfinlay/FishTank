@@ -29,5 +29,6 @@ namespace FishTank.Models.Levels
         EggPiece,
 
         FeederFish,
+        CoinCrab,
     }
 }

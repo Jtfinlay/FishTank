@@ -133,7 +133,7 @@ namespace FishTank.Models
         /// Accelerate fish's velocity towards given direction
         /// </summary>
         /// <param name="direction">Direction to move towards</param>
-        protected void MoveTowards(Vector2 direction)
+        protected virtual void MoveTowards(Vector2 direction)
         {
             float acceleration = (_wanderingTarget == null) ? _maxAccelerationRate : _maxWanderAccelerationRate;
             float maxSpeed = (_wanderingTarget == null) ? _maxSpeed : _maxWanderSpeed;
@@ -184,7 +184,7 @@ namespace FishTank.Models
         /// Moved fish with given velocity
         /// </summary>
         /// <param name="velocity">Direction & magnitude to translate fish position</param>
-        protected void Translate(Vector2 velocity)
+        protected virtual void Translate(Vector2 velocity)
         {
             Vector2 nextPosition = BoundaryBox.Location.ToVector2() + velocity;
 
@@ -269,12 +269,12 @@ namespace FishTank.Models
         /// <summary>
         /// Maximum speed of the fish.
         /// </summary>
-        protected const float _maxSpeed = 4.5f;
+        protected float _maxSpeed = 4.5f;
 
         /// <summary>
         /// Maximum acceleration of the fish.
         /// </summary>
-        protected const float _maxAccelerationRate = 0.6f;
+        protected float _maxAccelerationRate = 0.6f;
 
         /// <summary>
         /// Current movement velocity of the fish

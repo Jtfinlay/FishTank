@@ -64,6 +64,9 @@ namespace FishTank.Components
                 case LevelItemType.FeederFish:
                     fish = new FeederFish();
                     break;
+                case LevelItemType.CoinCrab:
+                    fish = new CoinCrab();
+                    break;
                 default:
                     throw new ArgumentException($"Unexpected item type: {type}");
             }

@@ -56,6 +56,7 @@ namespace FishTank.Screens
             _tankView.CreateFish(LevelItemType.GuppyFish);
             _tankView.CreateFish(LevelItemType.GuppyFish);
             _tankView.CreateFish(LevelItemType.FeederFish);
+            _tankView.CreateFish(LevelItemType.CoinCrab);
         }
 
         public override void UnloadContent()

@@ -28,6 +28,7 @@ namespace FishTank.Components
     public class Coin : IInteractable, IClickable
     {
         public event EventHandler OnClick;
+
         public Rectangle BoundaryBox => Area;
 
         public InteractableState State { get; private set; }
@@ -69,11 +70,26 @@ namespace FishTank.Components
             if (mouseEvent.Action == InputAction.Click ||
                 mouseEvent.Action == InputAction.TouchTap)
             {
-                OnClick?.Invoke(this, null);
-                State = InteractableState.Discard;
-                return true;
+                return Gather();
             }
             return false;
+        }
+
+        /// <summary>
+        /// Consume the coin and invoke clicked event.
+        /// </summary>
+        /// <returns>Boolean indicating whether coin was consumed.</returns>
+        public bool Gather()
+        {
+            if (State == InteractableState.Discard ||
+                State == InteractableState.Dead)
+            {
+                return false;
+            }
+
+            OnClick?.Invoke(this, null);
+            State = InteractableState.Discard;
+            return true;
         }
 
         private readonly string _assetName = TextureNames.CoinAsset;
