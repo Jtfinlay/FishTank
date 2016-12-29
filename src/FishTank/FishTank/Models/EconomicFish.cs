@@ -60,6 +60,18 @@ namespace FishTank.Models
             WanderAround();
         }
 
+        protected float CurrentHunger
+        {
+            get
+            {
+                return _currentHunger;
+            }
+            set
+            {
+                _currentHunger = (value > _maxHunger) ? _maxHunger : value;
+            }
+        }
+
         /// <summary>
         ///  The maximum hunger of the fish
         /// </summary>
@@ -68,7 +80,12 @@ namespace FishTank.Models
         /// <summary>
         /// Current hunger of the fish. At zero the fish dies
         /// </summary>
-        protected float _currentHunger;
+        private float _currentHunger;
+
+        /// <summary>
+        /// Amount of nutrition the fish has consumed.
+        /// </summary>
+        protected float _totalConsumption;
 
         /// <summary>
         /// Value to decrement hunger each frame

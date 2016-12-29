@@ -59,8 +59,6 @@ namespace FishTank.Models
         /// <returns>Bool indicating whether targeting a source of food</returns>
         protected abstract bool SearchForFood(List<IInteractable> models);
 
-        public Fish() { }
-
         protected void InvokeOnItemDrop(object sender, ItemDropEventArgs eventArgs)
         {
             OnItemDrop?.Invoke(sender, eventArgs);

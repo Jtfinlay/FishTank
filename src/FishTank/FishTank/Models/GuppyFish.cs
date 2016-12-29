@@ -42,7 +42,7 @@ namespace FishTank.Models
 
             _dropCoinTime = TimeSpan.FromSeconds(15);
             _maxHunger = 1.0f;
-            _currentHunger = _maxHunger;
+            CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
@@ -52,6 +52,7 @@ namespace FishTank.Models
             ContentBuilder.Instance.LoadTextureByName(_hungryAssetName);
             ContentBuilder.Instance.LoadTextureByName(_starvingAssetName);
             ContentBuilder.Instance.LoadTextureByName(_deadAssetName);
+            ContentBuilder.Instance.CreateRectangleTexture(_healthyAssetName2, BoundaryBox.Width, BoundaryBox.Height);
         }
 
         /// <summary>
@@ -70,8 +71,9 @@ namespace FishTank.Models
                     assetName = _deadAssetName;
                     break;
                 case InteractableState.Alive:
-                    if (_currentHunger <= _hungerDangerValue) assetName = _starvingAssetName;
-                    else if (_currentHunger <= _hungerWarningValue) assetName = _hungryAssetName;
+                    if (CurrentHunger <= _hungerDangerValue) assetName = _starvingAssetName;
+                    else if (CurrentHunger <= _hungerWarningValue) assetName = _hungryAssetName;
+                    else if (_level == 1) assetName = _healthyAssetName2;
                     else assetName = _healthyAssetName;
                     break;
             }
@@ -98,7 +100,7 @@ namespace FishTank.Models
         /// <returns>Bool indicating whether targeting a source of food</returns>
         protected override bool SearchForFood(List<IInteractable> models)
         {
-            if (_currentHunger > _hungerStartValue)
+            if (CurrentHunger > _hungerStartValue)
             {
                 return false;
             }
@@ -110,8 +112,7 @@ namespace FishTank.Models
                 float distance = Vector2.Distance(nearestPellet.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
                 if (distance < 30)
                 {
-                    _currentHunger = _maxHunger;
-                    nearestPellet.Eat();
+                    ConsumeFood(nearestPellet.Eat());
                     return true;
                 }
 
@@ -122,10 +123,26 @@ namespace FishTank.Models
             return false;
         }
 
+        private void ConsumeFood(float nutrition)
+        {
+            CurrentHunger += nutrition;
+            _totalConsumption += nutrition;
+            if (_totalConsumption >= _upgrade1HungerThreshold)
+            {
+                _level = 1;
+            }
+        }
+
+        private const float _upgrade1HungerThreshold = 70;
+
+        private int _level = 0;
+
         /// <summary>
         /// Drawable texture showing the fish
         /// </summary>
         private readonly string _healthyAssetName = "Guppy.png";
+
+        private readonly string _healthyAssetName2 = "GuppyLevel2Asset";
 
         private readonly string _hungryAssetName = "Guppy_Hungry.png";
 

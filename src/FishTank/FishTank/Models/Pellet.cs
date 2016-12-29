@@ -82,9 +82,14 @@ namespace FishTank.Models
             }
         }
 
-        public void Eat()
+        /// <summary>
+        /// Consume the pellet, returning the nutrition value of the food
+        /// </summary>
+        /// <returns>Nutrition value fo the food</returns>
+        public float Eat()
         {
             State = InteractableState.Discard;
+            return 1.0f;
         }
 
         private Rectangle _swimArea;

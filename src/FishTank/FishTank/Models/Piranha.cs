@@ -34,7 +34,7 @@ namespace FishTank.Models
 
             _dropCoinTime = TimeSpan.FromSeconds(20);
             _maxHunger = 2.0f;
-            _currentHunger = _maxHunger;
+            CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
@@ -55,8 +55,8 @@ namespace FishTank.Models
                     color = Color.Black;
                     break;
                 case InteractableState.Alive:
-                    if (_currentHunger <= _hungerDangerValue) color = Color.Purple;
-                    else if (_currentHunger <= _hungerWarningValue) color = Color.Pink;
+                    if (CurrentHunger <= _hungerDangerValue) color = Color.Purple;
+                    else if (CurrentHunger <= _hungerWarningValue) color = Color.Pink;
                     else color = Color.Red;
                     break;
             }
@@ -69,7 +69,7 @@ namespace FishTank.Models
 
         protected override bool SearchForFood(List<IInteractable> models)
         {
-            if (_currentHunger > _hungerStartValue)
+            if (CurrentHunger > _hungerStartValue)
             {
                 return false;
             }
@@ -81,7 +81,7 @@ namespace FishTank.Models
                 float distance = Vector2.Distance(nearestGuppy.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
                 if (distance < 30)
                 {
-                    _currentHunger = _maxHunger;
+                    CurrentHunger = _maxHunger;
                     nearestGuppy.Eat();
                     return true;
                 }
