@@ -138,6 +138,7 @@
     <Compile Include="Utilities\Extensions.cs" />
     <Compile Include="Utilities\Inputs\MouseAction.cs" />
     <Compile Include="Utilities\Inputs\MouseEvent.cs" />
+    <Compile Include="Utilities\RandomAccessor.cs" />
     <Compile Include="ViewAdapters\BoxingMode.cs" />
     <Compile Include="ViewAdapters\BoxingViewportAdapter.cs" />
     <Compile Include="ViewAdapters\ScalingViewportAdapter.cs" />

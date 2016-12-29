@@ -59,10 +59,7 @@ namespace FishTank.Models
         /// <returns>Bool indicating whether targeting a source of food</returns>
         protected abstract bool SearchForFood(List<IInteractable> models);
 
-        public Fish()
-        {
-            _random = new Random();
-        }
+        public Fish() { }
 
         protected void InvokeOnItemDrop(object sender, ItemDropEventArgs eventArgs)
         {
@@ -120,7 +117,7 @@ namespace FishTank.Models
             }
 
             // Perform probability check to see whether to wander
-            if (_random.NextDouble() > _chanceToMovePerFrame)
+            if (RandomAccessor.Instance.NextDouble() > _chanceToMovePerFrame)
             {
                 SlowDown();
                 return;
@@ -210,8 +207,8 @@ namespace FishTank.Models
         /// <returns>Destination vector</returns>
         private Vector2 CreateWanderDestination()
         {
-            var angle = _random.NextDouble() * Math.PI * 2;
-            float radius = (float)Math.Sqrt(_random.NextDouble()) * _maxWanderDistance;
+            var angle = RandomAccessor.Instance.NextDouble() * Math.PI * 2;
+            float radius = (float)Math.Sqrt(RandomAccessor.Instance.NextDouble()) * _maxWanderDistance;
             float x = BoundaryBox.Center.X + radius * (float)Math.Cos(angle);
             float y = BoundaryBox.Center.Y + radius * (float)Math.Sin(angle);
 
@@ -300,11 +297,6 @@ namespace FishTank.Models
         /// The max distance to wander
         /// </summary>
         private const float _maxWanderDistance = 300;
-
-        /// <summary>
-        /// Random object used for probability checks
-        /// </summary>
-        private Random _random;
 
         /// <summary>
         /// Expect fish to wander around every 3 seconds
