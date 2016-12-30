@@ -118,7 +118,7 @@ namespace FishTank.Screens
         private void _tankView_OnCoinClick(object sender, EventArgs e)
         {
             Coin coin = sender as Coin;
-            _topBarView.GoldAmount += coin.GoldValue;
+            _topBarView.GoldAmount += coin.CoinValue;
         }
 
         private void PurchaseFish(object sender, PurchaseEventArgs e)

@@ -14,24 +14,17 @@
 //  limitations under the License.
 //
 
-using Microsoft.Xna.Framework;
 using System;
 
 namespace FishTank.Utilities.Events
 {
     public class ItemDropEventArgs : EventArgs
     {
-        public Vector2 Position { get; set; }
+        public Object Item { get; set; }
 
-        public Vector2 Velocity { get; set; }
-
-        public Type ItemType { get; set; }
-
-        public ItemDropEventArgs(Type type, Vector2 position, Vector2 velocity)
+        public ItemDropEventArgs(Object item)
         {
-            ItemType = type;
-            Velocity = velocity;
-            Position = position;
+            Item = item;
         }
     }
 }

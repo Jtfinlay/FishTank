@@ -147,15 +147,19 @@ namespace FishTank.Components
 
         private void Fish_OnItemDrop(object sender, ItemDropEventArgs e)
         {
-            if (e.ItemType == typeof(Coin))
+            if (e.Item is Coin)
             {
-                Coin coin = new Coin(e.Position);
+                Coin coin = e.Item as Coin;
                 coin.OnClick += Coin_OnClick;
                 _models.Add(coin);
             }
-            else if (e.ItemType == typeof(Pellet))
+            else if (e.Item is Pellet)
             {
-                _models.Add(new Pellet(e.Position, e.Velocity));
+                _models.Add(e.Item as Pellet);
+            }
+            else
+            {
+                throw new ArgumentException("ItemType is unknown");
             }
         }
 

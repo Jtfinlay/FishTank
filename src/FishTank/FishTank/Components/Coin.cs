@@ -35,11 +35,19 @@ namespace FishTank.Components
 
         public Rectangle Area { get; private set; }
 
-        public int GoldValue { get; private set; } = 125;
+        public int CoinValue { get; private set; }
 
-        public Coin(Vector2 position)
+        public const int SilverCoinValue = 50;
+
+        public const int GoldCoinValue = 100;
+
+        public const int DiamondCoinValue = 150;
+
+        public Coin(Vector2 position, int coinValue)
         {
+            CoinValue = coinValue;
             Area = new Rectangle(position.ToPoint(), new Point(20, 20));
+
             ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
         }
 
@@ -51,7 +59,12 @@ namespace FishTank.Components
                 return;
             }
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), Color.Gold);
+            Color color = Color.White;
+            if (CoinValue >= DiamondCoinValue) color = Color.LightBlue;
+            else if (CoinValue >= GoldCoinValue) color = Color.Gold;
+            else color = Color.Silver;
+
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), color);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)

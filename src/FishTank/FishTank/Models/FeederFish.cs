@@ -58,7 +58,7 @@ namespace FishTank.Models
 
                 Vector2 launchPosition = new Vector2(BoundaryBox.Center.X, BoundaryBox.Top);
                 Vector2 launchVelocity = new Vector2(_pelletLaunchSpeed * (_facingLeft ? -1 : 1), 0);
-                InvokeOnItemDrop(this, new ItemDropEventArgs(typeof(Pellet), launchPosition, launchVelocity));
+                InvokeOnItemDrop(this, new ItemDropEventArgs(new Pellet(launchPosition, launchVelocity)));
                 return;
             }
 
