@@ -37,11 +37,11 @@ namespace FishTank.Components
         {
             get
             {
-                return _gameStatusBar.GoldAmount;
+                return _coinBank.GoldAmount;
             }
             set
             {
-                _gameStatusBar.GoldAmount = value;
+                _coinBank.GoldAmount = value;
             }
         }
 
@@ -50,14 +50,24 @@ namespace FishTank.Components
             _level = level;
 
             Area = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualBarHeight);
-            _gameStatusBar = new GameStatusBar(_level, Area);
+
+            Rectangle paddedArea = Area.ApplyPadding(Constants.Padding, Alignment.Right | Alignment.Bottom);
+            _coinBank = new CoinBankBar(new Rectangle(paddedArea.Right - (225 + Constants.Padding), Constants.Padding * 3 + 50, 225, 50));
 
             GoldAmount = level.InitialGold;
         }
 
         public override void LoadContent()
         {
-            _gameStatusBar.LoadContent();
+            ContentBuilder.Instance.LoadFontByName(_fontName);
+
+            Rectangle paddedArea = Area.ApplyPadding(Constants.Padding, Alignment.Right | Alignment.Bottom);
+            _menuButton = new ButtonComponent(new Rectangle(paddedArea.Right - (225 + Constants.Padding), Constants.Padding, 225, 50), ContentBuilder.Instance.GetString("Menu"), _fontName);
+            _menuButton.OnClick += OnMenuButtonClicked;
+
+            _menuButton.LoadContent();
+            _coinBank.LoadContent();
+
             _buttons = new List<TopbarItem>();
             for (int i = 0; i < Constants.TopBarItems; i++)
             {
@@ -67,12 +77,14 @@ namespace FishTank.Components
                 _buttons.Add(topBarItem);
             }
 
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, Area.Width, Area.Height);
+            ContentBuilder.Instance.CreateRectangleTexture(_backgroundAssetName, Area.Width, Area.Height);
         }
 
         public override void UnloadContent()
         {
-            _gameStatusBar.UnloadContent();
+            _menuButton.OnClick -= OnMenuButtonClicked;
+            _menuButton.UnloadContent();
+            _coinBank.UnloadContent();
             _buttons.ForEach((item) =>
             {
                 item.OnPurchased -= OnItemPurchase;
@@ -82,18 +94,31 @@ namespace FishTank.Components
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), new Vector2(0, 0), Color.Coral);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_backgroundAssetName), new Vector2(0, 0), Color.Coral);
             _buttons.ForEach((button) => button.Draw(gameTime, spriteBatch));
-            _gameStatusBar.Draw(gameTime, spriteBatch);
+
+            spriteBatch.DrawString(ContentBuilder.Instance.LoadFontByName(_fontName), _level.LevelName, Area, Alignment.Right | Alignment.Bottom, Color.Black);
+            _menuButton.Draw(gameTime, spriteBatch);
+            _coinBank.Draw(gameTime, spriteBatch);
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
+            _menuButton.Update(gameTime, currentMouseState);
+            _buttons.ForEach((button) => button.Update(gameTime, currentMouseState));
         }
 
         public override bool MouseEvent(InputEvent mouseEvent)
         {
+            if (_menuButton.Area.Contains(mouseEvent.Position))
+            {
+                return _menuButton.MouseEvent(mouseEvent);
+            }
             return _buttons.Where((button) => button.Area.Contains(mouseEvent.Position)).FirstOrDefault()?.MouseEvent(mouseEvent) ?? false;
+        }
+
+        private void OnMenuButtonClicked(object sender, EventArgs e)
+        {
         }
 
         private void OnItemPurchase(object sender, PurchaseEventArgs e)
@@ -114,12 +139,19 @@ namespace FishTank.Components
             }
         }
 
+        /// <summary>
+        /// Object containing level-specific data for the game
+        /// </summary>
         private Level _level;
 
-        private readonly string _assetName = TextureNames.ItemBarComponentAsset;
+        private readonly string _backgroundAssetName = TextureNames.ItemBarComponentAsset;
+
+        private readonly string _fontName = FontNames.Arial_20;
 
         private List<TopbarItem> _buttons;
 
-        private GameStatusBar _gameStatusBar;
+        private ButtonComponent _menuButton;
+
+        private CoinBankBar _coinBank;
     }
 }

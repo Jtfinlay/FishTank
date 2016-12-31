@@ -109,7 +109,6 @@ namespace FishTank.Models
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
         {
-            throw new NotImplementedException();
         }
 
         private LevelItem _model;
