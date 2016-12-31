@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Components;
 using FishTank.Content;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
@@ -34,6 +35,7 @@ namespace FishTank.Models
 
             _dropCoinTime = TimeSpan.FromSeconds(20);
             _maxHunger = 2.0f;
+            _coinValue = Coin.DiamondCoinValue;
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);

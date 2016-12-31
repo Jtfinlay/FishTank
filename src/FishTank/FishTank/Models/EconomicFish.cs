@@ -39,7 +39,7 @@ namespace FishTank.Models
             if (_timeSinceCoinDrop >= _dropCoinTime)
             {
                 _timeSinceCoinDrop = TimeSpan.Zero;
-                InvokeOnItemDrop(this, new ItemDropEventArgs(new Coin(BoundaryBox.Center.ToVector2(), Coin.SilverCoinValue)));
+                InvokeOnItemDrop(this, new ItemDropEventArgs(new Coin(BoundaryBox.Center.ToVector2(), _coinValue)));
             }
 
             // First, try to find food if nearby
@@ -86,6 +86,11 @@ namespace FishTank.Models
         /// Amount of nutrition the fish has consumed.
         /// </summary>
         protected float _totalConsumption;
+
+        /// <summary>
+        /// Value of dropped coin
+        /// </summary>
+        protected int _coinValue;
 
         /// <summary>
         /// Value to decrement hunger each frame

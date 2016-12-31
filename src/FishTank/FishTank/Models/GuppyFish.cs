@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Components;
 using FishTank.Content;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
@@ -42,6 +43,7 @@ namespace FishTank.Models
 
             _dropCoinTime = TimeSpan.FromSeconds(15);
             _maxHunger = 1.0f;
+            _coinValue = Coin.SilverCoinValue;
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
@@ -130,6 +132,7 @@ namespace FishTank.Models
             if (_totalConsumption >= _upgrade1HungerThreshold)
             {
                 _level = 1;
+                _coinValue = Coin.GoldCoinValue;
             }
         }
 
