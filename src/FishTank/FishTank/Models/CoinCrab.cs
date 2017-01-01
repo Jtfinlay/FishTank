@@ -38,6 +38,8 @@ namespace FishTank.Models
             _maxSpeed = 3.0f;
             _maxAccelerationRate = 0.9f;
 
+            _moveAnimation = new Animation(_animationFrames);
+
             int height = 75;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
@@ -46,22 +48,17 @@ namespace FishTank.Models
             ContentBuilder.Instance.LoadTextureByName(_stillAsset);
             _animationFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
+
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            string assetName = _stillAsset;
+            string assetName = string.Empty;
             if (Math.Abs(_currentVelocity.X) > _movementBuffer)
             {
-                if (gameTime.TotalGameTime > _changeAnimationFrameTarget)
-                {
-                    _changeAnimationFrameTarget = gameTime.TotalGameTime + TimeSpan.FromMilliseconds(_animationDuration);
-                    _currentAnimationFrame++;
-                    if (_currentAnimationFrame >= _animationFrames.Count)
-                    {
-                        _currentAnimationFrame = 0;
-                    }
-                }
-
-                assetName = _animationFrames.ElementAt(_currentAnimationFrame);
+                assetName = _moveAnimation.CurrentAnimationFrame(gameTime);
+            }
+            else
+            {
+                assetName = _stillAsset;
             }
             spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null);
         }
@@ -111,24 +108,11 @@ namespace FishTank.Models
         private readonly string _stillAsset = "crab.png";
 
         /// <summary>
-        /// Time when to change animation frame.
-        /// </summary>
-        private TimeSpan _changeAnimationFrameTarget = default(TimeSpan);
-
-        /// <summary>
-        /// Time, in milliseconds, until moving to next animation frame.
-        /// </summary>
-        private int _animationDuration = 100;
-
-        /// <summary>
-        /// Index of the next animation frame to draw
-        /// </summary>
-        private int _currentAnimationFrame = 0;
-
-        /// <summary>
         /// Movement speed to trigger move animation
         /// </summary>
         private float _movementBuffer = 0.3f;
+
+        private Animation _moveAnimation;
 
         private readonly List<string> _animationFrames = new List<string>()
         {
@@ -137,6 +121,5 @@ namespace FishTank.Models
             "crab_move2.png",
             "crab.png",
         };
-
     }
 }

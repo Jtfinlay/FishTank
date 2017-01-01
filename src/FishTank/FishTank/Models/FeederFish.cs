@@ -36,13 +36,24 @@ namespace FishTank.Models
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 60, 75);
 
             // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_assetName);
+            _moveAnimation = new Animation(_animationFrames);
+            ContentBuilder.Instance.LoadTextureByName(_stillAsset);
+            _animationFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
+            string assetName = string.Empty;
+            if (Math.Abs(_currentVelocity.Length()) > _movementBuffer)
+            {
+                assetName = _moveAnimation.CurrentAnimationFrame(gameTime);
+            }
+            else
+            {
+                assetName = _stillAsset;
+            }
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
@@ -66,7 +77,22 @@ namespace FishTank.Models
             WanderAround();
         }
 
-        private string _assetName = "seahorse.png";
+        private Animation _moveAnimation;
+
+        private string _stillAsset = "seahorse.png";
+
+        private readonly List<string> _animationFrames = new List<string>()
+        {
+            "seahorse.png",
+            "seahorse2.png",
+            "seahorse3.png",
+            "seahorse2.png",
+        };
+
+        /// <summary>
+        /// Movement speed to trigger move animation
+        /// </summary>
+        private float _movementBuffer = 0.05f;
 
         /// <summary>
         /// Timespan tracking the time since the last food drop
