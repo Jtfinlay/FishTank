@@ -155,6 +155,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\BlackLock_Small.png" />
+    <Content Include="Content\crab.png" />
     <Content Include="Content\Fishfingers.ttf" />
     <None Include="Content\Arial_20.spritefont" />
     <None Include="Content\FishFingers_70.spritefont" />

@@ -35,16 +35,16 @@ namespace FishTank.Models
             _maxSpeed = 2.0f;
             _maxAccelerationRate = 0.7f;
 
-            int height = 50;
+            int height = 75;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 70, height);
+            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
 
             // Preload assets
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.LoadTextureByName(_assetName);
         }
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), Color.Orange);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
@@ -89,6 +89,6 @@ namespace FishTank.Models
             WanderAround();
         }
 
-        private string _assetName = "CoinCrabAsset";
+        private string _assetName = "crab.png";
     }
 }
