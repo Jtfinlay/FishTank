@@ -105,12 +105,23 @@ namespace FishTank.Models
             WanderAround();
         }
 
+        /// <summary>
+        /// Determine a target for fish to wander to
+        /// </summary>
+        /// <returns>Destination vector</returns>
+        protected override Vector2 CreateWanderDestination()
+        {
+            Vector2 target = base.CreateWanderDestination();
+            target.Y = BoundaryBox.Y;
+            return target;
+        }
+
         private readonly string _stillAsset = "crab.png";
 
         /// <summary>
         /// Movement speed to trigger move animation
         /// </summary>
-        private float _movementBuffer = 0.3f;
+        private float _movementBuffer = 0.01f;
 
         private Animation _moveAnimation;
 

@@ -203,7 +203,7 @@ namespace FishTank.Models
         /// Create a destination for this goldfish to wander to
         /// </summary>
         /// <returns>Destination vector</returns>
-        private Vector2 CreateWanderDestination()
+        protected virtual Vector2 CreateWanderDestination()
         {
             var angle = RandomAccessor.Instance.NextDouble() * Math.PI * 2;
             float radius = (float)Math.Sqrt(RandomAccessor.Instance.NextDouble()) * _maxWanderDistance;
