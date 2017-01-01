@@ -36,12 +36,13 @@ namespace FishTank.Models
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 60, 75);
 
             // Preload assets
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.LoadTextureByName(_assetName);
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), Color.AliceBlue);
+            SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
@@ -65,7 +66,7 @@ namespace FishTank.Models
             WanderAround();
         }
 
-        private string _assetName = "FeederFish";
+        private string _assetName = "seahorse.png";
 
         /// <summary>
         /// Timespan tracking the time since the last food drop

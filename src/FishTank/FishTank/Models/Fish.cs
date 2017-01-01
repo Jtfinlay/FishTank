@@ -284,12 +284,12 @@ namespace FishTank.Models
         /// <summary>
         /// Slower wandering speed when no important targets around
         /// </summary>
-        private const float _maxWanderSpeed = 2f;
+        protected const float _maxWanderSpeed = 2f;
 
         /// <summary>
         /// Slow wandering acceleration when no important targets around
         /// </summary>
-        private const float _maxWanderAccelerationRate = .05f;
+        protected const float _maxWanderAccelerationRate = .05f;
 
         /// <summary>
         /// The max distance to wander
