@@ -25,7 +25,7 @@ namespace FishTank.Models
 {
     public class Pellet : IInteractable
     {
-        public readonly string TextureName = "PelletRectangleAsset";
+        public readonly string TextureName = "pellet.png";
 
         public InteractableState State { get; private set; }
 
@@ -34,10 +34,11 @@ namespace FishTank.Models
         public Pellet(Vector2 position, Vector2 velocity)
         {
             BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
-            ContentBuilder.Instance.CreateRectangleTexture(TextureName, BoundaryBox.Width, BoundaryBox.Height);
             _velocity = velocity;
             _velocity.Y = Constants.FallSpeed;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
+
+            ContentBuilder.Instance.LoadTextureByName(TextureName);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -48,7 +49,7 @@ namespace FishTank.Models
                 return;
             }
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location.ToVector2(), Color.LightGreen);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location.ToVector2(), null);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)

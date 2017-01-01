@@ -175,6 +175,7 @@
     <Content Include="Content\Guppy_Dead.png" />
     <Content Include="Content\Guppy_Hungry.png" />
     <Content Include="Content\Guppy_Starving.png" />
+    <Content Include="Content\pellet.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
