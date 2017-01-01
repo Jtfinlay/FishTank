@@ -47,7 +47,11 @@ namespace FishTank.Models
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 70, 60);
+
+            _moveAnimationHealthy= new Animation(_animationFramesHealthy);
+            _moveAnimationHungry = new Animation(_animationFramesHungry);
+            _moveAnimationStarving = new Animation(_animationFramesStarving);
 
             // Preload assets
             ContentBuilder.Instance.LoadTextureByName(_healthyAssetName);
@@ -55,6 +59,9 @@ namespace FishTank.Models
             ContentBuilder.Instance.LoadTextureByName(_starvingAssetName);
             ContentBuilder.Instance.LoadTextureByName(_deadAssetName);
             ContentBuilder.Instance.CreateRectangleTexture(_healthyAssetName2, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
+            _animationFramesHealthy.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            _animationFramesHungry.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            _animationFramesStarving.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
 
         /// <summary>
@@ -73,10 +80,20 @@ namespace FishTank.Models
                     assetName = _deadAssetName;
                     break;
                 case InteractableState.Alive:
-                    if (CurrentHunger <= _hungerDangerValue) assetName = _starvingAssetName;
-                    else if (CurrentHunger <= _hungerWarningValue) assetName = _hungryAssetName;
-                    else if (_level == 1) assetName = _healthyAssetName2;
-                    else assetName = _healthyAssetName;
+                    if (Math.Abs(_currentVelocity.X) > _movementBuffer)
+                    {
+                        if (CurrentHunger <= _hungerDangerValue) assetName = _moveAnimationStarving.CurrentAnimationFrame(gameTime);
+                        else if (CurrentHunger <= _hungerWarningValue) assetName = _moveAnimationHungry.CurrentAnimationFrame(gameTime);
+                        else if (_level == 1) assetName = _healthyAssetName2;
+                        else assetName = _moveAnimationHealthy.CurrentAnimationFrame(gameTime); ;
+                    }
+                    else
+                    {
+                        if (CurrentHunger <= _hungerDangerValue) assetName = _starvingAssetName;
+                        else if (CurrentHunger <= _hungerWarningValue) assetName = _hungryAssetName;
+                        else if (_level == 1) assetName = _healthyAssetName2;
+                        else assetName = _healthyAssetName;
+                    }
                     break;
             }
 
@@ -152,5 +169,36 @@ namespace FishTank.Models
         private readonly string _starvingAssetName = "Guppy_Starving.png";
 
         private readonly string _deadAssetName = "Guppy_Dead.png";
+
+        private Animation _moveAnimationHealthy, _moveAnimationHungry, _moveAnimationStarving;
+
+        private readonly List<string> _animationFramesHealthy = new List<string>()
+        {
+            "Guppy.png",
+            "Guppy_move1.png",
+            "Guppy.png",
+            "Guppy_move2.png",
+        };
+
+        private readonly List<string> _animationFramesHungry = new List<string>()
+        {
+            "Guppy_Hungry.png",
+            "guppy_hungry_move1.png",
+            "Guppy_Hungry.png",
+            "guppy_hungry_move2.png",
+        };
+
+        private readonly List<string> _animationFramesStarving = new List<string>()
+        {
+            "Guppy_Starving.png",
+            "guppy_starving_move1.png",
+            "Guppy_Starving.png",
+            "guppy_starving_move2.png",
+        };
+
+        /// <summary>
+        /// Movement speed to trigger move animation
+        /// </summary>
+        private float _movementBuffer = 0.01f;
     }
 }

@@ -176,7 +176,13 @@
     <Content Include="Content\Guppy.png" />
     <Content Include="Content\Guppy_Dead.png" />
     <Content Include="Content\Guppy_Hungry.png" />
+    <Content Include="Content\guppy_hungry_move1.png" />
+    <Content Include="Content\guppy_hungry_move2.png" />
+    <Content Include="Content\Guppy_move1.png" />
+    <Content Include="Content\Guppy_move2.png" />
     <Content Include="Content\Guppy_Starving.png" />
+    <Content Include="Content\guppy_starving_move1.png" />
+    <Content Include="Content\guppy_starving_move2.png" />
     <Content Include="Content\pellet.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
