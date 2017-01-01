@@ -33,7 +33,7 @@ namespace FishTank.Models
         public FeederFish() : base()
         {
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 60, 75);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 60, 75);
 
             // Preload assets
             _moveAnimation = new Animation(_animationFrames);
@@ -53,7 +53,7 @@ namespace FishTank.Models
             {
                 assetName = _stillAsset;
             }
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null, effects: spriteEffects);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)

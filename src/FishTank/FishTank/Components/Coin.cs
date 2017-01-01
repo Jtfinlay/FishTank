@@ -25,15 +25,18 @@ using FishTank.Content;
 
 namespace FishTank.Components
 {
+    /// <summary>
+    /// Describes a collectable <see cref="Coin"/> object dropped by fish.
+    /// </summary>
     public class Coin : IInteractable, IClickable
     {
         public event EventHandler OnClick;
 
-        public Rectangle BoundaryBox => Area;
+        public Rectangle2 BoundaryBox { get; private set; }
 
         public InteractableState State { get; private set; }
 
-        public Rectangle Area { get; private set; }
+        public Rectangle Area => BoundaryBox.ToRectangle();
 
         public int CoinValue { get; private set; }
 
@@ -46,9 +49,9 @@ namespace FishTank.Components
         public Coin(Vector2 position, int coinValue)
         {
             CoinValue = coinValue;
-            Area = new Rectangle(position.ToPoint(), new Point(20, 20));
+            BoundaryBox = new Rectangle2(position, new Vector2(20, 20));
 
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -64,13 +67,13 @@ namespace FishTank.Components
             else if (CoinValue >= GoldCoinValue) color = Color.Gold;
             else color = Color.Silver;
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), color);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, color);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)
         {
-            var position = Vector2.Add(BoundaryBox.Location.ToVector2(), new Vector2(0, Constants.FallSpeed));
-            Area = new Rectangle(position.ToPoint(), BoundaryBox.Size);
+            var position = Vector2.Add(BoundaryBox.Location, new Vector2(0, Constants.FallSpeed));
+            BoundaryBox = new Rectangle2(position, BoundaryBox.Size);
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {

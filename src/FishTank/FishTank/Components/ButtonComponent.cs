@@ -18,7 +18,6 @@ using FishTank.Content;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;

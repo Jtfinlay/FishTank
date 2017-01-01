@@ -39,7 +39,7 @@ namespace FishTank.Models
             if (_timeSinceCoinDrop >= _dropCoinTime)
             {
                 _timeSinceCoinDrop = TimeSpan.Zero;
-                InvokeOnItemDrop(this, new ItemDropEventArgs(new Coin(BoundaryBox.Center.ToVector2(), _coinValue)));
+                InvokeOnItemDrop(this, new ItemDropEventArgs(new Coin(BoundaryBox.Center, _coinValue)));
             }
 
             // First, try to find food if nearby

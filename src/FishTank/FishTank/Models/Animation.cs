@@ -39,7 +39,7 @@ namespace FishTank.Models
                     _currentAnimationFrame = _loop ? 0 : _animationFrames.Count - 1;
                 }
             }
-            return _animationFrames.ElementAt(_currentAnimationFrame);
+            return _animationFrames[_currentAnimationFrame];
         }
 
         /// <summary>

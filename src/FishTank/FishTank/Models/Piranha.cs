@@ -39,10 +39,10 @@ namespace FishTank.Models
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
 
             // Preload assets
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -65,7 +65,7 @@ namespace FishTank.Models
 
             if (color != null)
             {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), color ?? Color.White);
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, color ?? Color.White);
             }
         }
 
@@ -77,10 +77,10 @@ namespace FishTank.Models
             }
 
             GuppyFish nearestGuppy = models.Where((model) => (model as GuppyFish)?.State == InteractableState.Alive)?
-                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2())).FirstOrDefault() as GuppyFish;
+                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center, BoundaryBox.Center)).FirstOrDefault() as GuppyFish;
             if (nearestGuppy != null)
             {
-                float distance = Vector2.Distance(nearestGuppy.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
+                float distance = Vector2.Distance(nearestGuppy.BoundaryBox.Center, BoundaryBox.Center);
                 if (distance < 30)
                 {
                     CurrentHunger = _maxHunger;
@@ -88,7 +88,7 @@ namespace FishTank.Models
                     return true;
                 }
 
-                Vector2 direction = Vector2.Normalize(nearestGuppy.BoundaryBox.Center.ToVector2() - BoundaryBox.Center.ToVector2());
+                Vector2 direction = Vector2.Normalize(nearestGuppy.BoundaryBox.Center - BoundaryBox.Center);
                 MoveTowards(direction);
                 return true;
             }

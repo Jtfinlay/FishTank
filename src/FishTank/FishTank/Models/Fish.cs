@@ -38,9 +38,9 @@ namespace FishTank.Models
         public InteractableState State { get; protected set; }
 
         /// <summary>
-        /// Rectangle indicating the boundary box for the gold fish
+        /// Instance of <see cref="Rectangle2"/> indicating the position and dimensions of the <see cref="Fish"/>
         /// </summary>
-        public Rectangle BoundaryBox { get; protected set; }
+        public Rectangle2 BoundaryBox { get; protected set; }
 
         public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
@@ -102,14 +102,14 @@ namespace FishTank.Models
             // Continue wandering to target if it is set
             if (_wanderingTarget != null)
             {
-                float distance = Vector2.Distance((Vector2)_wanderingTarget, BoundaryBox.Center.ToVector2());
+                float distance = Vector2.Distance((Vector2)_wanderingTarget, BoundaryBox.Center);
                 if (distance < BoundaryBox.Width)
                 {
                     _wanderingTarget = null;
                     return;
                 }
 
-                Vector2 direction = Vector2.Normalize((Vector2)_wanderingTarget - BoundaryBox.Center.ToVector2());
+                Vector2 direction = Vector2.Normalize((Vector2)_wanderingTarget - BoundaryBox.Center);
                 MoveTowards(direction);
                 return;
             }
@@ -181,7 +181,7 @@ namespace FishTank.Models
         /// <param name="velocity">Direction & magnitude to translate fish position</param>
         protected virtual void Translate(Vector2 velocity)
         {
-            Vector2 nextPosition = BoundaryBox.Location.ToVector2() + velocity;
+            Vector2 nextPosition = BoundaryBox.Location + velocity;
 
             float rightBoundary = _swimArea.Right - BoundaryBox.Width;
             float bottomBoundary = _swimArea.Bottom - BoundaryBox.Height;
@@ -196,7 +196,7 @@ namespace FishTank.Models
             _currentVelocity.X = (nextPosition.X == 0 || nextPosition.X == rightBoundary) ? 0 : _currentVelocity.X;
             _currentVelocity.Y = (nextPosition.Y == 0 || nextPosition.Y == bottomBoundary) ? 0 : _currentVelocity.Y;
 
-            BoundaryBox = new Rectangle(nextPosition.ToPoint(), BoundaryBox.Size);
+            BoundaryBox = new Rectangle2(nextPosition, BoundaryBox.Size);
         }
 
         /// <summary>

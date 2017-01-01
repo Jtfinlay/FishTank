@@ -29,11 +29,11 @@ namespace FishTank.Models
 
         public InteractableState State { get; private set; }
 
-        public Rectangle BoundaryBox { get; private set; }
+        public Rectangle2 BoundaryBox { get; private set; }
 
         public Pellet(Vector2 position, Vector2 velocity)
         {
-            BoundaryBox = new Rectangle(position.ToPoint(), new Point(20, 20));
+            BoundaryBox = new Rectangle2(position, new Vector2(20, 20));
             _velocity = velocity;
             _velocity.Y = Constants.FallSpeed;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
@@ -49,7 +49,7 @@ namespace FishTank.Models
                 return;
             }
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location.ToVector2(), null);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(TextureName), BoundaryBox.Location, null);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)
@@ -60,7 +60,7 @@ namespace FishTank.Models
 
             _velocity = targetVelocity;
 
-            var nextPosition = Vector2.Add(BoundaryBox.Location.ToVector2(), _velocity);
+            var nextPosition = Vector2.Add(BoundaryBox.Location, _velocity);
 
             float rightBoundary = _swimArea.Right - BoundaryBox.Width;
             float bottomBoundary = _swimArea.Bottom - BoundaryBox.Height;
@@ -75,7 +75,7 @@ namespace FishTank.Models
             _velocity.X = (nextPosition.X == 0 || nextPosition.X == rightBoundary) ? 0 : targetVelocity.X;
             _velocity.Y = (nextPosition.Y == 0 || nextPosition.Y == bottomBoundary) ? 0 : targetVelocity.Y;
 
-            BoundaryBox = new Rectangle(nextPosition.ToPoint(), BoundaryBox.Size);
+            BoundaryBox = new Rectangle2(nextPosition, BoundaryBox.Size);
 
             if (BoundaryBox.Bottom >= Constants.VirtualHeight)
             {

@@ -47,14 +47,14 @@ namespace FishTank.Models
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
 
             // Preload assets
             ContentBuilder.Instance.LoadTextureByName(_healthyAssetName);
             ContentBuilder.Instance.LoadTextureByName(_hungryAssetName);
             ContentBuilder.Instance.LoadTextureByName(_starvingAssetName);
             ContentBuilder.Instance.LoadTextureByName(_deadAssetName);
-            ContentBuilder.Instance.CreateRectangleTexture(_healthyAssetName2, BoundaryBox.Width, BoundaryBox.Height);
+            ContentBuilder.Instance.CreateRectangleTexture(_healthyAssetName2, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace FishTank.Models
             if (!string.IsNullOrWhiteSpace(assetName))
             {
                 SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null, effects: spriteEffects);
             }
         }
 
@@ -108,17 +108,17 @@ namespace FishTank.Models
             }
 
             Pellet nearestPellet = models.Where((model) => model is Pellet)?
-                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2())).FirstOrDefault() as Pellet;
+                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center, BoundaryBox.Center)).FirstOrDefault() as Pellet;
             if (nearestPellet != null)
             {
-                float distance = Vector2.Distance(nearestPellet.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
+                float distance = Vector2.Distance(nearestPellet.BoundaryBox.Center, BoundaryBox.Center);
                 if (distance < 30)
                 {
                     ConsumeFood(nearestPellet.Eat());
                     return true;
                 }
 
-                Vector2 direction = Vector2.Normalize(nearestPellet.BoundaryBox.Center.ToVector2() - BoundaryBox.Center.ToVector2());
+                Vector2 direction = Vector2.Normalize(nearestPellet.BoundaryBox.Center - BoundaryBox.Center);
                 MoveTowards(direction);
                 return true;
             }

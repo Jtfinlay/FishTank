@@ -1,5 +1,5 @@
 ﻿//
-//  Copyright 2016 James Finlay
+//  Copyright 2017 James Finlay
 //
 //  Licensed under the Apache License, Version 2.0 (the "License");
 //  you may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -39,9 +40,9 @@ namespace FishTank.Models.Interfaces
         void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
         /// <summary>
-        /// Rectangle indicating the boundary box for the interactable
+        /// Instance of <see cref="Rectangle2"/> indicating the position and dimensions of the <see cref="Fish"/>
         /// </summary>
-        Rectangle BoundaryBox { get; }
+        Rectangle2 BoundaryBox { get; }
 
         /// <summary>
         /// State of the object indicating whether interactable with other objects

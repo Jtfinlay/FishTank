@@ -42,7 +42,7 @@ namespace FishTank.Models
 
             int height = 75;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
 
             // Preload assets
             ContentBuilder.Instance.LoadTextureByName(_stillAsset);
@@ -60,23 +60,23 @@ namespace FishTank.Models
             {
                 assetName = _stillAsset;
             }
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
         {
             Coin nearestCoin = models.Where((model) => model is Coin)?
-                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2())).FirstOrDefault() as Coin;
+                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center, BoundaryBox.Center)).FirstOrDefault() as Coin;
             if (nearestCoin != null)
             {
-                float distance = Vector2.Distance(nearestCoin.BoundaryBox.Center.ToVector2(), BoundaryBox.Center.ToVector2());
+                float distance = Vector2.Distance(nearestCoin.BoundaryBox.Center, BoundaryBox.Center);
                 if (distance < 30)
                 {
                     nearestCoin.Gather();
                     return true;
                 }
 
-                Vector2 direction = Vector2.Normalize(nearestCoin.BoundaryBox.Center.ToVector2() - BoundaryBox.Center.ToVector2());
+                Vector2 direction = Vector2.Normalize(nearestCoin.BoundaryBox.Center - BoundaryBox.Center);
                 MoveTowards(direction);
                 return true;
             }
