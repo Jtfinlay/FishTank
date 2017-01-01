@@ -45,7 +45,7 @@ namespace FishTank.Models
             ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             Color? color = null;
             switch (State)

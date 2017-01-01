@@ -36,7 +36,7 @@ namespace FishTank.Models.Interfaces
         /// Called when the interactable should draw itself
         /// </summary>
         /// <param name="spriteBatch">Graphics resource for drawing</param>
-        void Draw(SpriteBatch spriteBatch);
+        void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
         /// <summary>
         /// Rectangle indicating the boundary box for the interactable

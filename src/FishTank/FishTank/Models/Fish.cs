@@ -42,7 +42,7 @@ namespace FishTank.Models
         /// </summary>
         public Rectangle BoundaryBox { get; protected set; }
 
-        public abstract void Draw(SpriteBatch spriteBatch);
+        public abstract void Draw(SpriteBatch spriteBatch, GameTime gameTime);
 
         /// <summary>
         /// Perform regular actions if the fish is alive
@@ -284,12 +284,12 @@ namespace FishTank.Models
         /// <summary>
         /// Slower wandering speed when no important targets around
         /// </summary>
-        protected const float _maxWanderSpeed = 2f;
+        protected float _maxWanderSpeed = 2f;
 
         /// <summary>
         /// Slow wandering acceleration when no important targets around
         /// </summary>
-        protected const float _maxWanderAccelerationRate = .05f;
+        protected float _maxWanderAccelerationRate = .05f;
 
         /// <summary>
         /// The max distance to wander

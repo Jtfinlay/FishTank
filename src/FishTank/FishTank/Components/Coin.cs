@@ -51,7 +51,7 @@ namespace FishTank.Components
             ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.Width, BoundaryBox.Height);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             if (State == InteractableState.Discard)
             {

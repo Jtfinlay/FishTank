@@ -61,7 +61,7 @@ namespace FishTank.Models
         /// Draw the model on the canvas
         /// </summary>
         /// <param name="spriteBatch">Graphics resource for drawing</param>
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             string assetName = null;
             switch (State)

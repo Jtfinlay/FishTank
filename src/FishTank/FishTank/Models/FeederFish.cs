@@ -39,7 +39,7 @@ namespace FishTank.Models
             ContentBuilder.Instance.LoadTextureByName(_assetName);
         }
 
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null, effects: spriteEffects);

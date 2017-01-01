@@ -108,7 +108,7 @@ namespace FishTank.Components
 
             foreach (IInteractable model in _models)
             {
-                model.Draw(spriteBatch);
+                model.Draw(spriteBatch, gameTime);
             }
         }
 

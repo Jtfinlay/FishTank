@@ -20,6 +20,7 @@ using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,19 +33,37 @@ namespace FishTank.Models
     {
         public CoinCrab(): base()
         {
-            _maxSpeed = 2.0f;
-            _maxAccelerationRate = 0.7f;
+            _maxWanderSpeed = 1.5f;
+            _maxWanderAccelerationRate = 0.8f;
+            _maxSpeed = 3.0f;
+            _maxAccelerationRate = 0.9f;
 
             int height = 75;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
 
             // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_assetName);
+            ContentBuilder.Instance.LoadTextureByName(_stillAsset);
+            _animationFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
-        public override void Draw(SpriteBatch spriteBatch)
+        public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location.ToVector2(), null);
+            string assetName = _stillAsset;
+            if (Math.Abs(_currentVelocity.X) > _movementBuffer)
+            {
+                if (gameTime.TotalGameTime > _changeAnimationFrameTarget)
+                {
+                    _changeAnimationFrameTarget = gameTime.TotalGameTime + TimeSpan.FromMilliseconds(_animationDuration);
+                    _currentAnimationFrame++;
+                    if (_currentAnimationFrame >= _animationFrames.Count)
+                    {
+                        _currentAnimationFrame = 0;
+                    }
+                }
+
+                assetName = _animationFrames.ElementAt(_currentAnimationFrame);
+            }
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location.ToVector2(), null);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
@@ -89,6 +108,35 @@ namespace FishTank.Models
             WanderAround();
         }
 
-        private string _assetName = "crab.png";
+        private readonly string _stillAsset = "crab.png";
+
+        /// <summary>
+        /// Time when to change animation frame.
+        /// </summary>
+        private TimeSpan _changeAnimationFrameTarget = default(TimeSpan);
+
+        /// <summary>
+        /// Time, in milliseconds, until moving to next animation frame.
+        /// </summary>
+        private int _animationDuration = 100;
+
+        /// <summary>
+        /// Index of the next animation frame to draw
+        /// </summary>
+        private int _currentAnimationFrame = 0;
+
+        /// <summary>
+        /// Movement speed to trigger move animation
+        /// </summary>
+        private float _movementBuffer = 0.3f;
+
+        private readonly List<string> _animationFrames = new List<string>()
+        {
+            "crab_move1.png",
+            "crab.png",
+            "crab_move2.png",
+            "crab.png",
+        };
+
     }
 }
