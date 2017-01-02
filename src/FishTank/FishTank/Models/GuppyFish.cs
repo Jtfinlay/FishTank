@@ -15,6 +15,7 @@
 //
 
 using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;

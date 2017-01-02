@@ -23,6 +23,7 @@ using FishTank.Utilities.Inputs;
 using System;
 using FishTank.Content;
 using FishTank.Models;
+using FishTank.Drawing;
 
 namespace FishTank.Components
 {
@@ -69,12 +70,12 @@ namespace FishTank.Components
                 return;
             }
 
-            string assetName = string.Empty;
-            if (CoinValue >= DiamondCoinValue) assetName = _diamondAnimation.CurrentAnimationFrame(gameTime);
-            else if (CoinValue >= GoldCoinValue) assetName = _goldAnimation.CurrentAnimationFrame(gameTime);
-            else assetName = _silverAnimation.CurrentAnimationFrame(gameTime);
+            Animation animation = null;
+            if (CoinValue >= DiamondCoinValue) animation = _diamondAnimation;
+            else if (CoinValue >= GoldCoinValue) animation = _goldAnimation;
+            else animation = _silverAnimation;
 
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null);
+            animation.Draw(spriteBatch, gameTime, BoundaryBox.Location, SpriteEffects.None);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)

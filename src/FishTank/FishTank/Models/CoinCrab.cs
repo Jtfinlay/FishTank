@@ -16,6 +16,7 @@
 
 using FishTank.Components;
 using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
 using Microsoft.Xna.Framework;
@@ -54,13 +55,12 @@ namespace FishTank.Models
             string assetName = string.Empty;
             if (Math.Abs(_currentVelocity.X) > _movementBuffer)
             {
-                assetName = _moveAnimation.CurrentAnimationFrame(gameTime);
+                _moveAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, SpriteEffects.None);
             }
             else
             {
-                assetName = _stillAsset;
+                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_stillAsset), BoundaryBox.Location, null);
             }
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)

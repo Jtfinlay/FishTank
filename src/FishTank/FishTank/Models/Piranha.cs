@@ -16,6 +16,7 @@
 
 using FishTank.Components;
 using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
@@ -39,16 +40,39 @@ namespace FishTank.Models
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 120, 88);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, _width, _height);
+
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+            List<Point> animationFrames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0, _height),
+                new Point(0,0),
+                new Point(0, _height * 2),
+            };
+            _movementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_assetName);
+            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, null, effects: spriteEffects);
+
+            bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
+            if (fishIsMoving)
+            {
+                _movementAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, spriteEffects);
+            }
+            else
+            {
+                spriteBatch.Draw(
+                    texture: ContentBuilder.Instance.LoadTextureByName(_spriteSheet.AssetName),
+                    sourceRectangle: _spriteSheet.DefaultTile,
+                    position: BoundaryBox.Location,
+                    effects: spriteEffects);
+            }
         }
 
         protected override bool SearchForFood(List<IInteractable> models)
@@ -77,6 +101,19 @@ namespace FishTank.Models
             return false;
         }
 
-        private readonly string _assetName = TextureNames.PiranhaAsset;
+        private const int _width = 120;
+
+        private const int _height = 88;
+
+        /// <summary>
+        /// Threshold value which, when current velocity surpasses, triggers use of move animations
+        /// </summary>
+        private float _movementBuffer = 0.01f;
+
+        private Animation _movementAnimation;
+
+        private SpriteSheet _spriteSheet;
+
+        private readonly string _spriteSheetAssetName = "Piranha\\piranha_sheet.png";
     }
 }
