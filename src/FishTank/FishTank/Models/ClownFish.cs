@@ -135,7 +135,7 @@ namespace FishTank.Models
             }
         }
 
-        private const float _upgradeHungerThreshold = 100;
+        private const float _upgradeHungerThreshold = 50;
 
         /// <summary>
         /// Constant width used for all instances of the <see cref="ClownFish"/>.

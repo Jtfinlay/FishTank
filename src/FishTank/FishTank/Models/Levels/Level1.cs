@@ -24,7 +24,7 @@ namespace FishTank.Models.Levels
             LevelId = 1;
             Items[0] = new LevelItem(LevelItemType.GuppyFish, 100);
             Items[2] = new LevelItem(LevelItemType.PiranhaFish, 200);
-            InitialGold = int.MaxValue;
+            InitialGold = int.MaxValue / 1000;
         }
     }
 }

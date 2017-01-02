@@ -199,6 +199,15 @@
     <Content Include="Content\ClownFish\starving.png" />
     <Content Include="Content\ClownFish\starving_move1.png" />
     <Content Include="Content\ClownFish\starving_move2.png" />
+    <Content Include="Content\Coins\diamond.png" />
+    <Content Include="Content\Coins\diamond1.png" />
+    <Content Include="Content\Coins\diamond2.png" />
+    <Content Include="Content\Coins\diamond3.png" />
+    <Content Include="Content\Coins\gold.png" />
+    <Content Include="Content\Coins\gold1.png" />
+    <Content Include="Content\Coins\gold2.png" />
+    <Content Include="Content\Coins\gold3.png" />
+    <Content Include="Content\Coins\gold4.png" />
     <Content Include="Content\Coins\silver.png" />
     <Content Include="Content\Coins\silver1.png" />
     <Content Include="Content\Coins\silver2.png" />

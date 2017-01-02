@@ -53,7 +53,12 @@ namespace FishTank.Components
             BoundaryBox = new Rectangle2(position, new Vector2(30, 30));
 
             _silverAnimation = new Animation(_silverFrames);
+            _goldAnimation = new Animation(_goldFrames);
+            _diamondAnimation = new Animation(_diamondFrames);
+
             _silverFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            _goldFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            _diamondFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -64,7 +69,11 @@ namespace FishTank.Components
                 return;
             }
 
-            string assetName = _silverAnimation.CurrentAnimationFrame(gameTime);
+            string assetName = string.Empty;
+            if (CoinValue >= DiamondCoinValue) assetName = _diamondAnimation.CurrentAnimationFrame(gameTime);
+            else if (CoinValue >= GoldCoinValue) assetName = _goldAnimation.CurrentAnimationFrame(gameTime);
+            else assetName = _silverAnimation.CurrentAnimationFrame(gameTime);
+
             spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null);
         }
 
@@ -108,12 +117,33 @@ namespace FishTank.Components
 
         private Animation _silverAnimation;
 
+        private Animation _goldAnimation;
+
+        private Animation _diamondAnimation;
+
         private readonly List<string> _silverFrames = new List<string>()
         {
             "Coins\\silver.png",
             "Coins\\silver1.png",
             "Coins\\silver2.png",
             "Coins\\silver3.png",
+        };
+
+        private readonly List<string> _goldFrames = new List<string>()
+        {
+            "Coins\\gold.png",
+            "Coins\\gold1.png",
+            "Coins\\gold2.png",
+            "Coins\\gold3.png",
+        };
+
+        private readonly List<string> _diamondFrames = new List<string>()
+        {
+            "Coins\\diamond.png",
+            "Coins\\diamond1.png",
+            "Coins\\diamond2.png",
+            "Coins\\diamond.png",
+            "Coins\\diamond3.png",
         };
     }
 }
