@@ -254,6 +254,7 @@
     <Content Include="Content\KingFish\starving_move1.png" />
     <Content Include="Content\KingFish\starving_move2.png" />
     <Content Include="Content\pellet.png" />
+    <Content Include="Content\Piranha\healthy.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

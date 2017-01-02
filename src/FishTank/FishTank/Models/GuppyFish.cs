@@ -149,7 +149,7 @@ namespace FishTank.Models
             }
         }
 
-        private const float _upgradeHungerThreshold = 1;
+        private const float _upgradeHungerThreshold = 10;
 
         /// <summary>
         /// Constant width used for all instances of the <see cref="GuppyFish"/>.

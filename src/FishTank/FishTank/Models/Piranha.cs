@@ -39,34 +39,16 @@ namespace FishTank.Models
             CurrentHunger = _maxHunger;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 75, 60);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 120, 88);
 
             // Preload assets
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
+            ContentBuilder.Instance.LoadTextureByName(_assetName);
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            Color? color = null;
-            switch (State)
-            {
-                case InteractableState.Discard:
-                    // fish is destroyed but awaiting cleanup. Don't draw
-                    return;
-                case InteractableState.Dead:
-                    color = Color.Black;
-                    break;
-                case InteractableState.Alive:
-                    if (CurrentHunger <= _hungerDangerValue) color = Color.Purple;
-                    else if (CurrentHunger <= _hungerWarningValue) color = Color.Pink;
-                    else color = Color.Red;
-                    break;
-            }
-
-            if (color != null)
-            {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, color ?? Color.White);
-            }
+            SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, null, effects: spriteEffects);
         }
 
         protected override bool SearchForFood(List<IInteractable> models)

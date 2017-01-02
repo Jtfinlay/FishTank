@@ -28,7 +28,7 @@ namespace FishTank.Content
 
         public static readonly string ItemBarComponentAsset = "ItemBarComponentAsset";
 
-        public static readonly string PiranhaAsset = "PiranhaAsset";
+        public static readonly string PiranhaAsset = "Piranha\\healthy.png";
 
         public static readonly string TopbarItemAsset = "TopBarItemAsset";
 
