@@ -199,6 +199,11 @@
     <Content Include="Content\ClownFish\starving.png" />
     <Content Include="Content\ClownFish\starving_move1.png" />
     <Content Include="Content\ClownFish\starving_move2.png" />
+    <Content Include="Content\Coins\silver.png" />
+    <Content Include="Content\Coins\silver1.png" />
+    <Content Include="Content\Coins\silver2.png" />
+    <Content Include="Content\Coins\silver3.png" />
+    <Content Include="Content\Coins\silver4.png" />
     <Content Include="Content\crab.png" />
     <Content Include="Content\crab_move1.png" />
     <Content Include="Content\crab_move2.png" />

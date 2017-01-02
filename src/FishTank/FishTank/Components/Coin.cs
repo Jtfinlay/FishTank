@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using FishTank.Utilities.Inputs;
 using System;
 using FishTank.Content;
+using FishTank.Models;
 
 namespace FishTank.Components
 {
@@ -49,9 +50,10 @@ namespace FishTank.Components
         public Coin(Vector2 position, int coinValue)
         {
             CoinValue = coinValue;
-            BoundaryBox = new Rectangle2(position, new Vector2(20, 20));
+            BoundaryBox = new Rectangle2(position, new Vector2(30, 30));
 
-            ContentBuilder.Instance.CreateRectangleTexture(_assetName, BoundaryBox.ToRectangle().Width, BoundaryBox.ToRectangle().Height);
+            _silverAnimation = new Animation(_silverFrames);
+            _silverFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -62,12 +64,8 @@ namespace FishTank.Components
                 return;
             }
 
-            Color color = Color.White;
-            if (CoinValue >= DiamondCoinValue) color = Color.LightBlue;
-            else if (CoinValue >= GoldCoinValue) color = Color.Gold;
-            else color = Color.Silver;
-
-            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), BoundaryBox.Location, color);
+            string assetName = _silverAnimation.CurrentAnimationFrame(gameTime);
+            spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null);
         }
 
         public void Update(List<IInteractable> models, GameTime gameTime)
@@ -108,6 +106,14 @@ namespace FishTank.Components
             return true;
         }
 
-        private readonly string _assetName = TextureNames.CoinAsset;
+        private Animation _silverAnimation;
+
+        private readonly List<string> _silverFrames = new List<string>()
+        {
+            "Coins\\silver.png",
+            "Coins\\silver1.png",
+            "Coins\\silver2.png",
+            "Coins\\silver3.png",
+        };
     }
 }

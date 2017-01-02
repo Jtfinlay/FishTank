@@ -77,7 +77,7 @@ namespace FishTank.Models
                     assetName = _deadAsset;
                     break;
                 case InteractableState.Alive:
-                    bool fishIsMoving = Math.Abs(_currentVelocity.X) > _movementBuffer;
+                    bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
                     if (CurrentHunger <= _hungerDangerValue)
                     {
                         assetName = (fishIsMoving) ? _moveAnimationStarving.CurrentAnimationFrame(gameTime) : _starvingAsset;
@@ -149,7 +149,7 @@ namespace FishTank.Models
             }
         }
 
-        private const float _upgradeHungerThreshold = 5;
+        private const float _upgradeHungerThreshold = 1;
 
         /// <summary>
         /// Constant width used for all instances of the <see cref="GuppyFish"/>.
