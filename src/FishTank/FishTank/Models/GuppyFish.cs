@@ -18,6 +18,7 @@ using FishTank.Content;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
+using FishTank.Utilities.Events;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -143,11 +144,12 @@ namespace FishTank.Models
             _totalConsumption += nutrition;
             if (_totalConsumption >= _upgradeHungerThreshold)
             {
-                // TODO
+                InvokeOnItemDrop(this, new ItemDropEventArgs(new ClownFish(BoundaryBox.Left, BoundaryBox.Top)));
+                State = InteractableState.Discard;
             }
         }
 
-        private const float _upgradeHungerThreshold = 200;
+        private const float _upgradeHungerThreshold = 5;
 
         /// <summary>
         /// Constant width used for all instances of the <see cref="GuppyFish"/>.

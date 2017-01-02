@@ -157,6 +157,12 @@ namespace FishTank.Components
             {
                 _models.Add(e.Item as Pellet);
             }
+            else if (e.Item is Fish)
+            {
+                Fish fish = e.Item as Fish;
+                fish.OnItemDrop += Fish_OnItemDrop;
+                _models.Add(fish);
+            }
             else
             {
                 throw new ArgumentException("ItemType is unknown");
