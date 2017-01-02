@@ -39,15 +39,10 @@ namespace FishTank.Models
             _maxSpeed = 3.0f;
             _maxAccelerationRate = 0.9f;
 
-            _moveAnimation = new Animation(_animationFrames);
-
-            int height = 75;
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - height, 105, height);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - _height, _width, _height);
 
-            // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_stillAsset);
-            _animationFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            LoadAssets();
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -59,7 +54,10 @@ namespace FishTank.Models
             }
             else
             {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_stillAsset), BoundaryBox.Location, null);
+                spriteBatch.Draw(
+                    texture: ContentBuilder.Instance.LoadTextureByName(_spriteSheet.AssetName), 
+                    position: BoundaryBox.Location,
+                    sourceRectangle: _spriteSheet.DefaultTile);
             }
         }
 
@@ -116,7 +114,23 @@ namespace FishTank.Models
             return target;
         }
 
-        private readonly string _stillAsset = "crab.png";
+        private void LoadAssets()
+        {
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+
+            var animationFrames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0,_height),
+                new Point(0,0),
+                new Point(0, 2 * _height),
+            };
+            _moveAnimation = new Animation(_spriteSheet, animationFrames);
+        }
+
+        private const int _width = 140;
+
+        private const int _height = 100;
 
         /// <summary>
         /// Movement speed to trigger move animation
@@ -125,12 +139,8 @@ namespace FishTank.Models
 
         private Animation _moveAnimation;
 
-        private readonly List<string> _animationFrames = new List<string>()
-        {
-            "crab_move1.png",
-            "crab.png",
-            "crab_move2.png",
-            "crab.png",
-        };
+        private SpriteSheet _spriteSheet;
+
+        private readonly string _spriteSheetAssetName = "sheets\\crab_sheet.png";
     }
 }
