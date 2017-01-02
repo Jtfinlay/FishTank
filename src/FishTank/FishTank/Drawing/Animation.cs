@@ -37,9 +37,11 @@ namespace FishTank.Drawing
         /// the individual frames.
         /// </summary>
         /// <param name="frames">List of assets to use for animation. Used in the given order.</param>
-        public Animation(List<string> frames)
+        /// <param name="loop">Whether to loop the animation frames</param>
+        public Animation(List<string> frames, bool loop = true)
         {
             _assetFrames = frames;
+            _loop = loop;
         }
 
         /// <summary>
@@ -49,10 +51,12 @@ namespace FishTank.Drawing
         /// </summary>
         /// <param name="spriteSheet"><see cref="SpriteSheet"/> instance holding target asset</param>
         /// <param name="frames">List of locations on the <see cref="SpriteSheet"/> to use for this <see cref="Animation"/>.</param>
-        public Animation(SpriteSheet spriteSheet, List<Point> frames)
+        /// <param name="loop">Whether to loop the animation frames</param>
+        public Animation(SpriteSheet spriteSheet, List<Point> frames, bool loop = true)
         {
             _sheetFrames = frames;
             _spriteSheet = spriteSheet;
+            _loop = loop;
         }
 
         /// <summary>
@@ -77,6 +81,12 @@ namespace FishTank.Drawing
         {
             IncrementAnimationFrame(gameTime);
             return _currentAnimationAsset;
+        }
+
+        public Rectangle? CurrentSourceRectangle(GameTime gameTime)
+        {
+            IncrementAnimationFrame(gameTime);
+            return _currentSourceRectangle;
         }
 
         /// <summary>
@@ -149,7 +159,7 @@ namespace FishTank.Drawing
         /// <summary>
         /// Boolean indicating whether the animation loops back to the first after completion
         /// </summary>
-        private bool _loop = true;
+        private bool _loop;
 
         private SpriteSheet _spriteSheet;
 

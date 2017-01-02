@@ -42,34 +42,44 @@ namespace FishTank.Models
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, _width, _height);
 
-            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
-            List<Point> animationFrames = new List<Point>()
-            {
-                new Point(0,0),
-                new Point(0, _height),
-                new Point(0,0),
-                new Point(0, _height * 2),
-            };
-            _movementAnimation = new Animation(_spriteSheet, animationFrames);
-
-            // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+            LoadAssets();
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
-            if (fishIsMoving)
+            Rectangle? sourceRectangle = default(Rectangle?);
+            switch (State)
             {
-                _movementAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, spriteEffects);
+                case InteractableState.Discard:
+                    // fish is destroyed but await cleanup. Don't draw
+                    break;
+                case InteractableState.Dead:
+                    sourceRectangle = _deadTile;
+                    break;
+                case InteractableState.Alive:
+                    bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
+                    if (CurrentHunger <= _hungerDangerValue)
+                    {
+                        sourceRectangle = (fishIsMoving) ? _starvingMovementAnimation.CurrentSourceRectangle(gameTime) : _starvingTile;
+                    }
+                    else if (CurrentHunger <= _hungerWarningValue)
+                    {
+                        sourceRectangle = (fishIsMoving) ? _hungryMovementAnimation.CurrentSourceRectangle(gameTime) : _hungryTile;
+                    }
+                    else
+                    {
+                        sourceRectangle = (fishIsMoving) ? _healthyMovementAnimation.CurrentSourceRectangle(gameTime) : _healthyTile;
+                    }
+                    break;
             }
-            else
+
+            if (sourceRectangle.HasValue && !((Rectangle)sourceRectangle).IsEmpty)
             {
                 spriteBatch.Draw(
                     texture: ContentBuilder.Instance.LoadTextureByName(_spriteSheet.AssetName),
-                    sourceRectangle: _spriteSheet.DefaultTile,
+                    sourceRectangle: sourceRectangle,
                     position: BoundaryBox.Location,
                     effects: spriteEffects);
             }
@@ -101,6 +111,42 @@ namespace FishTank.Models
             return false;
         }
 
+        private void LoadAssets()
+        {
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+
+            // Healthy movement
+            var animationFrames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0, _height),
+                new Point(0,0),
+                new Point(0, _height * 2),
+            };
+            _healthyMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Hungry movement
+            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            _hungryMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Starving movement
+            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            _starvingMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Eat animation
+            animationFrames = new List<Point>() { new Point(_width * 3, _height) };
+            _eatAnimation = new Animation(_spriteSheet, animationFrames, false);
+
+            // Still frames
+            _healthyTile = new Rectangle(new Point(0, 0), _spriteSheet.TileSize);
+            _hungryTile = new Rectangle(new Point(_width, 0), _spriteSheet.TileSize);
+            _starvingTile = new Rectangle(new Point(_width*2, 0), _spriteSheet.TileSize);
+            _deadTile = new Rectangle(new Point(_width*3, 0), _spriteSheet.TileSize);
+
+            // Preload assets
+            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+        }
+
         private const int _width = 120;
 
         private const int _height = 88;
@@ -110,7 +156,9 @@ namespace FishTank.Models
         /// </summary>
         private float _movementBuffer = 0.01f;
 
-        private Animation _movementAnimation;
+        private Animation _healthyMovementAnimation, _hungryMovementAnimation, _starvingMovementAnimation, _eatAnimation;
+
+        private Rectangle _healthyTile, _hungryTile, _starvingTile, _deadTile;
 
         private SpriteSheet _spriteSheet;
 
