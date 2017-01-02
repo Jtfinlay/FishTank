@@ -107,6 +107,7 @@
     <Compile Include="Content\TextureNames.cs" />
     <Compile Include="Instrumentation\Log.cs" />
     <Compile Include="Models\Animation.cs" />
+    <Compile Include="Models\ClownFish.cs" />
     <Compile Include="Models\CoinCrab.cs" />
     <Compile Include="Models\EconomicFish.cs" />
     <Compile Include="Models\FeederFish.cs" />
@@ -188,6 +189,16 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\BlackLock_Small.png" />
+    <Content Include="Content\ClownFish\dead.png" />
+    <Content Include="Content\ClownFish\healthy.png" />
+    <Content Include="Content\ClownFish\healthy_move1.png" />
+    <Content Include="Content\ClownFish\healthy_move2.png" />
+    <Content Include="Content\ClownFish\hungry.png" />
+    <Content Include="Content\ClownFish\hungry_move1.png" />
+    <Content Include="Content\ClownFish\hungry_move2.png" />
+    <Content Include="Content\ClownFish\starving.png" />
+    <Content Include="Content\ClownFish\starving_move1.png" />
+    <Content Include="Content\ClownFish\starving_move2.png" />
     <Content Include="Content\crab.png" />
     <Content Include="Content\crab_move1.png" />
     <Content Include="Content\crab_move2.png" />
@@ -205,15 +216,29 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Guppy.png" />
-    <Content Include="Content\Guppy_Dead.png" />
-    <Content Include="Content\Guppy_Hungry.png" />
-    <Content Include="Content\guppy_hungry_move1.png" />
-    <Content Include="Content\guppy_hungry_move2.png" />
+    <Content Include="Content\GuppyFish\dead.png" />
+    <Content Include="Content\GuppyFish\healthy.png" />
+    <Content Include="Content\GuppyFish\healthy_move1.png" />
+    <Content Include="Content\GuppyFish\healthy_move2.png" />
+    <Content Include="Content\GuppyFish\hungry.png" />
+    <Content Include="Content\GuppyFish\hungry_move1.png" />
+    <Content Include="Content\GuppyFish\hungry_move2.png" />
+    <Content Include="Content\GuppyFish\starving.png" />
+    <Content Include="Content\GuppyFish\starving_move1.png" />
+    <Content Include="Content\GuppyFish\starving_move2.png" />
     <Content Include="Content\Guppy_move1.png" />
     <Content Include="Content\Guppy_move2.png" />
-    <Content Include="Content\Guppy_Starving.png" />
-    <Content Include="Content\guppy_starving_move1.png" />
-    <Content Include="Content\guppy_starving_move2.png" />
+    <Content Include="Content\kingfish.png" />
+    <Content Include="Content\KingFish\dead.png" />
+    <Content Include="Content\KingFish\healthy.png" />
+    <Content Include="Content\KingFish\healthy_move1.png" />
+    <Content Include="Content\KingFish\healthy_move2.png" />
+    <Content Include="Content\KingFish\hungry.png" />
+    <Content Include="Content\KingFish\hungry_move1.png" />
+    <Content Include="Content\KingFish\hungry_move2.png" />
+    <Content Include="Content\KingFish\starving.png" />
+    <Content Include="Content\KingFish\starving_move1.png" />
+    <Content Include="Content\KingFish\starving_move2.png" />
     <Content Include="Content\pellet.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

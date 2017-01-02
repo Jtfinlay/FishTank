@@ -30,7 +30,10 @@ namespace FishTank.Models
     /// </summary>
     public abstract class EconomicFish : Fish
     {
-        public EconomicFish() : base() { }
+        public EconomicFish() : base()
+        {
+            _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
+        }
 
         protected override void UpdateAlive(List<IInteractable> models, GameTime gameTime)
         {
@@ -115,7 +118,7 @@ namespace FishTank.Models
         /// <summary>
         /// Timespan indicating how often the fish should drop a coin. Required
         /// </summary>
-        protected TimeSpan _dropCoinTime;
+        protected TimeSpan _dropCoinTime = TimeSpan.MaxValue;
 
         /// <summary>
         /// Timespan tracking the time since the last coin drop

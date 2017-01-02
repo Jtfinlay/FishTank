@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Components;
 using FishTank.Content;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
@@ -26,28 +27,28 @@ using System.Linq;
 
 namespace FishTank.Models
 {
-    /// <summary>
-    /// Class instance for the <see cref="GuppyFish"/>. This is the simplest <see cref="Fish"/> available in the game. It
-    /// chases food, drops coins, and dies. Upgrades to a <see cref="ClownFish"/>.
-    /// </summary>
-    public class GuppyFish : EconomicFish
+    public class ClownFish : EconomicFish
     {
-        /// <summary>
-        /// Basic fish that chases food and dies
-        /// </summary>
-        /// <param name="graphicsDevice">Graphics resource for texture creation</param>
-        public GuppyFish() : base()
-        {
-            Log.LogVerbose("Creating guppy fish");
 
-            _dropCoinTime = TimeSpan.MaxValue;
+        /// <summary>
+        /// Creates a new instance of the <see cref="ClownFish"/> at given coordinates.
+        /// </summary>
+        /// <param name="x">X coordinate of the top-left corner of the created <see cref="ClownFish"/>.</param>
+        /// <param name="y">Y coordinate of the top-left corner of the created <see cref="ClownFish"/>.</param>
+        public ClownFish(float x, float y) : base()
+        {
+            Log.LogVerbose("Creating clown fish");
+
+            // Set basic values
+            _dropCoinTime = TimeSpan.FromSeconds(15);
             _maxHunger = 1.0f;
-            _coinValue = 0;
+            _coinValue = Coin.SilverCoinValue;
             CurrentHunger = _maxHunger;
 
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 47, 40);
+            BoundaryBox = new Rectangle2(x, y, _width, _height);
 
-            _moveAnimationHealthy= new Animation(_animationFramesHealthy);
+            // Animation objects
+            _moveAnimationHealthy = new Animation(_animationFramesHealthy);
             _moveAnimationHungry = new Animation(_animationFramesHungry);
             _moveAnimationStarving = new Animation(_animationFramesStarving);
 
@@ -59,9 +60,9 @@ namespace FishTank.Models
         }
 
         /// <summary>
-        /// Draw the <see cref="GuppyFish"/> to the canvas
+        /// Draw the <see cref="ClownFish"/> to the canvas
         /// </summary>
-        /// <param name="spriteBatch">Graphics resource for drawing</param>
+        /// <param name="spriteBatch">Graphics resource used for drawing</param>
         /// <param name="gameTime">Time measurements for the game world</param>
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
@@ -99,19 +100,6 @@ namespace FishTank.Models
             }
         }
 
-        /// <summary>
-        /// Invoked by another entity that has targeted this fish as food
-        /// </summary>
-        public void Eat()
-        {
-            State = InteractableState.Discard;
-        }
-
-        /// <summary>
-        /// If fish is hungry, find nearby food and move to consume it
-        /// </summary>
-        /// <param name="models">List of  all interactable objects on the field</param>
-        /// <returns>Bool indicating whether targeting a source of food</returns>
         protected override bool SearchForFood(List<IInteractable> models)
         {
             if (CurrentHunger > _hungerStartValue)
@@ -150,12 +138,12 @@ namespace FishTank.Models
         private const float _upgradeHungerThreshold = 200;
 
         /// <summary>
-        /// Constant width used for all instances of the <see cref="GuppyFish"/>.
+        /// Constant width used for all instances of the <see cref="ClownFish"/>.
         /// </summary>
         private const int _width = 70;
 
         /// <summary>
-        /// Constant height used for all instances of the <see cref="GuppyFish"/>.
+        /// Constant height used for all instances of the <see cref="ClownFish"/>.
         /// </summary>
         private const int _height = 60;
 
@@ -166,61 +154,61 @@ namespace FishTank.Models
 
         /// <summary>
         /// Set of <see cref="Animation"/> objects used for the different hunger states 
-        /// of the <see cref="GuppyFish"/> during movement.
+        /// of the <see cref="ClownFish"/> during movement.
         /// </summary>
         private Animation _moveAnimationHealthy, _moveAnimationHungry, _moveAnimationStarving;
 
         /// <summary>
-        /// Name of asset to use when <see cref="GuppyFish"/>'s hunger is at a healthy level.
+        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a healthy level.
         /// </summary>
-        private readonly string _healthyAsset = "GuppyFish\\healthy.png";
+        private readonly string _healthyAsset = "ClownFish\\healthy.png";
 
         /// <summary>
-        /// Name of asset to use when <see cref="GuppyFish"/>'s hunger is at a hungry level.
+        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a hungry level.
         /// </summary>
-        private readonly string _hungryAsset = "GuppyFish\\hungry.png";
+        private readonly string _hungryAsset = "ClownFish\\hungry.png";
 
         /// <summary>
-        /// Name of asset to use when <see cref="GuppyFish"/>'s hunger is at a starving level.
+        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a starving level.
         /// </summary>
-        private readonly string _starvingAsset = "GuppyFish\\starving.png";
+        private readonly string _starvingAsset = "ClownFish\\starving.png";
 
         /// <summary>
-        /// Name of asset to use when <see cref="GuppyFish"/> is dead.
+        /// Name of asset to use when <see cref="ClownFish"/> is dead.
         /// </summary>
-        private readonly string _deadAsset = "GuppyFish\\dead.png";
+        private readonly string _deadAsset = "ClownFish\\dead.png";
 
         /// <summary>
-        /// List of movement assets to use when the <see cref="GuppyFish"/>'s hunger is at a healthy level.
+        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a healthy level.
         /// </summary>
         private readonly List<string> _animationFramesHealthy = new List<string>()
         {
-            "GuppyFish\\healthy.png",
-            "GuppyFish\\healthy_move1.png",
-            "GuppyFish\\healthy.png",
-            "GuppyFish\\healthy_move2.png",
+            "ClownFish\\healthy.png",
+            "ClownFish\\healthy_move1.png",
+            "ClownFish\\healthy.png",
+            "ClownFish\\healthy_move2.png",
         };
 
         /// <summary>
-        /// List of movement assets to use when the <see cref="GuppyFish"/>'s hunger is at a hungry level.
+        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a hungry level.
         /// </summary>
         private readonly List<string> _animationFramesHungry = new List<string>()
         {
-            "GuppyFish\\hungry.png",
-            "GuppyFish\\hungry_move1.png",
-            "GuppyFish\\hungry.png",
-            "GuppyFish\\hungry_move2.png",
+            "ClownFish\\hungry.png",
+            "ClownFish\\hungry_move1.png",
+            "ClownFish\\hungry.png",
+            "ClownFish\\hungry_move2.png",
         };
 
         /// <summary>
-        /// List of movement assets to use when the <see cref="GuppyFish"/>'s hunger is at a starving level.
+        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a starving level.
         /// </summary>
         private readonly List<string> _animationFramesStarving = new List<string>()
         {
-            "GuppyFish\\starving.png",
-            "GuppyFish\\starving_move1.png",
-            "GuppyFish\\starving.png",
-            "GuppyFish\\starving_move2.png",
+            "ClownFish\\starving.png",
+            "ClownFish\\starving_move1.png",
+            "ClownFish\\starving.png",
+            "ClownFish\\starving_move2.png",
         };
     }
 }
