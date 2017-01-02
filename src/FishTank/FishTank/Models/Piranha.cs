@@ -156,7 +156,13 @@ namespace FishTank.Models
         /// </summary>
         private float _movementBuffer = 0.01f;
 
-        private Animation _healthyMovementAnimation, _hungryMovementAnimation, _starvingMovementAnimation, _eatAnimation;
+        private Animation _healthyMovementAnimation;
+
+        private Animation _hungryMovementAnimation;
+
+        private Animation _starvingMovementAnimation;
+
+        private Animation _eatAnimation;
 
         private Rectangle _healthyTile, _hungryTile, _starvingTile, _deadTile;
 

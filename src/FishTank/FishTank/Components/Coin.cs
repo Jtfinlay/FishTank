@@ -14,16 +14,16 @@
 //  limitations under the License.
 //
 
+using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
+using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using FishTank.Utilities.Inputs;
 using System;
-using FishTank.Content;
-using FishTank.Models;
-using FishTank.Drawing;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace FishTank.Components
 {
@@ -51,15 +51,9 @@ namespace FishTank.Components
         public Coin(Vector2 position, int coinValue)
         {
             CoinValue = coinValue;
-            BoundaryBox = new Rectangle2(position, new Vector2(30, 30));
+            BoundaryBox = new Rectangle2(position, new Vector2(_width, _height));
 
-            _silverAnimation = new Animation(_silverFrames);
-            _goldAnimation = new Animation(_goldFrames);
-            _diamondAnimation = new Animation(_diamondFrames);
-
-            _silverFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
-            _goldFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
-            _diamondFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            LoadAssets();
         }
 
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
@@ -116,35 +110,52 @@ namespace FishTank.Components
             return true;
         }
 
+        private void LoadAssets()
+        {
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+
+            // Silver
+            var frames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0, _height),
+                new Point(0, _height * 2),
+                new Point(0, _height * 3),
+                new Point(0, _height * 4),
+            };
+            _silverAnimation = new Animation(_spriteSheet, frames);
+
+            // Gold
+            frames = frames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            _goldAnimation = new Animation(_spriteSheet, frames);
+
+            // Diamond
+            frames = new List<Point>()
+            {
+                new Point(_width*2,0),
+                new Point(_width*2, _height),
+                new Point(_width*2, _height * 2),
+                new Point(_width*2,0),
+                new Point(_width*2, _height * 3),
+            };
+            _diamondAnimation = new Animation(_spriteSheet, frames);
+
+            // Preload assets
+            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+        }
+
+        private const int _width = 30;
+
+        private const int _height = 30;
+
         private Animation _silverAnimation;
 
         private Animation _goldAnimation;
 
         private Animation _diamondAnimation;
 
-        private readonly List<string> _silverFrames = new List<string>()
-        {
-            "Coins\\silver.png",
-            "Coins\\silver1.png",
-            "Coins\\silver2.png",
-            "Coins\\silver3.png",
-        };
+        private SpriteSheet _spriteSheet;
 
-        private readonly List<string> _goldFrames = new List<string>()
-        {
-            "Coins\\gold.png",
-            "Coins\\gold1.png",
-            "Coins\\gold2.png",
-            "Coins\\gold3.png",
-        };
-
-        private readonly List<string> _diamondFrames = new List<string>()
-        {
-            "Coins\\diamond.png",
-            "Coins\\diamond1.png",
-            "Coins\\diamond2.png",
-            "Coins\\diamond.png",
-            "Coins\\diamond3.png",
-        };
+        private readonly string _spriteSheetAssetName = "sheets\\coin_sheet.png";
     }
 }
