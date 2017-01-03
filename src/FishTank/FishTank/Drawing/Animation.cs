@@ -27,25 +27,15 @@ namespace FishTank.Drawing
     /// </summary>
     public class Animation
     {
+        /// <summary>
+        /// <see cref="EventHandler"/> invoked when an iteration of the <see cref="Animation"/> has completed.
+        /// </summary>
         public event EventHandler OnAnimationComplete;
 
         /// <summary>
         /// Denotes the number of <see cref="Frames"/> in one animation loop
         /// </summary>
-        public int Frames => (int)((_spriteSheet == null) ? _assetFrames?.Count : _sheetFrames?.Count);
-
-        /// <summary>
-        /// Creates a new instance of the <see cref="Animation"/> object using given list of assets as
-        /// the individual frames.
-        /// </summary>
-        /// <param name="frames">List of assets to use for animation. Used in the given order.</param>
-        /// <param name="loop">Whether to loop the animation frames</param>
-        public Animation(List<string> frames, bool loop = true, int animationDuration = 100)
-        {
-            _assetFrames = frames;
-            _loop = loop;
-            _animationDuration = animationDuration;
-        }
+        public int Frames => (int)(_sheetFrames?.Count);
 
         /// <summary>
         /// Creates a new instance of the <see cref="Animation"/> object using a given <see cref="SpriteSheet"/>
@@ -81,40 +71,30 @@ namespace FishTank.Drawing
                 effects: effects);
         }
 
-        public string CurrentAnimationFrame(GameTime gameTime)
-        {
-            IncrementAnimationFrame(gameTime);
-            return _currentAnimationAsset;
-        }
-
+        /// <summary>
+        /// Helper method that updates the animation frame and returns the appropriate tile location as a <see cref="Rectangle"/>.
+        /// </summary>
+        /// <param name="gameTime">Performance object tracking elapsed time.</param>
+        /// <returns>Source location of the current tile as a <see cref="Rectangle"/>.</returns>
         public Rectangle? CurrentSourceRectangle(GameTime gameTime)
         {
             IncrementAnimationFrame(gameTime);
             return _currentSourceRectangle;
         }
 
+        /// <summary>
+        /// Resets the <see cref="Animation"/>'s tile iterator and the target <see cref="TimeSpan"/>.
+        /// </summary>
         public void Reset()
         {
             _changeAnimationFrameTarget = default(TimeSpan);
+            _currentAnimationFrame = 0;
         }
 
         /// <summary>
         /// The asset to use when drawing. Either a specific asset from the provided list, or a full <see cref="SpriteSheet"/> asset.
         /// </summary>
-        private string _currentAnimationAsset
-        {
-            get
-            {
-                if (_spriteSheet != null)
-                {
-                    return _spriteSheet.AssetName;
-                }
-                else
-                {
-                    return _assetFrames[_currentAnimationFrame];
-                }
-            }
-        }
+        private string _currentAnimationAsset => _spriteSheet.AssetName;
 
         /// <summary>
         /// The area of the asset to draw. Either a specific area or the default value (when no spritesheet provided)
@@ -123,11 +103,6 @@ namespace FishTank.Drawing
         {
             get
             {
-                if (_spriteSheet == null)
-                {
-                    return default(Rectangle?);
-                }
-
                 Point origin = _sheetFrames[_currentAnimationFrame];
                 return new Rectangle(origin, _spriteSheet.TileSize);
             }
@@ -160,12 +135,12 @@ namespace FishTank.Drawing
         /// <summary>
         /// Time when to change animation frame.
         /// </summary>
-        private TimeSpan _changeAnimationFrameTarget = default(TimeSpan);
+        private TimeSpan _changeAnimationFrameTarget;
 
         /// <summary>
         /// Time, in milliseconds, until moving to next animation frame.
         /// </summary>
-        private int _animationDuration = 100;
+        private int _animationDuration;
 
         /// <summary>
         /// Index of the next animation frame to draw
@@ -177,10 +152,15 @@ namespace FishTank.Drawing
         /// </summary>
         private bool _loop;
 
+        /// <summary>
+        /// Handler for tiles multi-asset <see cref="SpriteSheet"/>.
+        /// </summary>
         private SpriteSheet _spriteSheet;
 
-        private List<string> _assetFrames;
-
+        /// <summary>
+        /// Ordered list of coordinates on the <see cref="SpriteSheet"/> that denote the individual
+        /// frames to draw.
+        /// </summary>
         private List<Point> _sheetFrames;
     }
 }

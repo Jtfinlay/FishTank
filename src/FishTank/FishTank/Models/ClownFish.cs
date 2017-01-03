@@ -30,7 +30,6 @@ namespace FishTank.Models
 {
     public class ClownFish : EconomicFish
     {
-
         /// <summary>
         /// Creates a new instance of the <see cref="ClownFish"/> at given coordinates.
         /// </summary>
@@ -48,16 +47,7 @@ namespace FishTank.Models
 
             BoundaryBox = new Rectangle2(x, y, _width, _height);
 
-            // Animation objects
-            _moveAnimationHealthy = new Animation(_animationFramesHealthy);
-            _moveAnimationHungry = new Animation(_animationFramesHungry);
-            _moveAnimationStarving = new Animation(_animationFramesStarving);
-
-            // Preload assets
-            _animationFramesHealthy.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
-            _animationFramesHungry.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
-            _animationFramesStarving.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
-            ContentBuilder.Instance.LoadTextureByName(_deadAsset);
+            LoadAssets();
         }
 
         /// <summary>
@@ -67,40 +57,53 @@ namespace FishTank.Models
         /// <param name="gameTime">Time measurements for the game world</param>
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            string assetName = string.Empty;
+            SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+            Rectangle? sourceRectangle = default(Rectangle?);
             switch (State)
             {
                 case InteractableState.Discard:
-                    // fish is destroyed but awaiting cleanup. Don't draw
+                    // fish is destroyed but await cleanup. Don't draw
                     break;
                 case InteractableState.Dead:
-                    assetName = _deadAsset;
+                    sourceRectangle = _deadTile;
                     break;
                 case InteractableState.Alive:
                     bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
                     if (CurrentHunger <= _hungerDangerValue)
                     {
-                        assetName = (fishIsMoving) ? _moveAnimationStarving.CurrentAnimationFrame(gameTime) : _starvingAsset;
+                        sourceRectangle = (fishIsMoving) ? _starvingMovementAnimation.CurrentSourceRectangle(gameTime) : _starvingTile;
                     }
                     else if (CurrentHunger <= _hungerWarningValue)
                     {
-                        assetName = (fishIsMoving) ? _moveAnimationHungry.CurrentAnimationFrame(gameTime) : _hungryAsset;
+                        sourceRectangle = (fishIsMoving) ? _hungryMovementAnimation.CurrentSourceRectangle(gameTime) : _hungryTile;
+                    }
+                    else if (_animationState == AnimationState.Eat)
+                    {
+                        sourceRectangle = _eatAnimation.CurrentSourceRectangle(gameTime);
                     }
                     else
                     {
-                        assetName = (fishIsMoving) ? _moveAnimationHealthy.CurrentAnimationFrame(gameTime) : _healthyAsset;
+                        sourceRectangle = (fishIsMoving) ? _healthyMovementAnimation.CurrentSourceRectangle(gameTime) : _healthyTile;
                     }
                     break;
             }
 
-            if (!string.IsNullOrWhiteSpace(assetName))
+            if (sourceRectangle.HasValue && !((Rectangle)sourceRectangle).IsEmpty)
             {
-                SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(assetName), BoundaryBox.Location, null, effects: spriteEffects);
+                spriteBatch.Draw(
+                    texture: ContentBuilder.Instance.LoadTextureByName(_spriteSheet.AssetName),
+                    sourceRectangle: sourceRectangle,
+                    position: BoundaryBox.Location,
+                    effects: spriteEffects);
             }
         }
 
+        /// <summary>
+        /// If fish is hungry, find nearby food and move to consume it
+        /// </summary>
+        /// <param name="models">List of  all interactable objects on the field</param>
+        /// <returns>Bool indicating whether targeting a source of food</returns>
         protected override bool SearchForFood(List<IInteractable> models)
         {
             if (CurrentHunger > _hungerStartValue)
@@ -126,16 +129,77 @@ namespace FishTank.Models
             return false;
         }
 
+        /// <summary>
+        /// Manage hunger and internal states from provided nutrition value.
+        /// </summary>
+        /// <param name="nutrition">Float value indicating the effectiveness of the consumed food.</param>
         private void ConsumeFood(float nutrition)
         {
             CurrentHunger += nutrition;
             _totalConsumption += nutrition;
+
+            _animationState = AnimationState.Eat;
+            _eatAnimation.Reset();
+
             if (_totalConsumption >= _upgradeHungerThreshold)
             {
                 // TODO
             }
         }
 
+        /// <summary>
+        /// <see cref="EventHandler"/> for when the 'eat' <see cref="Animation"/> has completed.
+        /// </summary>
+        /// <param name="sender">Instance of the invoking <see cref="Animation"/> element.</param>
+        /// <param name="e">Argument object for this event. Null.</param>
+        private void OnEatAnimationComplete(object sender, EventArgs e)
+        {
+            _animationState = AnimationState.None;
+        }
+
+        /// <summary>
+        /// Load assets, <see cref="SpriteSheet"/>s, and <see cref="Animation"/>s for drawing.
+        /// </summary>
+        private void LoadAssets()
+        {
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+
+            // Healthy movement
+            var animationFrames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0, _height),
+                new Point(0,0),
+                new Point(0, _height * 2),
+            };
+            _healthyMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Hungry movement
+            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            _hungryMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Starving movement
+            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            _starvingMovementAnimation = new Animation(_spriteSheet, animationFrames);
+
+            // Eat animation
+            animationFrames = new List<Point>() { new Point(_width * 3, _height) };
+            _eatAnimation = new Animation(_spriteSheet, animationFrames, false, 200);
+            _eatAnimation.OnAnimationComplete += OnEatAnimationComplete;
+
+            // Still frames
+            _healthyTile = new Rectangle(new Point(0, 0), _spriteSheet.TileSize);
+            _hungryTile = new Rectangle(new Point(_width, 0), _spriteSheet.TileSize);
+            _starvingTile = new Rectangle(new Point(_width * 2, 0), _spriteSheet.TileSize);
+            _deadTile = new Rectangle(new Point(_width * 3, 0), _spriteSheet.TileSize);
+
+            // Preload assets
+            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+        }
+
+        /// <summary>
+        /// Threshold value at which the <see cref="ClownFish"/> evolves to a bigger <see cref="Fish"/>.
+        /// </summary>
         private const float _upgradeHungerThreshold = 50;
 
         /// <summary>
@@ -154,62 +218,34 @@ namespace FishTank.Models
         private float _movementBuffer = 0.01f;
 
         /// <summary>
+        /// Current <see cref="AnimationState"/> of the instance. Used for non-repeating <see cref="Animation"/>s.
+        /// </summary>
+        private AnimationState _animationState;
+
+        /// <summary>
+        /// Non-looping <see cref="Animation"/> invoked when consuming food.
+        /// </summary>
+        private Animation _eatAnimation;
+
+        /// <summary>
+        /// Handler for tiled multi-asset <see cref="SpriteSheet"/>. Holds all assets for the <see cref="Fish"/>.
+        /// </summary>
+        private SpriteSheet _spriteSheet;
+
+        /// <summary>
+        /// Path to the <see cref="SpriteSheet"/> asset for this <see cref="Fish"/>.
+        /// </summary>
+        private readonly string _spriteSheetAssetName = "sheets\\clownfish_sheet.png";
+
+        /// <summary>
         /// Set of <see cref="Animation"/> objects used for the different hunger states 
         /// of the <see cref="ClownFish"/> during movement.
         /// </summary>
-        private Animation _moveAnimationHealthy, _moveAnimationHungry, _moveAnimationStarving;
+        private Animation _healthyMovementAnimation, _hungryMovementAnimation, _starvingMovementAnimation;
 
         /// <summary>
-        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a healthy level.
+        /// Set of <see cref="Rectangle"/> instances used to show non-animated states from the <see cref="SpriteSheet"/>.
         /// </summary>
-        private readonly string _healthyAsset = "ClownFish\\healthy.png";
-
-        /// <summary>
-        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a hungry level.
-        /// </summary>
-        private readonly string _hungryAsset = "ClownFish\\hungry.png";
-
-        /// <summary>
-        /// Name of asset to use when <see cref="ClownFish"/>'s hunger is at a starving level.
-        /// </summary>
-        private readonly string _starvingAsset = "ClownFish\\starving.png";
-
-        /// <summary>
-        /// Name of asset to use when <see cref="ClownFish"/> is dead.
-        /// </summary>
-        private readonly string _deadAsset = "ClownFish\\dead.png";
-
-        /// <summary>
-        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a healthy level.
-        /// </summary>
-        private readonly List<string> _animationFramesHealthy = new List<string>()
-        {
-            "ClownFish\\healthy.png",
-            "ClownFish\\healthy_move1.png",
-            "ClownFish\\healthy.png",
-            "ClownFish\\healthy_move2.png",
-        };
-
-        /// <summary>
-        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a hungry level.
-        /// </summary>
-        private readonly List<string> _animationFramesHungry = new List<string>()
-        {
-            "ClownFish\\hungry.png",
-            "ClownFish\\hungry_move1.png",
-            "ClownFish\\hungry.png",
-            "ClownFish\\hungry_move2.png",
-        };
-
-        /// <summary>
-        /// List of movement assets to use when the <see cref="ClownFish"/>'s hunger is at a starving level.
-        /// </summary>
-        private readonly List<string> _animationFramesStarving = new List<string>()
-        {
-            "ClownFish\\starving.png",
-            "ClownFish\\starving_move1.png",
-            "ClownFish\\starving.png",
-            "ClownFish\\starving_move2.png",
-        };
+        private Rectangle _healthyTile, _hungryTile, _starvingTile, _deadTile;
     }
 }
