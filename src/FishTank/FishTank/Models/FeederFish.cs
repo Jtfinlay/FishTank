@@ -43,7 +43,7 @@ namespace FishTank.Models
         {
             SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
+            bool isFishMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
             if (isFishMoving)
             {
                 _moveAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, spriteEffects);
