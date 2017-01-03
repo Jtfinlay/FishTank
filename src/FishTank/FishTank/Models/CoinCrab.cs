@@ -47,8 +47,8 @@ namespace FishTank.Models
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            string assetName = string.Empty;
-            if (Math.Abs(_currentVelocity.X) > _movementBuffer)
+            bool isFishMoving = Math.Abs(_currentVelocity.X) > _movementBuffer;
+            if (isFishMoving)
             {
                 _moveAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, SpriteEffects.None);
             }

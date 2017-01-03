@@ -267,6 +267,7 @@
     <Content Include="Content\sheets\coin_sheet.png" />
     <Content Include="Content\sheets\crab_sheet.png" />
     <Content Include="Content\sheets\guppy_sheet.png" />
+    <Content Include="Content\sheets\seahorse_sheet.png" />
     <Content Include="Content\Unknown.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\Wide310x150Logo.scale-200.png" />

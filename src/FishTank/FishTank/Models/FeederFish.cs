@@ -34,25 +34,27 @@ namespace FishTank.Models
         public FeederFish() : base()
         {
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, 60, 75);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, _width, _height);
 
-            // Preload assets
-            _moveAnimation = new Animation(_animationFrames);
-            ContentBuilder.Instance.LoadTextureByName(_stillAsset);
-            _animationFrames.ForEach((frame) => ContentBuilder.Instance.LoadTextureByName(frame));
+            LoadAssets();
         }
 
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
-            SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            SpriteEffects spriteEffects = (_facingLeft) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-            if (Math.Abs(_currentVelocity.Length()) > _movementBuffer)
+            bool fishIsMoving = Math.Abs(_currentVelocity.Length()) > _movementBuffer;
+            if (isFishMoving)
             {
                 _moveAnimation.Draw(spriteBatch, gameTime, BoundaryBox.Location, spriteEffects);
             }
             else
             {
-                spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_stillAsset), BoundaryBox.Location, null, effects: spriteEffects);
+                spriteBatch.Draw(
+                    texture: ContentBuilder.Instance.LoadTextureByName(_spriteSheet.AssetName),
+                    position: BoundaryBox.Location,
+                    sourceRectangle: _spriteSheet.DefaultTile,
+                    effects: spriteEffects);
             }
         }
 
@@ -77,17 +79,29 @@ namespace FishTank.Models
             WanderAround();
         }
 
+        private void LoadAssets()
+        {
+            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+
+            var animationFrames = new List<Point>()
+            {
+                new Point(0,0),
+                new Point(0,_height),
+                new Point(0,0),
+                new Point(0, 2 * _height),
+            };
+            _moveAnimation = new Animation(_spriteSheet, animationFrames);
+        }
+
+        private int _width = 68;
+
+        private int _height = 128;
+
         private Animation _moveAnimation;
 
-        private string _stillAsset = "seahorse.png";
+        private SpriteSheet _spriteSheet;
 
-        private readonly List<string> _animationFrames = new List<string>()
-        {
-            "seahorse.png",
-            "seahorse2.png",
-            "seahorse3.png",
-            "seahorse2.png",
-        };
+        private readonly string _spriteSheetAssetName = "sheets\\seahorse_sheet.png";
 
         /// <summary>
         /// Movement speed to trigger move animation
