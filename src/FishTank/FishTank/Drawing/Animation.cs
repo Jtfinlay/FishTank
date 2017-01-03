@@ -27,6 +27,8 @@ namespace FishTank.Drawing
     /// </summary>
     public class Animation
     {
+        public event EventHandler OnAnimationComplete;
+
         /// <summary>
         /// Denotes the number of <see cref="Frames"/> in one animation loop
         /// </summary>
@@ -38,10 +40,11 @@ namespace FishTank.Drawing
         /// </summary>
         /// <param name="frames">List of assets to use for animation. Used in the given order.</param>
         /// <param name="loop">Whether to loop the animation frames</param>
-        public Animation(List<string> frames, bool loop = true)
+        public Animation(List<string> frames, bool loop = true, int animationDuration = 100)
         {
             _assetFrames = frames;
             _loop = loop;
+            _animationDuration = animationDuration;
         }
 
         /// <summary>
@@ -52,11 +55,12 @@ namespace FishTank.Drawing
         /// <param name="spriteSheet"><see cref="SpriteSheet"/> instance holding target asset</param>
         /// <param name="frames">List of locations on the <see cref="SpriteSheet"/> to use for this <see cref="Animation"/>.</param>
         /// <param name="loop">Whether to loop the animation frames</param>
-        public Animation(SpriteSheet spriteSheet, List<Point> frames, bool loop = true)
+        public Animation(SpriteSheet spriteSheet, List<Point> frames, bool loop = true, int animationDuration = 100)
         {
             _sheetFrames = frames;
             _spriteSheet = spriteSheet;
             _loop = loop;
+            _animationDuration = animationDuration;
         }
 
         /// <summary>
@@ -89,8 +93,13 @@ namespace FishTank.Drawing
             return _currentSourceRectangle;
         }
 
+        public void Reset()
+        {
+            _changeAnimationFrameTarget = default(TimeSpan);
+        }
+
         /// <summary>
-        /// The asset to use when drawing. Either a specific asset from the provided list, or a full spritesheet.
+        /// The asset to use when drawing. Either a specific asset from the provided list, or a full <see cref="SpriteSheet"/> asset.
         /// </summary>
         private string _currentAnimationAsset
         {
@@ -130,6 +139,12 @@ namespace FishTank.Drawing
         /// <param name="gameTime">Performance object tracking elapsed time.</param>
         private void IncrementAnimationFrame(GameTime gameTime)
         {
+            if (_changeAnimationFrameTarget == default(TimeSpan))
+            {
+                // If the target animation time is not set, then animation is starting fresh.
+                _changeAnimationFrameTarget = gameTime.TotalGameTime + TimeSpan.FromMilliseconds(_animationDuration);
+            }
+
             if (gameTime.TotalGameTime > _changeAnimationFrameTarget)
             {
                 _changeAnimationFrameTarget = gameTime.TotalGameTime + TimeSpan.FromMilliseconds(_animationDuration);
@@ -137,6 +152,7 @@ namespace FishTank.Drawing
                 if (_currentAnimationFrame >= Frames)
                 {
                     _currentAnimationFrame = _loop ? 0 : Frames - 1;
+                    OnAnimationComplete?.Invoke(this, null);
                 }
             }
         }

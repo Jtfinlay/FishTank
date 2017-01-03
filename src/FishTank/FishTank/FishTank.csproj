@@ -105,6 +105,7 @@
     <Compile Include="Content\ContentBuilder.cs" />
     <Compile Include="Content\FontNames.cs" />
     <Compile Include="Content\TextureNames.cs" />
+    <Compile Include="Drawing\AnimationState.cs" />
     <Compile Include="Drawing\SpriteSheet.cs" />
     <Compile Include="Instrumentation\Log.cs" />
     <Compile Include="Drawing\Animation.cs" />
