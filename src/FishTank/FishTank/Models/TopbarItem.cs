@@ -57,7 +57,7 @@ namespace FishTank.Models
                 case LevelItemType.PiranhaFish:
                     _iconAssetName = TextureNames.PiranhaAsset;
                     break;
-                case LevelItemType.GuppyFish:
+                case LevelItemType.ClownFish:
                     _iconAssetName = TextureNames.GuppyAsset;
                     break;
                 case LevelItemType.Locked:

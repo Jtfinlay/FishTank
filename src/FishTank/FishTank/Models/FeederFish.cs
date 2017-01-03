@@ -70,7 +70,7 @@ namespace FishTank.Models
             {
                 _timeSinceFoodDrop = TimeSpan.Zero;
 
-                Vector2 launchPosition = new Vector2(BoundaryBox.Center.X, BoundaryBox.Top);
+                Vector2 launchPosition = new Vector2(BoundaryBox.Center.X, BoundaryBox.Top + 20);
                 Vector2 launchVelocity = new Vector2(_pelletLaunchSpeed * (_facingLeft ? -1 : 1), 0);
                 InvokeOnItemDrop(this, new ItemDropEventArgs(new Pellet(launchPosition, launchVelocity)));
                 return;

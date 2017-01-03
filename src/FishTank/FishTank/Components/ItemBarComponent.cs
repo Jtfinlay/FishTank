@@ -131,7 +131,7 @@ namespace FishTank.Components
             }
             switch (item.ItemType)
             {
-                case LevelItemType.GuppyFish:
+                case LevelItemType.ClownFish:
                 case LevelItemType.PiranhaFish:
                     GoldAmount -= item.GoldValue;
                     OnPurchaseFish?.Invoke(this, e);

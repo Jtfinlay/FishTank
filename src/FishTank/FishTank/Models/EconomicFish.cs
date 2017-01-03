@@ -39,7 +39,7 @@ namespace FishTank.Models
         {
             // Check whether to drop coin
             _timeSinceCoinDrop += gameTime.ElapsedGameTime;
-            if (_timeSinceCoinDrop >= _dropCoinTime)
+            if (_timeSinceCoinDrop >= _dropCoinTime && _coinValue > 0)
             {
                 _timeSinceCoinDrop = TimeSpan.Zero;
                 InvokeOnItemDrop(this, new ItemDropEventArgs(new Coin(BoundaryBox.Center, _coinValue)));

@@ -55,8 +55,8 @@ namespace FishTank.Components
             Fish fish = null;
             switch (type)
             {
-                case LevelItemType.GuppyFish:
-                    fish = new GuppyFish();
+                case LevelItemType.ClownFish:
+                    fish = new ClownFish();
                     break;
                 case LevelItemType.PiranhaFish:
                     fish = new Piranha();

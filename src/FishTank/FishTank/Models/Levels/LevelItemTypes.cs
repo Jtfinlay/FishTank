@@ -20,7 +20,7 @@ namespace FishTank.Models.Levels
     {
         Locked = 0,
 
-        GuppyFish,
+        ClownFish,
         PiranhaFish,
 
         FoodUpgrade,

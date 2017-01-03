@@ -39,7 +39,6 @@ namespace FishTank.Models
             _coinValue = Coin.DiamondCoinValue;
             CurrentHunger = _maxHunger;
 
-            _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
             BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, _width, _height);
 
             LoadAssets();
@@ -92,8 +91,9 @@ namespace FishTank.Models
                 return false;
             }
 
-            GuppyFish nearestGuppy = models.Where((model) => (model as GuppyFish)?.State == InteractableState.Alive)?
-                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center, BoundaryBox.Center)).FirstOrDefault() as GuppyFish;
+            // Find the nearest alive Clownfish at stage 0 (a guppy)
+            ClownFish nearestGuppy = models.Where((model) => ((model as ClownFish)?.State == InteractableState.Alive) && (model as ClownFish)?.Stage == 0)?
+                .OrderBy(i => Vector2.Distance(i.BoundaryBox.Center, BoundaryBox.Center)).FirstOrDefault() as ClownFish;
             if (nearestGuppy != null)
             {
                 float distance = Vector2.Distance(nearestGuppy.BoundaryBox.Center, BoundaryBox.Center);

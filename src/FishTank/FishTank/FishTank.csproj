@@ -126,7 +126,6 @@
     <Compile Include="Models\Piranha.cs" />
     <Compile Include="Screens\GameScreen.cs" />
     <Compile Include="Models\TopbarItem.cs" />
-    <Compile Include="Models\GuppyFish.cs" />
     <Compile Include="Models\Interfaces\IInteractable.cs" />
     <Compile Include="Models\Interfaces\InteractableState.cs" />
     <Compile Include="Models\Pellet.cs" />
@@ -268,6 +267,7 @@
     <Content Include="Content\sheets\coin_sheet.png" />
     <Content Include="Content\sheets\crab_sheet.png" />
     <Content Include="Content\sheets\guppy_sheet.png" />
+    <Content Include="Content\sheets\kingfish_sheet.png" />
     <Content Include="Content\sheets\seahorse_sheet.png" />
     <Content Include="Content\Unknown.png" />
     <Content Include="Properties\Default.rd.xml" />

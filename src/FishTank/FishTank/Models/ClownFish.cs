@@ -31,21 +31,46 @@ namespace FishTank.Models
     public class ClownFish : EconomicFish
     {
         /// <summary>
+        /// Current level of the <see cref="ClownFish"/> determining size and coin value.
+        /// </summary>
+        /// <remarks>0: Guppy. 1: Regular. 2: King.</remarks>
+        public int Stage
+        {
+            get
+            {
+                return _stage;
+            }
+            private set
+            {
+                if (value >= _stageData.Count)
+                {
+                    value = _stageData.Count - 1;
+                }
+                _stage = value;
+
+                // Update values
+                BoundaryBox = new Rectangle2(BoundaryBox.Location, _size.ToVector2());
+                _coinValue = _stageData[Stage].CoinValue;
+                LoadAssets();
+            }
+        }
+
+        /// <summary>
         /// Creates a new instance of the <see cref="ClownFish"/> at given coordinates.
         /// </summary>
         /// <param name="x">X coordinate of the top-left corner of the created <see cref="ClownFish"/>.</param>
         /// <param name="y">Y coordinate of the top-left corner of the created <see cref="ClownFish"/>.</param>
-        public ClownFish(float x, float y) : base()
+        public ClownFish(float x = 0, float y = 0) : base()
         {
             Log.LogVerbose("Creating clown fish");
 
             // Set basic values
             _dropCoinTime = TimeSpan.FromSeconds(15);
             _maxHunger = 1.0f;
-            _coinValue = Coin.SilverCoinValue;
+            _coinValue = 0;
             CurrentHunger = _maxHunger;
 
-            BoundaryBox = new Rectangle2(x, y, _width, _height);
+            BoundaryBox = new Rectangle2(x, y, _size.X, _size.Y);
 
             LoadAssets();
         }
@@ -100,6 +125,14 @@ namespace FishTank.Models
         }
 
         /// <summary>
+        /// Invoked by a predator that has consumed this <see cref="ClownFish"/> as food.
+        /// </summary>
+        public void Eat()
+        {
+            State = InteractableState.Discard;
+        }
+
+        /// <summary>
         /// If fish is hungry, find nearby food and move to consume it
         /// </summary>
         /// <param name="models">List of  all interactable objects on the field</param>
@@ -143,7 +176,7 @@ namespace FishTank.Models
 
             if (_totalConsumption >= _upgradeHungerThreshold)
             {
-                // TODO
+                Stage++;
             }
         }
 
@@ -162,55 +195,60 @@ namespace FishTank.Models
         /// </summary>
         private void LoadAssets()
         {
-            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
+            string assetName = _stageData[Stage].AssetName;
+            _spriteSheet = new SpriteSheet(assetName, BoundaryBox.Size.ToPoint());
 
             // Healthy movement
             var animationFrames = new List<Point>()
             {
                 new Point(0,0),
-                new Point(0, _height),
+                new Point(0, _size.Y),
                 new Point(0,0),
-                new Point(0, _height * 2),
+                new Point(0, _size.Y * 2),
             };
             _healthyMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Hungry movement
-            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            animationFrames = animationFrames.Select((point) => { point += new Point(_size.X, 0); return point; }).ToList();
             _hungryMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Starving movement
-            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            animationFrames = animationFrames.Select((point) => { point += new Point(_size.X, 0); return point; }).ToList();
             _starvingMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Eat animation
-            animationFrames = new List<Point>() { new Point(_width * 3, _height) };
+            animationFrames = new List<Point>() { new Point(_size.X * 3, _size.Y) };
             _eatAnimation = new Animation(_spriteSheet, animationFrames, false, 200);
             _eatAnimation.OnAnimationComplete += OnEatAnimationComplete;
 
             // Still frames
             _healthyTile = new Rectangle(new Point(0, 0), _spriteSheet.TileSize);
-            _hungryTile = new Rectangle(new Point(_width, 0), _spriteSheet.TileSize);
-            _starvingTile = new Rectangle(new Point(_width * 2, 0), _spriteSheet.TileSize);
-            _deadTile = new Rectangle(new Point(_width * 3, 0), _spriteSheet.TileSize);
+            _hungryTile = new Rectangle(new Point(_size.X, 0), _spriteSheet.TileSize);
+            _starvingTile = new Rectangle(new Point(_size.X * 2, 0), _spriteSheet.TileSize);
+            _deadTile = new Rectangle(new Point(_size.X * 3, 0), _spriteSheet.TileSize);
 
             // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+            ContentBuilder.Instance.LoadTextureByName(assetName);
         }
+
+        private List<StageData> _stageData = new List<StageData>()
+        {
+            new StageData("sheets\\guppy_sheet.png", new Point(47, 40), 10, 0),
+            new StageData("sheets\\clownfish_sheet.png", new Point(70, 60), 70, Coin.SilverCoinValue),
+            new StageData("sheets\\kingfish_sheet.png", new Point(70, 60), int.MaxValue, Coin.GoldCoinValue),
+        };
+
+        private int _stage;
 
         /// <summary>
         /// Threshold value at which the <see cref="ClownFish"/> evolves to a bigger <see cref="Fish"/>.
         /// </summary>
-        private const float _upgradeHungerThreshold = 50;
+        private float _upgradeHungerThreshold => _stageData[Stage].UpgradeThreshold;
 
         /// <summary>
-        /// Constant width used for all instances of the <see cref="ClownFish"/>.
+        /// Width & height for current <see cref="ClownFish"/>.
         /// </summary>
-        private const int _width = 70;
-
-        /// <summary>
-        /// Constant height used for all instances of the <see cref="ClownFish"/>.
-        /// </summary>
-        private const int _height = 60;
+        private Point _size => _stageData[Stage].Size;
 
         /// <summary>
         /// Threshold value which, when current velocity surpasses, triggers use of move animations
@@ -233,11 +271,6 @@ namespace FishTank.Models
         private SpriteSheet _spriteSheet;
 
         /// <summary>
-        /// Path to the <see cref="SpriteSheet"/> asset for this <see cref="Fish"/>.
-        /// </summary>
-        private readonly string _spriteSheetAssetName = "sheets\\clownfish_sheet.png";
-
-        /// <summary>
         /// Set of <see cref="Animation"/> objects used for the different hunger states 
         /// of the <see cref="ClownFish"/> during movement.
         /// </summary>
@@ -247,5 +280,24 @@ namespace FishTank.Models
         /// Set of <see cref="Rectangle"/> instances used to show non-animated states from the <see cref="SpriteSheet"/>.
         /// </summary>
         private Rectangle _healthyTile, _hungryTile, _starvingTile, _deadTile;
+
+        struct StageData
+        {
+            public StageData(string assetName, Point size, float upgradeThreshold, int coinValue)
+            {
+                AssetName = assetName;
+                Size = size;
+                UpgradeThreshold = upgradeThreshold;
+                CoinValue = coinValue;
+            }
+
+            public string AssetName { get; set; }
+
+            public int CoinValue { get; set; }
+
+            public Point Size { get; set; }
+
+            public float UpgradeThreshold { get; set; }
+        };
     }
 }

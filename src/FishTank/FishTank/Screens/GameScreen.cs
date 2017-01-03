@@ -53,8 +53,8 @@ namespace FishTank.Screens
             _tankView.LoadContent();
             _topBarView.LoadContent();
 
-            _tankView.CreateFish(LevelItemType.GuppyFish);
-            _tankView.CreateFish(LevelItemType.GuppyFish);
+            _tankView.CreateFish(LevelItemType.ClownFish);
+            _tankView.CreateFish(LevelItemType.ClownFish);
             _tankView.CreateFish(LevelItemType.FeederFish);
             _tankView.CreateFish(LevelItemType.CoinCrab);
         }
