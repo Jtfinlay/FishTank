@@ -21,7 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
 
-namespace FishTank.Content
+namespace FishTank.Drawing
 {
     /// <summary>
     /// Provides simple access to game resources such as fonts, strings, and textures.

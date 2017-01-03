@@ -14,7 +14,7 @@
 //  limitations under the License.
 //
 
-namespace FishTank.Content
+namespace FishTank.Drawing
 {
     public static class TextureNames
     {

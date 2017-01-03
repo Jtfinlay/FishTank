@@ -14,7 +14,7 @@
 //  limitations under the License.
 // 
 
-using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Utilities;
 using FishTank.Utilities.Inputs;
 using Microsoft.Xna.Framework;

@@ -15,7 +15,7 @@
 //
 
 using FishTank.Components;
-using FishTank.Content;
+using FishTank.Drawing;
 using FishTank.Models.Levels;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;

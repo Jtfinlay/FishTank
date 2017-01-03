@@ -102,9 +102,9 @@
     </Compile>
     <Compile Include="Components\Coin.cs" />
     <Compile Include="Components\CoinBankBar.cs" />
-    <Compile Include="Content\ContentBuilder.cs" />
-    <Compile Include="Content\FontNames.cs" />
-    <Compile Include="Content\TextureNames.cs" />
+    <Compile Include="Drawing\ContentBuilder.cs" />
+    <Compile Include="Drawing\FontNames.cs" />
+    <Compile Include="Drawing\TextureNames.cs" />
     <Compile Include="Drawing\AnimationState.cs" />
     <Compile Include="Drawing\SpriteSheet.cs" />
     <Compile Include="Instrumentation\Log.cs" />
