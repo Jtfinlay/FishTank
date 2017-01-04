@@ -36,7 +36,6 @@ namespace FishTank.Components
         {
             // Preload assets
             ContentBuilder.Instance.CreateRectangleTexture(_assetName, Area.Width, Area.Height);
-            ContentBuilder.Instance.LoadTextureByName(_coinAssetName);
             ContentBuilder.Instance.LoadFontByName(_fontAssetName);
         }
 
@@ -47,10 +46,12 @@ namespace FishTank.Components
             spriteBatch.Draw(ContentBuilder.Instance.LoadTextureByName(_assetName), Area.Location.ToVector2(), Color.Black);
             spriteBatch.DrawString(ContentBuilder.Instance.LoadFontByName(_fontAssetName), _goldAmountString, Area.ApplyPadding(Constants.Padding, Alignment.Right), Alignment.Right, Color.White);
 
-
-            Texture2D coinAsset = ContentBuilder.Instance.LoadTextureByName(_coinAssetName);
-            var coinIconPosition = Area.Location.ToVector2() + new Vector2(Constants.Padding, (Area.Height / 2) - (coinAsset.Height / 2));
-            spriteBatch.Draw(coinAsset, coinIconPosition, Color.Gold);
+            Texture2D coinAsset = ContentBuilder.Instance.LoadTextureByName(SpriteSheets.CoinSheet.AssetName);
+            var coinIconPosition = Area.Location.ToVector2() + new Vector2(Constants.Padding, (Area.Height / 2) - (SpriteSheets.CoinSheet.TileHeight / 2));
+            spriteBatch.Draw(
+                texture: coinAsset, 
+                position: coinIconPosition, 
+                sourceRectangle: new Rectangle(_goldTile, SpriteSheets.CoinSheet.TileSize));
         }
 
         public override void Update(GameTime gameTime, MouseState currentMouseState)
@@ -64,9 +65,9 @@ namespace FishTank.Components
 
         private string _goldAmountString => $"{GoldAmount}g";
 
-        private readonly string _assetName = TextureNames.CoinBankBarAsset;
+        private readonly Point _goldTile = new Point(SpriteSheets.CoinSheet.TileWidth, 0);
 
-        private readonly string _coinAssetName = TextureNames.CoinAsset;
+        private readonly string _assetName = TextureNames.CoinBankBarAsset;
 
         private readonly string _fontAssetName = FontNames.Arial_20;
     }

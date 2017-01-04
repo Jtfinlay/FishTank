@@ -14,7 +14,6 @@
 //  limitations under the License.
 //
 
-using FishTank.Components;
 using FishTank.Drawing;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
@@ -38,7 +37,7 @@ namespace FishTank.Models
             _coinValue = Coin.DiamondCoinValue;
             CurrentHunger = _maxHunger;
 
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, 100, _width, _height);
+            BoundaryBox = new Rectangle2(new Vector2(_swimArea.X + Constants.VirtualWidth / 2, 100), _size.ToVector2());
 
             LoadAssets();
         }
@@ -112,43 +111,36 @@ namespace FishTank.Models
 
         private void LoadAssets()
         {
-            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
-
             // Healthy movement
             var animationFrames = new List<Point>()
             {
                 new Point(0,0),
-                new Point(0, _height),
+                new Point(0, _size.Y),
                 new Point(0,0),
-                new Point(0, _height * 2),
+                new Point(0, _size.Y * 2),
             };
             _healthyMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Hungry movement
-            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            animationFrames = animationFrames.Select((point) => { point += new Point(_size.X, 0); return point; }).ToList();
             _hungryMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Starving movement
-            animationFrames = animationFrames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            animationFrames = animationFrames.Select((point) => { point += new Point(_size.X, 0); return point; }).ToList();
             _starvingMovementAnimation = new Animation(_spriteSheet, animationFrames);
 
             // Eat animation
-            animationFrames = new List<Point>() { new Point(_width * 3, _height) };
+            animationFrames = new List<Point>() { new Point(_size.X * 3, _size.Y) };
             _eatAnimation = new Animation(_spriteSheet, animationFrames, false);
 
             // Still frames
             _healthyTile = new Rectangle(new Point(0, 0), _spriteSheet.TileSize);
-            _hungryTile = new Rectangle(new Point(_width, 0), _spriteSheet.TileSize);
-            _starvingTile = new Rectangle(new Point(_width*2, 0), _spriteSheet.TileSize);
-            _deadTile = new Rectangle(new Point(_width*3, 0), _spriteSheet.TileSize);
-
-            // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
+            _hungryTile = new Rectangle(new Point(_size.X, 0), _spriteSheet.TileSize);
+            _starvingTile = new Rectangle(new Point(_size.X * 2, 0), _spriteSheet.TileSize);
+            _deadTile = new Rectangle(new Point(_size.X * 3, 0), _spriteSheet.TileSize);
         }
 
-        private const int _width = 120;
-
-        private const int _height = 88;
+        private Point _size => _spriteSheet.TileSize;
 
         /// <summary>
         /// Threshold value which, when current velocity surpasses, triggers use of move animations
@@ -165,8 +157,6 @@ namespace FishTank.Models
 
         private Rectangle _healthyTile, _hungryTile, _starvingTile, _deadTile;
 
-        private SpriteSheet _spriteSheet;
-
-        private readonly string _spriteSheetAssetName = "Piranha\\piranha_sheet.png";
+        private SpriteSheet _spriteSheet => SpriteSheets.PiranhaSheet;
     }
 }

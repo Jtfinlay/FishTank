@@ -39,7 +39,7 @@ namespace FishTank.Models
             _maxAccelerationRate = 0.9f;
 
             _swimArea = new Rectangle(0, 0, Constants.VirtualWidth, Constants.VirtualHeight);
-            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - _height, _width, _height);
+            BoundaryBox = new Rectangle2(_swimArea.X + Constants.VirtualWidth / 2, Constants.VirtualHeight - _size.Y, _size.X, _size.Y);
 
             LoadAssets();
         }
@@ -115,21 +115,15 @@ namespace FishTank.Models
 
         private void LoadAssets()
         {
-            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
-
             var animationFrames = new List<Point>()
             {
-                new Point(0,0),
-                new Point(0,_height),
-                new Point(0,0),
-                new Point(0, 2 * _height),
+                new Point(0, 0),
+                new Point(0, _size.Y),
+                new Point(0, 0),
+                new Point(0, 2 * _size.Y),
             };
             _moveAnimation = new Animation(_spriteSheet, animationFrames);
         }
-
-        private const int _width = 140;
-
-        private const int _height = 100;
 
         /// <summary>
         /// Movement speed to trigger move animation
@@ -138,8 +132,8 @@ namespace FishTank.Models
 
         private Animation _moveAnimation;
 
-        private SpriteSheet _spriteSheet;
+        private Point _size => _spriteSheet.TileSize;
 
-        private readonly string _spriteSheetAssetName = "sheets\\crab_sheet.png";
+        private SpriteSheet _spriteSheet => SpriteSheets.CrabSheet;
     }
 }

@@ -54,10 +54,12 @@ namespace FishTank.Models
             switch (ItemType)
             {
                 case LevelItemType.PiranhaFish:
-                    _iconAssetName = TextureNames.PiranhaAsset;
+                    _iconAssetName = SpriteSheets.PiranhaSheet.AssetName;
+                    _iconSourceRectangle = SpriteSheets.PiranhaSheet.DefaultTile;
                     break;
                 case LevelItemType.ClownFish:
-                    _iconAssetName = TextureNames.GuppyAsset;
+                    _iconAssetName = SpriteSheets.ClownFishSheet.AssetName;
+                    _iconSourceRectangle = SpriteSheets.ClownFishSheet.DefaultTile;
                     break;
                 case LevelItemType.Locked:
                     _iconAssetName = TextureNames.BlackLockAsset;
@@ -76,7 +78,10 @@ namespace FishTank.Models
             SpriteFont font = ContentBuilder.Instance.LoadFontByName(_fontName);
 
             spriteBatch.Draw(backgroundAsset, Area.Location.ToVector2(), Color.Red);
-            spriteBatch.DrawCenterAt(iconAsset, Area.Center.ToVector2() + new Vector2(0, -20), null);
+            spriteBatch.DrawCenterAt(
+                texture: iconAsset, 
+                position: Area.Center.ToVector2() + new Vector2(0, -20), 
+                sourceRectangle: _iconSourceRectangle);
 
             if (ItemType != LevelItemType.Locked)
             {
@@ -113,6 +118,8 @@ namespace FishTank.Models
         private LevelItem _model;
 
         private string _iconAssetName;
+
+        private Rectangle? _iconSourceRectangle;
 
         private readonly string _textureAssetName = TextureNames.TopbarItemAsset;
 

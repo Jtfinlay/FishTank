@@ -14,7 +14,6 @@
 //  limitations under the License.
 //
 
-using FishTank.Components;
 using FishTank.Drawing;
 using FishTank.Instrumentation;
 using FishTank.Models.Interfaces;
@@ -27,6 +26,10 @@ using System.Linq;
 
 namespace FishTank.Models
 {
+    /// <summary>
+    /// Describes a standard <see cref="Fish"/> type that eats <see cref="Pellet"/>s and 
+    /// drops <see cref="Coin"/>s.
+    /// </summary>
     public class ClownFish : EconomicFish
     {
         /// <summary>
@@ -194,7 +197,7 @@ namespace FishTank.Models
         /// </summary>
         private void LoadAssets()
         {
-            string assetName = _stageData[Stage].AssetName;
+            string assetName = _stageData[Stage].SpriteSheet.AssetName;
             _spriteSheet = new SpriteSheet(assetName, BoundaryBox.Size.ToPoint());
 
             // Healthy movement
@@ -232,9 +235,9 @@ namespace FishTank.Models
 
         private List<StageData> _stageData = new List<StageData>()
         {
-            new StageData("sheets\\guppy_sheet.png", new Point(47, 40), 10, 0),
-            new StageData("sheets\\clownfish_sheet.png", new Point(70, 60), 70, Coin.SilverCoinValue),
-            new StageData("sheets\\kingfish_sheet.png", new Point(70, 60), int.MaxValue, Coin.GoldCoinValue),
+            new StageData(SpriteSheets.GuppyFishSheet, 10, 0),
+            new StageData(SpriteSheets.ClownFishSheet, 70, Coin.SilverCoinValue),
+            new StageData(SpriteSheets.KingFishSheet, int.MaxValue, Coin.GoldCoinValue),
         };
 
         private int _stage;
@@ -247,7 +250,7 @@ namespace FishTank.Models
         /// <summary>
         /// Width & height for current <see cref="ClownFish"/>.
         /// </summary>
-        private Point _size => _stageData[Stage].Size;
+        private Point _size => _stageData[Stage].SpriteSheet.TileSize;
 
         /// <summary>
         /// Threshold value which, when current velocity surpasses, triggers use of move animations
@@ -282,19 +285,16 @@ namespace FishTank.Models
 
         struct StageData
         {
-            public StageData(string assetName, Point size, float upgradeThreshold, int coinValue)
+            public StageData(SpriteSheet spriteSheet, float upgradeThreshold, int coinValue)
             {
-                AssetName = assetName;
-                Size = size;
+                SpriteSheet = spriteSheet;
                 UpgradeThreshold = upgradeThreshold;
                 CoinValue = coinValue;
             }
 
-            public string AssetName { get; set; }
+            public SpriteSheet SpriteSheet { get; set; }
 
             public int CoinValue { get; set; }
-
-            public Point Size { get; set; }
 
             public float UpgradeThreshold { get; set; }
         };

@@ -22,13 +22,7 @@ namespace FishTank.Drawing
 
         public static readonly string CoinBankBarAsset = "CoinBankBarAsset";
 
-        public static readonly string CoinAsset = "CoinRectangleAsset";
-
-        public static readonly string GuppyAsset = "Guppy.png";
-
         public static readonly string ItemBarComponentAsset = "ItemBarComponentAsset";
-
-        public static readonly string PiranhaAsset = "Piranha\\healthy.png";
 
         public static readonly string TopbarItemAsset = "TopBarItemAsset";
 

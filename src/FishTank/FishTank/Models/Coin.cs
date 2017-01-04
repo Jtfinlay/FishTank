@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+using FishTank.Components;
 using FishTank.Drawing;
 using FishTank.Models.Interfaces;
 using FishTank.Utilities;
@@ -24,7 +25,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace FishTank.Components
+namespace FishTank.Models
 {
     /// <summary>
     /// Describes a collectable <see cref="Coin"/> object dropped by fish.
@@ -50,7 +51,7 @@ namespace FishTank.Components
         public Coin(Vector2 position, int coinValue)
         {
             CoinValue = coinValue;
-            BoundaryBox = new Rectangle2(position, new Vector2(_width, _height));
+            BoundaryBox = new Rectangle2(position, _size.ToVector2());
 
             LoadAssets();
         }
@@ -111,41 +112,34 @@ namespace FishTank.Components
 
         private void LoadAssets()
         {
-            _spriteSheet = new SpriteSheet(_spriteSheetAssetName, BoundaryBox.Size.ToPoint());
-
             // Silver
             var frames = new List<Point>()
             {
                 new Point(0,0),
-                new Point(0, _height),
-                new Point(0, _height * 2),
-                new Point(0, _height * 3),
-                new Point(0, _height * 4),
+                new Point(0, _size.Y),
+                new Point(0, _size.Y * 2),
+                new Point(0, _size.Y * 3),
+                new Point(0, _size.Y * 4),
             };
             _silverAnimation = new Animation(_spriteSheet, frames);
 
             // Gold
-            frames = frames.Select((point) => { point += new Point(_width, 0); return point; }).ToList();
+            frames = frames.Select((point) => { point += new Point(_size.X, 0); return point; }).ToList();
             _goldAnimation = new Animation(_spriteSheet, frames);
 
             // Diamond
             frames = new List<Point>()
             {
-                new Point(_width*2,0),
-                new Point(_width*2, _height),
-                new Point(_width*2, _height * 2),
-                new Point(_width*2,0),
-                new Point(_width*2, _height * 3),
+                new Point(_size.X * 2, 0),
+                new Point(_size.X * 2, _size.Y),
+                new Point(_size.X * 2, _size.Y * 2),
+                new Point(_size.X * 2, 0),
+                new Point(_size.X * 2, _size.Y * 3),
             };
             _diamondAnimation = new Animation(_spriteSheet, frames);
-
-            // Preload assets
-            ContentBuilder.Instance.LoadTextureByName(_spriteSheetAssetName);
         }
 
-        private const int _width = 30;
-
-        private const int _height = 30;
+        private Point _size => _spriteSheet.TileSize;
 
         private Animation _silverAnimation;
 
@@ -153,8 +147,6 @@ namespace FishTank.Components
 
         private Animation _diamondAnimation;
 
-        private SpriteSheet _spriteSheet;
-
-        private readonly string _spriteSheetAssetName = "sheets\\coin_sheet.png";
+        private SpriteSheet _spriteSheet => SpriteSheets.CoinSheet;
     }
 }

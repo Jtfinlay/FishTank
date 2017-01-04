@@ -100,7 +100,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Components\Coin.cs" />
+    <Compile Include="Drawing\SpriteSheets.cs" />
+    <Compile Include="Models\Coin.cs" />
     <Compile Include="Components\CoinBankBar.cs" />
     <Compile Include="Drawing\ContentBuilder.cs" />
     <Compile Include="Drawing\FontNames.cs" />
@@ -186,37 +187,7 @@
     <Content Include="Content\backgrounds\background2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\BlackLock.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\BlackLock_Small.png" />
-    <Content Include="Content\ClownFish\dead.png" />
-    <Content Include="Content\ClownFish\healthy.png" />
-    <Content Include="Content\ClownFish\healthy_move1.png" />
-    <Content Include="Content\ClownFish\healthy_move2.png" />
-    <Content Include="Content\ClownFish\hungry.png" />
-    <Content Include="Content\ClownFish\hungry_move1.png" />
-    <Content Include="Content\ClownFish\hungry_move2.png" />
-    <Content Include="Content\ClownFish\starving.png" />
-    <Content Include="Content\ClownFish\starving_move1.png" />
-    <Content Include="Content\ClownFish\starving_move2.png" />
-    <Content Include="Content\Coins\diamond.png" />
-    <Content Include="Content\Coins\diamond1.png" />
-    <Content Include="Content\Coins\diamond2.png" />
-    <Content Include="Content\Coins\diamond3.png" />
-    <Content Include="Content\Coins\gold.png" />
-    <Content Include="Content\Coins\gold1.png" />
-    <Content Include="Content\Coins\gold2.png" />
-    <Content Include="Content\Coins\gold3.png" />
-    <Content Include="Content\Coins\gold4.png" />
-    <Content Include="Content\Coins\silver.png" />
-    <Content Include="Content\Coins\silver1.png" />
-    <Content Include="Content\Coins\silver2.png" />
-    <Content Include="Content\Coins\silver3.png" />
-    <Content Include="Content\Coins\silver4.png" />
-    <Content Include="Content\crab.png" />
-    <Content Include="Content\crab_move1.png" />
-    <Content Include="Content\crab_move2.png" />
     <Content Include="Content\Fishfingers.ttf" />
     <None Include="Content\Arial_20.spritefont" />
     <None Include="Content\FishFingers_70.spritefont" />
@@ -230,44 +201,16 @@
     <None Include="FishTank_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Guppy.png" />
-    <Content Include="Content\GuppyFish\dead.png" />
-    <Content Include="Content\GuppyFish\healthy.png" />
-    <Content Include="Content\GuppyFish\healthy_move1.png" />
-    <Content Include="Content\GuppyFish\healthy_move2.png" />
-    <Content Include="Content\GuppyFish\hungry.png" />
-    <Content Include="Content\GuppyFish\hungry_move1.png" />
-    <Content Include="Content\GuppyFish\hungry_move2.png" />
-    <Content Include="Content\GuppyFish\starving.png" />
-    <Content Include="Content\GuppyFish\starving_move1.png" />
-    <Content Include="Content\GuppyFish\starving_move2.png" />
-    <Content Include="Content\Guppy_move1.png" />
-    <Content Include="Content\Guppy_move2.png" />
-    <Content Include="Content\kingfish.png" />
-    <Content Include="Content\KingFish\dead.png" />
-    <Content Include="Content\KingFish\healthy.png" />
-    <Content Include="Content\KingFish\healthy_move1.png" />
-    <Content Include="Content\KingFish\healthy_move2.png" />
-    <Content Include="Content\KingFish\hungry.png" />
-    <Content Include="Content\KingFish\hungry_move1.png" />
-    <Content Include="Content\KingFish\hungry_move2.png" />
-    <Content Include="Content\KingFish\starving.png" />
-    <Content Include="Content\KingFish\starving_move1.png" />
-    <Content Include="Content\KingFish\starving_move2.png" />
     <Content Include="Content\pellet.png" />
-    <Content Include="Content\Piranha\healthy.png" />
-    <Content Include="Content\Piranha\piranha_sheet.png" />
     <Content Include="Content\RollingHills.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\seahorse.png" />
-    <Content Include="Content\seahorse2.png" />
-    <Content Include="Content\seahorse3.png" />
     <Content Include="Content\sheets\clownfish_sheet.png" />
     <Content Include="Content\sheets\coin_sheet.png" />
     <Content Include="Content\sheets\crab_sheet.png" />
     <Content Include="Content\sheets\guppy_sheet.png" />
     <Content Include="Content\sheets\kingfish_sheet.png" />
+    <Content Include="Content\sheets\piranha_sheet.png" />
     <Content Include="Content\sheets\seahorse_sheet.png" />
     <Content Include="Content\Unknown.png" />
     <Content Include="Properties\Default.rd.xml" />

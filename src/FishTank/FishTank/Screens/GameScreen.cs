@@ -17,6 +17,7 @@
 using FishTank.Components;
 using FishTank.Drawing;
 using FishTank.Instrumentation;
+using FishTank.Models;
 using FishTank.Models.Levels;
 using FishTank.Utilities.Events;
 using FishTank.Utilities.Inputs;
